@@ -7,6 +7,8 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
+  DrawerFooter,
+  DrawerBody,
 } from './ui/drawer';
 
 export function CartDrawer() {
@@ -24,6 +26,14 @@ export function CartDrawer() {
               account and remove your data from our servers.
             </DrawerDescription>
           </DrawerHeader>
+          <DrawerBody>
+            <div>Top of body</div>
+            <div className="h-screen" />
+            <div className="h-screen" />
+            <div className="h-screen" />
+            <div>End of body</div>
+          </DrawerBody>
+          <DrawerFooter>Footer</DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
