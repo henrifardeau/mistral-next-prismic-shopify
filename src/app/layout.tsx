@@ -6,6 +6,7 @@ import { prismic } from '@/lib/prismic';
 import { repositoryName } from '@/prismicio';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
+import { CartDrawer } from '@/components/cart-drawer';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await prismic.getSingle('settings');
@@ -40,6 +41,7 @@ export default function RootLayout({
     <html lang="fr">
       <body>
         <header>Head</header>
+        <CartDrawer />
         <main>{children}</main>
         <footer>Foot</footer>
         <PrismicPreview repositoryName={repositoryName} />
