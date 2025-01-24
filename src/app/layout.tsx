@@ -41,9 +41,9 @@ export default function RootLayout({
     <html lang="fr">
       <body>
         <header>Head</header>
-        <CartDrawer />
         <main>{children}</main>
         <footer>Foot</footer>
+        <CartDrawer />
         <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>
