@@ -44,7 +44,7 @@ export const DrawerOverlay = React.forwardRef<
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
 const drawerVariants = cva(
-  'fixed inset-y-0 z-50 flex h-full max-w-[30rem] flex-col bg-white focus:outline-none',
+  'fixed inset-y-0 z-50 flex h-full max-w-[30rem] flex-col bg-white focus:outline-hidden',
   {
     variants: {
       side: {
@@ -140,7 +140,7 @@ export const DrawerTitle = React.forwardRef<
   <DrawerPrimitive.Title
     ref={ref}
     className={cn(
-      'text-lg font-semibold leading-none tracking-tight',
+      'text-lg leading-none font-semibold tracking-tight',
       className,
     )}
     {...props}
