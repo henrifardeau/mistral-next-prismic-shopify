@@ -2,11 +2,10 @@ import type { Metadata } from 'next';
 
 import '@/styles/globals.css';
 
-import { prismic } from '@/lib/prismic';
-import { repositoryName } from '@/prismicio';
+import { CartDrawer } from '@/components/cart-drawer';
+import { prismic, repositoryName } from '@/lib/prismic';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
-import { CartDrawer } from '@/components/cart-drawer';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await prismic.getSingle('settings');
