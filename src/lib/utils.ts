@@ -11,3 +11,17 @@ export function chunk<T>(array: T[], chunkSize: number = 20): T[][] {
 export function clamp(target: number, min: number, max: number): number {
   return Math.max(min, Math.min(target, max));
 }
+
+export function safeStorage<T>(key: string): T | null {
+  try {
+    const storeValue = localStorage.getItem(key);
+    if (!storeValue) {
+      return null;
+    }
+
+    return JSON.parse(storeValue) as T;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}

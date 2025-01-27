@@ -1,5 +1,3 @@
-import { env } from '@/env';
-
 import { ShopifyInstance } from './ShopifyInstance';
 
 const globalForShopify = global as unknown as {
@@ -9,9 +7,9 @@ const globalForShopify = global as unknown as {
 export const shopify =
   globalForShopify.shopify ||
   new ShopifyInstance(
-    env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN,
-    env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION,
-    env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN,
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN!,
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION!,
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
   );
 
 if (process.env.NODE_ENV !== 'production') globalForShopify.shopify = shopify;

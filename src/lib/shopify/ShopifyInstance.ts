@@ -1,3 +1,5 @@
+import { UpdateCartMutationVariables } from './gql/graphql';
+import { createCartMutation, updateCartMutation } from './mutations';
 import { longProductByIdQuery, shortProductByIdQuery } from './queries';
 import { Shopify } from './Shopify';
 
@@ -29,5 +31,13 @@ export class ShopifyInstance extends Shopify {
         ? productId
         : PREFIXES.product + productId,
     });
+  }
+
+  public async createCart() {
+    return this.client().request(createCartMutation);
+  }
+
+  public async updateCart(payload: UpdateCartMutationVariables) {
+    return this.client().request(updateCartMutation, payload);
   }
 }

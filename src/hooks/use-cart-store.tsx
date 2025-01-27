@@ -1,6 +1,8 @@
+// import { devtools } from 'zustand/middleware';
 import { create } from 'zustand';
 
 type State = {
+  id: string;
   checkoutUrl: string;
   items: {
     id: string;
@@ -10,12 +12,13 @@ type State = {
 };
 
 type Actions = {
-  setCheckoutUrl: (checkoutUrl: string) => void;
+  onCartLoaded: (id: string, checkoutUrl: string) => void;
   length(): number;
   price(): number;
 };
 
 const initialState: State = {
+  id: '',
   checkoutUrl: '',
   items: [
     {
@@ -33,9 +36,11 @@ const initialState: State = {
 
 export const useCartStore = create<State & Actions>()((set, get) => ({
   ...initialState,
-  setCheckoutUrl: (checkoutUrl: string) => set({ checkoutUrl }),
   length: () => get().items.reduce(computeLength, 0),
   price: () => get().items.reduce(computePrice, 0),
+  onCartLoaded: (id: string, checkoutUrl: string) => {
+    set((state) => ({ ...state, id, checkoutUrl }));
+  },
 }));
 
 function computeLength(acc: number, cur: { quantity: number }) {
