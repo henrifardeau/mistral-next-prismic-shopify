@@ -5,6 +5,8 @@ import { prismic } from '@/lib/prismic';
 import { components } from '@/slices';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
+import { shopify } from '@/lib/shopify';
+import VariantSelector from './VariantSelector';
 
 export async function generateMetadata({
   params,
@@ -41,11 +43,20 @@ export default async function Page({
 
   const page = await prismic.getByUID('products', uid).catch(() => notFound());
 
+  if (!isFilled.keyText(page.data.shopify_product_id)) {
+    throw Error('Product is not linked with Shopify');
+  }
+
+  const shopifyProduct = await shopify.getLongProductById(
+    page.data.shopify_product_id,
+  );
+
   return (
     <div>
       <h2>
         {page.data.title} | {page.data.shopify_product_id}
       </h2>
+      <VariantSelector shopifyProduct={shopifyProduct} />
       <SliceZone slices={page.data.slices} components={components} />
     </div>
   );

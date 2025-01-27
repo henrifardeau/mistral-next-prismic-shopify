@@ -1,4 +1,4 @@
-import { shortProductByIdQuery } from './queries';
+import { longProductByIdQuery, shortProductByIdQuery } from './queries';
 import { Shopify } from './Shopify';
 
 const PREFIXES = {
@@ -13,7 +13,19 @@ export class ShopifyInstance extends Shopify {
     cache?: RequestCache,
   ) {
     return this.client(next, cache).request(shortProductByIdQuery, {
-      id: productId.startsWith(PREFIXES.collection)
+      id: productId.startsWith(PREFIXES.product)
+        ? productId
+        : PREFIXES.product + productId,
+    });
+  }
+
+  public async getLongProductById(
+    productId: string,
+    next?: NextFetchRequestConfig,
+    cache?: RequestCache,
+  ) {
+    return this.client(next, cache).request(longProductByIdQuery, {
+      id: productId.startsWith(PREFIXES.product)
         ? productId
         : PREFIXES.product + productId,
     });
