@@ -1,4 +1,4 @@
-import { productByIdQuery } from './queries';
+import { shortProductByIdQuery } from './queries';
 import { Shopify } from './Shopify';
 
 const PREFIXES = {
@@ -7,12 +7,12 @@ const PREFIXES = {
 };
 
 export class ShopifyInstance extends Shopify {
-  public async getProductById(
+  public async getShortProductById(
     productId: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ) {
-    return this.client(next, cache).request(productByIdQuery, {
+    return this.client(next, cache).request(shortProductByIdQuery, {
       id: productId.startsWith(PREFIXES.collection)
         ? productId
         : PREFIXES.product + productId,

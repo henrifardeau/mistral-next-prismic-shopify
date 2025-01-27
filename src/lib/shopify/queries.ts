@@ -1,6 +1,6 @@
 import { graphql } from './gql';
 
-export const productByIdQuery = graphql(`
+export const shortProductByIdQuery = graphql(`
   query ProductById($id: ID!) {
     product(id: $id) {
       title

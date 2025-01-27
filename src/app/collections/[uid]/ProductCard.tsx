@@ -16,7 +16,7 @@ export default async function ProductCard({
     throw Error('Product is not linked with Shopify');
   }
 
-  const shopifyProduct = await shopify.getProductById('9624120394058');
+  const shopifyProduct = await shopify.getShortProductById('9624120394058');
 
   return (
     <Link href={`/products/${uid}`}>
