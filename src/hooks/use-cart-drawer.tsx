@@ -9,7 +9,7 @@ type Actions = {
 };
 
 const initialState: State = {
-  open: true,
+  open: false,
 };
 
 export const useCartDrawer = create<State & Actions>()((set) => ({
