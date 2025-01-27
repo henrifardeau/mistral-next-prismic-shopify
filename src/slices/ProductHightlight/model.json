@@ -45,13 +45,6 @@
                   "allowText": true,
                   "repeat": false
                 }
-              },
-              "link_text": {
-                "type": "Text",
-                "config": {
-                  "label": "Link Text",
-                  "placeholder": ""
-                }
               }
             }
           }

@@ -1,13 +1,9 @@
 import { graphql } from './gql';
 
-export const productsQuery = graphql(`
-  query Products {
-    products(first: 10) {
-      edges {
-        node {
-          id
-        }
-      }
+export const productByIdQuery = graphql(`
+  query ProductById($id: ID!) {
+    product(id: $id) {
+      title
     }
   }
 `);

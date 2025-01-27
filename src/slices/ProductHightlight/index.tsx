@@ -19,7 +19,7 @@ export default function ProductHightlight({ slice }: ProductHightlightProps) {
       className="py-24"
     >
       <div className="px-16">
-        <div className="border-t border-black pb-8 pt-6">
+        <div className="border-t border-black pt-6 pb-8">
           <PrismicRichText
             field={slice.primary.heading}
             components={{
@@ -30,8 +30,8 @@ export default function ProductHightlight({ slice }: ProductHightlightProps) {
           />
         </div>
         <ul className="grid auto-cols-[1fr] grid-flow-row gap-5 md:grid-cols-[1fr_1fr] lg:grid-flow-col">
-          {slice.primary.products.map((item) => (
-            <li key={item.link_text}>
+          {slice.primary.products.map((item, index) => (
+            <li key={index}>
               <article className="grid grid-flow-row items-start gap-5">
                 <PrismicNextLink field={item.link}>
                   <PrismicNextImage field={item.thumbnail} alt="" />
@@ -39,10 +39,8 @@ export default function ProductHightlight({ slice }: ProductHightlightProps) {
                 <div>
                   <PrismicNextLink
                     field={item.link}
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-black px-3 text-xs uppercase"
-                  >
-                    {item.link_text}
-                  </PrismicNextLink>
+                    className="inline-flex items-center justify-center rounded-full border border-black px-3 py-1 text-xs whitespace-nowrap uppercase"
+                  />
                 </div>
               </article>
             </li>

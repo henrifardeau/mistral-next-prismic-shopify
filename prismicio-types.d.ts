@@ -4,6 +4,108 @@ import type * as prismic from '@prismicio/client';
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
+/**
+ * Item in *Collections → Products*
+ */
+export interface CollectionsDocumentDataProductsItem {
+  /**
+   * Product field in *Collections → Products*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collections.products[].product
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  product: prismic.ContentRelationshipField<'products'>;
+}
+
+type CollectionsDocumentDataSlicesSlice = ProductHightlightSlice;
+
+/**
+ * Content for Collections documents
+ */
+interface CollectionsDocumentData {
+  /**
+   * Title field in *Collections*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collections.title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Products field in *Collections*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collections.products[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  products: prismic.GroupField<Simplify<CollectionsDocumentDataProductsItem>>;
+
+  /**
+   * Slice Zone field in *Collections*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collections.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#slices
+   */
+  slices: prismic.SliceZone<CollectionsDocumentDataSlicesSlice> /**
+   * Meta Title field in *Collections*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: collections.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Collections*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: collections.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Collections*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collections.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Collections document from Prismic
+ *
+ * - **API ID**: `collections`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CollectionsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<CollectionsDocumentData>,
+    'collections',
+    Lang
+  >;
+
 type HomepageDocumentDataSlicesSlice = ProductHightlightSlice;
 
 /**
@@ -80,6 +182,93 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
+type ProductsDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Products documents
+ */
+interface ProductsDocumentData {
+  /**
+   * Shopify Product Id field in *Products*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.shopify_product_id
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  shopify_product_id: prismic.KeyTextField;
+
+  /**
+   * Title field in *Products*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Slice Zone field in *Products*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#slices
+   */
+  slices: prismic.SliceZone<ProductsDocumentDataSlicesSlice> /**
+   * Meta Title field in *Products*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: products.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */;
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Products*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: products.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Products*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Products document from Prismic
+ *
+ * - **API ID**: `products`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ProductsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<ProductsDocumentData>,
+    'products',
+    Lang
+  >;
+
 /**
  * Content for Settings documents
  */
@@ -134,7 +323,11 @@ export type SettingsDocument<Lang extends string = string> =
     Lang
   >;
 
-export type AllDocumentTypes = HomepageDocument | SettingsDocument;
+export type AllDocumentTypes =
+  | CollectionsDocument
+  | HomepageDocument
+  | ProductsDocument
+  | SettingsDocument;
 
 /**
  * Item in *ProductHightlight → Default → Primary → Products*
@@ -159,16 +352,6 @@ export interface ProductHightlightSliceDefaultPrimaryProductsItem {
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
-
-  /**
-   * Link Text field in *ProductHightlight → Default → Primary → Products*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: product_hightlight.default.primary.products[].link_text
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  link_text: prismic.KeyTextField;
 }
 
 /**
@@ -249,9 +432,16 @@ declare module '@prismicio/client' {
 
   namespace Content {
     export type {
+      CollectionsDocument,
+      CollectionsDocumentData,
+      CollectionsDocumentDataProductsItem,
+      CollectionsDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
+      ProductsDocument,
+      ProductsDocumentData,
+      ProductsDocumentDataSlicesSlice,
       SettingsDocument,
       SettingsDocumentData,
       AllDocumentTypes,

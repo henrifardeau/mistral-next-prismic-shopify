@@ -8,15 +8,14 @@ import config from '../../slicemachine.config.json';
 export const repositoryName = config.repositoryName;
 
 const routes: ClientConfig['routes'] = [
-  // Examples:
-  // {
-  // 	type: "homepage",
-  // 	path: "/",
-  // },
-  // {
-  // 	type: "page",
-  // 	path: "/:uid",
-  // },
+  {
+    type: 'homepage',
+    path: '/',
+  },
+  {
+    type: 'products',
+    path: '/products/:uid',
+  },
 ];
 
 const prismicInstance = (config: CreateClientConfig = {}) => {
