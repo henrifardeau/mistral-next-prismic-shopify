@@ -1,17 +1,19 @@
 'use client';
 
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
+import { useCartStore } from '@/hooks/use-cart-store';
 
 export function CartButton() {
-  const setCartOpen = useCartDrawer((state) => state.setOpen);
+  const { openCart } = useCartDrawer();
+  const { cartLength } = useCartStore();
 
   return (
     <button
-      onClick={() => setCartOpen(true)}
+      onClick={openCart}
       className="flex h-10 w-10 items-center justify-center"
     >
       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-xs text-white uppercase">
-        0
+        {cartLength}
       </span>
     </button>
   );

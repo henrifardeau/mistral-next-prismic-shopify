@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 
-import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
 import { addVariantToCart } from '@/lib/shopify';
 import { LongProductByIdQuery } from '@/lib/shopify/gql/graphql';
@@ -68,7 +67,6 @@ export default function VariantSelector({
   shopifyProduct: LongProductByIdQuery;
 }) {
   const { addCartLine } = useCartStore();
-  const setCartOpen = useCartDrawer((state) => state.setOpen);
   const options = useMemo(() => getOptions(shopifyProduct), [shopifyProduct]);
 
   const [selectedOptions, setSelectedOptions] = useState<
@@ -76,7 +74,7 @@ export default function VariantSelector({
   >(initialOptions(options));
 
   const [selectedVariant, setSelectedVariant] = useState<
-    { id: string } | null | undefined
+    { id: string; title: string } | undefined
   >(findVariant(shopifyProduct, selectedOptions));
 
   const onSelectOption = (optionName: string, optionValue: string) => {
@@ -84,7 +82,7 @@ export default function VariantSelector({
     setSelectedOptions(updatedOptions);
 
     const matchingVariant = findVariant(shopifyProduct, updatedOptions);
-    setSelectedVariant(matchingVariant || null);
+    setSelectedVariant(matchingVariant || undefined);
   };
 
   return (
@@ -110,8 +108,11 @@ export default function VariantSelector({
       {selectedVariant && (
         <form
           action={async () => {
-            addCartLine(selectedVariant.id);
-            setCartOpen(true);
+            addCartLine(
+              selectedVariant.id,
+              selectedVariant.title,
+              shopifyProduct.product?.title || '',
+            );
             await addVariantToCart([{ merchandiseId: selectedVariant.id }]);
           }}
         >

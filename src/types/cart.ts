@@ -1,37 +1,3 @@
-export type CartAction =
-  | {
-      type: 'ADD';
-      payload: {
-        merchandiseId: string;
-        quantity?: number;
-      };
-    }
-  | {
-      type: 'INCREMENT';
-      payload: {
-        lineId: string;
-      };
-    }
-  | {
-      type: 'DECREMENT';
-      payload: {
-        lineId: string;
-      };
-    }
-  | {
-      type: 'UPDATE';
-      payload: {
-        lineId: string;
-        quantity: number;
-      };
-    }
-  | {
-      type: 'REMOVE';
-      payload: {
-        lineId: string;
-      };
-    };
-
 export type AddToCartLine = {
   merchandiseId: string;
   quantity?: number;

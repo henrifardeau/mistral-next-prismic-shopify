@@ -19,14 +19,16 @@ import {
 } from './ui/drawer';
 
 export function CartDrawer() {
-  const cartOpen = useCartDrawer((state) => state.open);
-  const setCartOpen = useCartDrawer((state) => state.setOpen);
-
-  const { cart, incrementCartLine, decrementCartLine, removeCartLine } =
-    useCartStore();
+  const { isCartOpen, setCartOpen, closeCart } = useCartDrawer();
+  const {
+    optimisticCart,
+    incrementCartLine,
+    decrementCartLine,
+    removeCartLine,
+  } = useCartStore();
 
   return (
-    <Drawer open={cartOpen} onOpenChange={setCartOpen}>
+    <Drawer open={isCartOpen} onOpenChange={setCartOpen}>
       <DrawerContent className="w-full max-w-[478px]">
         <DrawerHeader>
           <hr className="border-black" />
@@ -36,7 +38,7 @@ export function CartDrawer() {
               {`CART_LINES_LENGTH`} items
             </DrawerDescription>
             <button
-              onClick={() => setCartOpen(false)}
+              onClick={closeCart}
               className="flex h-6 w-6 items-center justify-center justify-self-end rounded-full border border-black text-xs"
             >
               X
@@ -44,10 +46,10 @@ export function CartDrawer() {
           </div>
         </DrawerHeader>
 
-        {cart?.lines && (
+        {!!optimisticCart?.lines.length && (
           <DrawerBody>
             <ul className="space-y-4">
-              {cart.lines.map((line) => (
+              {optimisticCart.lines.map((line) => (
                 <li key={line.id} className="space-y-2 border p-2">
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
@@ -108,7 +110,7 @@ export function CartDrawer() {
           </DrawerBody>
         )}
 
-        {!cart?.lines.length && (
+        {!optimisticCart?.lines.length && (
           <DrawerBody>
             <div className="flex h-full items-center justify-center">
               Add product to your cart.
@@ -116,24 +118,26 @@ export function CartDrawer() {
           </DrawerBody>
         )}
 
-        <DrawerFooter>
-          <hr className="border-black" />
-          <div className="pt-5">
-            <div className="flex items-center justify-between text-sm uppercase">
-              <span>Subtotal</span>
-              <span>{`CART_SUBTOTAL`}€</span>
-            </div>
+        {!!optimisticCart?.lines.length && (
+          <DrawerFooter>
+            <hr className="border-black" />
+            <div className="pt-5">
+              <div className="flex items-center justify-between text-sm uppercase">
+                <span>Subtotal</span>
+                <span>{`CART_SUBTOTAL`}€</span>
+              </div>
 
-            <form action={redirectToCheckout} className="pt-4">
-              <button
-                type="submit"
-                className="flex w-full items-center justify-center rounded-full bg-black p-4 text-xs text-white uppercase"
-              >
-                Continue to Checkout
-              </button>
-            </form>
-          </div>
-        </DrawerFooter>
+              <form action={redirectToCheckout} className="pt-4">
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-center rounded-full bg-black p-4 text-xs text-white uppercase"
+                >
+                  Continue to Checkout
+                </button>
+              </form>
+            </div>
+          </DrawerFooter>
+        )}
       </DrawerContent>
     </Drawer>
   );
