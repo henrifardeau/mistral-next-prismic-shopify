@@ -1,8 +1,8 @@
 import { graphql } from './gql';
 
 export const createCartMutation = graphql(`
-  mutation CreateCart {
-    cartCreate {
+  mutation CreateCart($input: CartInput) {
+    cartCreate(input: $input) {
       cart {
         id
         checkoutUrl
@@ -15,6 +15,9 @@ export const createCartMutation = graphql(`
                 ... on ProductVariant {
                   id
                   title
+                  product {
+                    title
+                  }
                 }
               }
             }
@@ -40,6 +43,9 @@ export const addVariantToCartMutation = graphql(`
                 ... on ProductVariant {
                   id
                   title
+                  product {
+                    title
+                  }
                 }
               }
             }
@@ -65,6 +71,9 @@ export const updateVariantToCartMutation = graphql(`
                 ... on ProductVariant {
                   id
                   title
+                  product {
+                    title
+                  }
                 }
               }
             }
@@ -90,6 +99,9 @@ export const removeVariantToCartMutation = graphql(`
                 ... on ProductVariant {
                   id
                   title
+                  product {
+                    title
+                  }
                 }
               }
             }

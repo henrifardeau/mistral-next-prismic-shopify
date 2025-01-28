@@ -14,6 +14,9 @@ export const cartByIdQuery = graphql(`
               ... on ProductVariant {
                 id
                 title
+                product {
+                  title
+                }
               }
             }
           }

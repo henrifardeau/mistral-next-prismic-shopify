@@ -1,5 +1,7 @@
 import { ShopifyInstance } from './ShopifyInstance';
 
+export * from './actions';
+
 const globalForShopify = global as unknown as {
   shopify: ShopifyInstance;
 };

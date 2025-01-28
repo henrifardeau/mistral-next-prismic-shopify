@@ -1,5 +1,8 @@
 import { GraphQLClient } from 'graphql-request';
 
+import { Cart, RawCart } from '@/types/cart';
+import { Connection } from '@/types/gql';
+
 export class Shopify {
   protected readonly storefrontURL: string;
 
@@ -11,6 +14,16 @@ export class Shopify {
     this.storefrontURL = this.domain.startsWith('https://')
       ? this.domain + `/api/${this.apiVersion}/graphql`
       : 'https://' + this.domain + `/api/${this.apiVersion}/graphql`;
+  }
+
+  protected client(next?: NextFetchRequestConfig, cache?: RequestCache) {
+    return new GraphQLClient(this.storefrontURL, {
+      headers: {
+        'x-shopify-storefront-access-token': this.token,
+      },
+      cache,
+      next,
+    });
   }
 
   public get cartCookieName() {
@@ -26,13 +39,14 @@ export class Shopify {
     };
   }
 
-  protected client(next?: NextFetchRequestConfig, cache?: RequestCache) {
-    return new GraphQLClient(this.storefrontURL, {
-      headers: {
-        'x-shopify-storefront-access-token': this.token,
-      },
-      cache,
-      next,
-    });
+  public reshapeCart(rawCart: RawCart): Cart {
+    return {
+      ...rawCart,
+      lines: this.removeEdgesAndNodes(rawCart.lines),
+    };
+  }
+
+  public removeEdgesAndNodes<T>(array: Connection<T>): T[] {
+    return array.edges.map((edge) => edge?.node);
   }
 }

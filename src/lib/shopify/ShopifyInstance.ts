@@ -26,22 +26,19 @@ const PREFIXES = Object.freeze({
 });
 
 export class ShopifyInstance extends Shopify {
-  //#region CART
-  public async createCart() {
-    return this.client().request(createCartMutation);
-  }
+  public async createCart(cartLines: AddToCartLine[]) {
+    const lines = cartLines.map((line) => ({
+      quantity: line.quantity ?? 1,
+      merchandiseId: line.merchandiseId.startsWith(PREFIXES.variant)
+        ? line.merchandiseId
+        : PREFIXES.variant + line.merchandiseId,
+    }));
 
-  public async getCart(cartId: string) {
-    const id = cartId.startsWith(PREFIXES.cart)
-      ? cartId
-      : PREFIXES.cart + cartId;
-
-    return this.client().request(cartByIdQuery, { id });
+    return this.client().request(createCartMutation, { input: { lines } });
   }
 
   public async addVariantToCart(cartId: string, cartLines: AddToCartLine[]) {
     const lines = cartLines.map((line) => ({
-      ...line,
       quantity: line.quantity ?? 1,
       merchandiseId: line.merchandiseId.startsWith(PREFIXES.variant)
         ? line.merchandiseId
@@ -56,14 +53,10 @@ export class ShopifyInstance extends Shopify {
     cartLines: UpdateToCartLine[],
   ) {
     const lines = cartLines.map((line) => ({
-      ...line,
       quantity: line.quantity ?? 1,
       id: line.lineId.startsWith(PREFIXES.line)
         ? line.lineId
         : PREFIXES.line + line.lineId,
-      merchandiseId: line.merchandiseId.startsWith(PREFIXES.variant)
-        ? line.merchandiseId
-        : PREFIXES.variant + line.merchandiseId,
     }));
 
     return this.client().request(updateVariantToCartMutation, {
@@ -81,11 +74,7 @@ export class ShopifyInstance extends Shopify {
         ? cur.lineId
         : PREFIXES.line + cur.lineId;
 
-      if (acc.includes(prefixedCur)) {
-        return acc;
-      }
-
-      return [...acc, prefixedCur];
+      return acc.includes(prefixedCur) ? acc : [...acc, prefixedCur];
     }, [] as string[]);
 
     return this.client().request(removeVariantToCartMutation, {
@@ -93,9 +82,19 @@ export class ShopifyInstance extends Shopify {
       lineIds,
     });
   }
-  //#endregion
 
-  //#region PRODUCT & VARIANTS
+  public async getCart(
+    cartId: string,
+    next?: NextFetchRequestConfig,
+    cache?: RequestCache,
+  ) {
+    const id = cartId.startsWith(PREFIXES.cart)
+      ? cartId
+      : PREFIXES.cart + cartId;
+
+    return this.client(next, cache).request(cartByIdQuery, { id });
+  }
+
   public async getShortProductById(
     productId: string,
     next?: NextFetchRequestConfig,
@@ -119,5 +118,4 @@ export class ShopifyInstance extends Shopify {
 
     return this.client(next, cache).request(longProductByIdQuery, { id });
   }
-  //#endregion
 }

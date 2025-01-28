@@ -1,5 +1,3 @@
-import { Connection } from '@/types/gql';
-
 export function chunk<T>(array: T[], chunkSize: number = 20): T[][] {
   const chunks = [];
 
@@ -21,8 +19,4 @@ export function safeJSON<T>(data: string): T | null {
     console.error(err);
     return null;
   }
-}
-
-export function removeEdgesAndNodes<T>(array: Connection<T>): T[] {
-  return array.edges.map((edge) => edge?.node);
 }

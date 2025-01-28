@@ -1,12 +1,35 @@
 export type CartAction =
   | {
+      type: 'ADD';
+      payload: {
+        merchandiseId: string;
+        quantity?: number;
+      };
+    }
+  | {
+      type: 'INCREMENT';
+      payload: {
+        lineId: string;
+      };
+    }
+  | {
+      type: 'DECREMENT';
+      payload: {
+        lineId: string;
+      };
+    }
+  | {
       type: 'UPDATE';
+      payload: {
+        lineId: string;
+        quantity: number;
+      };
     }
   | {
       type: 'REMOVE';
-    }
-  | {
-      type: 'ADD';
+      payload: {
+        lineId: string;
+      };
     };
 
 export type AddToCartLine = {
@@ -16,13 +39,16 @@ export type AddToCartLine = {
 
 export type UpdateToCartLine = {
   lineId: string;
-  merchandiseId: string;
   quantity?: number;
 };
 
 export type RemoveToCartLine = {
   lineId: string;
 };
+
+export interface RawCart extends Omit<Cart, 'lines'> {
+  lines: { edges: { node: CartLine }[] };
+}
 
 export type Cart = {
   id?: string;
@@ -36,5 +62,8 @@ export type CartLine = {
   merchandise: {
     id: string;
     title: string;
+    product: {
+      title: string;
+    };
   };
 };

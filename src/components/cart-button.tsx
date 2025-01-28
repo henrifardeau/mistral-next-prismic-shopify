@@ -1,3 +1,5 @@
+'use client';
+
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 
 export function CartButton() {

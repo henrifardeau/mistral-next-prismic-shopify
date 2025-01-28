@@ -1,5 +1,3 @@
-'use client';
-
 import { CartButton } from '@/components/cart-button';
 
 export default function Page() {

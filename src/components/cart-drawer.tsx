@@ -1,7 +1,12 @@
 'use client';
 
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
-import { redirectToCheckout } from '@/hooks/use-cart/actions';
+import { useCartStore } from '@/hooks/use-cart-store';
+import {
+  redirectToCheckout,
+  removeVariantToCart,
+  updateVariantToCart,
+} from '@/lib/shopify';
 
 import {
   Drawer,
@@ -16,6 +21,9 @@ import {
 export function CartDrawer() {
   const cartOpen = useCartDrawer((state) => state.open);
   const setCartOpen = useCartDrawer((state) => state.setOpen);
+
+  const { cart, incrementCartLine, decrementCartLine, removeCartLine } =
+    useCartStore();
 
   return (
     <Drawer open={cartOpen} onOpenChange={setCartOpen}>
@@ -36,13 +44,77 @@ export function CartDrawer() {
           </div>
         </DrawerHeader>
 
-        <DrawerBody>
-          <div>Top of body</div>
-          <div className="h-screen" />
-          <div className="h-screen" />
-          <div className="h-screen" />
-          <div>End of body</div>
-        </DrawerBody>
+        {cart?.lines && (
+          <DrawerBody>
+            <ul className="space-y-4">
+              {cart.lines.map((line) => (
+                <li key={line.id} className="space-y-2 border p-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span>{line.merchandise.product.title}</span>
+                      <span>{line.merchandise.title}</span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <span className="rounded-full bg-black p-2 text-white">
+                        {line.quantity}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <form
+                      action={async () => {
+                        decrementCartLine(line.id);
+                        await updateVariantToCart([
+                          {
+                            lineId: line.id,
+                            quantity: line.quantity - 1,
+                          },
+                        ]);
+                      }}
+                    >
+                      <button className="rounded-full bg-black p-2 text-xs text-white">
+                        Minus
+                      </button>
+                    </form>
+                    <form
+                      action={async () => {
+                        incrementCartLine(line.id);
+                        await updateVariantToCart([
+                          {
+                            lineId: line.id,
+                            quantity: line.quantity + 1,
+                          },
+                        ]);
+                      }}
+                    >
+                      <button className="rounded-full bg-black p-2 text-xs text-white">
+                        Plus
+                      </button>
+                    </form>
+                    <form
+                      action={async () => {
+                        removeCartLine(line.id);
+                        await removeVariantToCart([{ lineId: line.id }]);
+                      }}
+                    >
+                      <button className="rounded-full bg-black p-2 text-xs text-white">
+                        Remove
+                      </button>
+                    </form>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </DrawerBody>
+        )}
+
+        {!cart?.lines.length && (
+          <DrawerBody>
+            <div className="flex h-full items-center justify-center">
+              Add product to your cart.
+            </div>
+          </DrawerBody>
+        )}
 
         <DrawerFooter>
           <hr className="border-black" />

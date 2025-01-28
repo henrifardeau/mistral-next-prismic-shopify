@@ -1,7 +1,11 @@
 'use client';
 
-import { LongProductByIdQuery } from '@/lib/shopify/gql/graphql';
 import { useMemo, useState } from 'react';
+
+import { useCartDrawer } from '@/hooks/use-cart-drawer';
+import { useCartStore } from '@/hooks/use-cart-store';
+import { addVariantToCart } from '@/lib/shopify';
+import { LongProductByIdQuery } from '@/lib/shopify/gql/graphql';
 
 function getOptions(shopifyProduct: LongProductByIdQuery) {
   if (!shopifyProduct.product?.variants) {
@@ -63,6 +67,8 @@ export default function VariantSelector({
 }: {
   shopifyProduct: LongProductByIdQuery;
 }) {
+  const { addCartLine } = useCartStore();
+  const setCartOpen = useCartDrawer((state) => state.setOpen);
   const options = useMemo(() => getOptions(shopifyProduct), [shopifyProduct]);
 
   const [selectedOptions, setSelectedOptions] = useState<
@@ -102,9 +108,17 @@ export default function VariantSelector({
         </div>
       ))}
       {selectedVariant && (
-        <button className="rounded-full bg-black px-4 py-2 text-white">
-          Add to cart
-        </button>
+        <form
+          action={async () => {
+            addCartLine(selectedVariant.id);
+            setCartOpen(true);
+            await addVariantToCart([{ merchandiseId: selectedVariant.id }]);
+          }}
+        >
+          <button className="rounded-full bg-black px-4 py-2 text-white">
+            Add to cart
+          </button>
+        </form>
       )}
     </div>
   );
