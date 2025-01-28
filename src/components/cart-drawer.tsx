@@ -1,12 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect } from 'react';
-
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
-import { useCartStore } from '@/hooks/use-cart-store';
-import { shopify } from '@/lib/shopify';
-import { safeStorage } from '@/lib/utils';
+import { redirectToCheckout } from '@/hooks/use-cart/actions';
 
 import {
   Drawer,
@@ -22,38 +17,6 @@ export function CartDrawer() {
   const cartOpen = useCartDrawer((state) => state.open);
   const setCartOpen = useCartDrawer((state) => state.setOpen);
 
-  const onCartLoaded = useCartStore((state) => state.onCartLoaded);
-
-  const cartCheckoutUrl = useCartStore((state) => state.checkoutUrl);
-  const cartLength = useCartStore((state) => state.length);
-  const cartPrice = useCartStore((state) => state.price);
-
-  const initializeCart = async () => {
-    const savedCart = safeStorage<{ id: string; checkoutUrl: string }>('cart');
-
-    if (savedCart) {
-      onCartLoaded(savedCart.id, savedCart.checkoutUrl);
-    } else {
-      const cart = await shopify.createCart();
-      if (!cart.cartCreate || !cart.cartCreate?.cart) {
-        throw Error('Failed to create cart');
-      }
-
-      onCartLoaded(cart.cartCreate.cart.id, cart.cartCreate.cart.checkoutUrl);
-      localStorage.setItem(
-        'cart',
-        JSON.stringify({
-          id: cart.cartCreate.cart.id,
-          checkoutUrl: cart.cartCreate.cart.checkoutUrl,
-        }),
-      );
-    }
-  };
-
-  useEffect(() => {
-    initializeCart();
-  }, []);
-
   return (
     <Drawer open={cartOpen} onOpenChange={setCartOpen}>
       <DrawerContent className="w-full max-w-[478px]">
@@ -62,7 +25,7 @@ export function CartDrawer() {
           <div className="grid grid-cols-[auto_auto_1fr] items-center gap-6 pt-5 pb-6">
             <DrawerTitle className="text-4xl">Cart</DrawerTitle>
             <DrawerDescription className="mt-1 rounded-full border border-black px-2 py-1 text-xs text-black uppercase">
-              {cartLength()} items
+              {`CART_LINES_LENGTH`} items
             </DrawerDescription>
             <button
               onClick={() => setCartOpen(false)}
@@ -84,25 +47,19 @@ export function CartDrawer() {
         <DrawerFooter>
           <hr className="border-black" />
           <div className="pt-5">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm uppercase">
-                <span>Subtotal</span>
-                <span>{cartPrice()}€</span>
-              </div>
-              <span className="text-xs uppercase">
-                or 4 payments of {cartPrice() / 4}€ with afterpay
-              </span>
+            <div className="flex items-center justify-between text-sm uppercase">
+              <span>Subtotal</span>
+              <span>{`CART_SUBTOTAL`}€</span>
             </div>
-            {cartCheckoutUrl && (
-              <div className="pt-4">
-                <Link
-                  href={cartCheckoutUrl}
-                  className="flex w-full items-center justify-center rounded-full bg-black p-4 text-xs text-white uppercase"
-                >
-                  Continue to Checkout
-                </Link>
-              </div>
-            )}
+
+            <form action={redirectToCheckout} className="pt-4">
+              <button
+                type="submit"
+                className="flex w-full items-center justify-center rounded-full bg-black p-4 text-xs text-white uppercase"
+              >
+                Continue to Checkout
+              </button>
+            </form>
           </div>
         </DrawerFooter>
       </DrawerContent>

@@ -6,18 +6,14 @@ export const createCartMutation = graphql(`
       cart {
         id
         checkoutUrl
-        lines(first: 250) {
-          nodes {
-            quantity
-            merchandise {
-              ... on ProductVariant {
-                id
-                title
-                selectedOptions {
-                  name
-                  value
-                }
-                product {
+        lines(first: 100) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
                   title
                 }
               }
@@ -29,12 +25,76 @@ export const createCartMutation = graphql(`
   }
 `);
 
-export const updateCartMutation = graphql(`
-  mutation UpdateCart($cartId: ID!, $lines: [CartLineInput!]!) {
+export const addVariantToCartMutation = graphql(`
+  mutation AddVariantToCart($cartId: ID!, $lines: [CartLineInput!]!) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart {
-        checkoutUrl
         id
+        checkoutUrl
+        lines(first: 250) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const updateVariantToCartMutation = graphql(`
+  mutation UpdateVariantToCart($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+      cart {
+        id
+        checkoutUrl
+        lines(first: 250) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const removeVariantToCartMutation = graphql(`
+  mutation RemoveVariantToCart($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        id
+        checkoutUrl
+        lines(first: 250) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

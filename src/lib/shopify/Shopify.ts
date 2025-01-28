@@ -13,6 +13,19 @@ export class Shopify {
       : 'https://' + this.domain + `/api/${this.apiVersion}/graphql`;
   }
 
+  public get cartCookieName() {
+    return 'mistral_shopify_cart';
+  }
+
+  public get cartCookieOptions() {
+    return {
+      maxAge: 7 * 24 * 60 * 60, // 7 days,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict' as const,
+    };
+  }
+
   protected client(next?: NextFetchRequestConfig, cache?: RequestCache) {
     return new GraphQLClient(this.storefrontURL, {
       headers: {
