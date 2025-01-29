@@ -6,6 +6,20 @@ import { useCartStore } from '@/hooks/use-cart-store';
 import { addVariantToCart } from '@/lib/shopify';
 import { LongProductByIdQuery } from '@/lib/shopify/gql/graphql';
 
+type ProductVariant = {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  compareAtPrice?: {
+    amount: string;
+    currencyCode: string;
+  } | null;
+  price: {
+    amount: string;
+    currencyCode: string;
+  };
+};
+
 function getOptions(shopifyProduct: LongProductByIdQuery) {
   if (!shopifyProduct.product?.variants) {
     return [];
@@ -74,7 +88,7 @@ export default function VariantSelector({
   >(initialOptions(options));
 
   const [selectedVariant, setSelectedVariant] = useState<
-    { id: string; title: string } | undefined
+    ProductVariant | undefined
   >(findVariant(shopifyProduct, selectedOptions));
 
   const onSelectOption = (optionName: string, optionValue: string) => {
@@ -109,15 +123,21 @@ export default function VariantSelector({
         <form
           action={async () => {
             addCartLine({
-              merchandiseId: selectedVariant.id,
-              merchandiseTitle: selectedVariant.title,
-              productTitle: shopifyProduct.product?.title || '',
+              product: {
+                title: shopifyProduct.product?.title || '',
+              },
+              variant: {
+                id: selectedVariant.id,
+                title: selectedVariant.title,
+                compareAtPrice: selectedVariant.compareAtPrice,
+                price: selectedVariant.price,
+              },
             });
             await addVariantToCart([{ merchandiseId: selectedVariant.id }]);
           }}
         >
           <button className="rounded-full bg-black px-4 py-2 text-white">
-            Add to cart
+            Add to cart ({selectedVariant.price.amount}€)
           </button>
         </form>
       )}

@@ -41,10 +41,22 @@ export type CartLinePayload = {
 };
 
 export type CartAddPayload = {
-  merchandiseId: string;
-  merchandiseTitle: string;
-  productTitle: string;
   quantity?: number;
+  product: {
+    title: string;
+  };
+  variant: {
+    id: string;
+    title: string;
+    compareAtPrice?: {
+      amount: string;
+      currencyCode: string;
+    } | null;
+    price: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
 };
 
 export type CartUpdatePayload = {

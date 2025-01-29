@@ -1,7 +1,7 @@
 import { graphql } from './gql';
 
-export const cartByIdQuery = graphql(`
-  query CartById($id: ID!) {
+export const getCartQuery = graphql(`
+  query GetCart($id: ID!) {
     cart(id: $id) {
       id
       checkoutUrl
@@ -14,6 +14,15 @@ export const cartByIdQuery = graphql(`
               ... on ProductVariant {
                 id
                 title
+                availableForSale
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+                price {
+                  amount
+                  currencyCode
+                }
                 product {
                   title
                 }
@@ -43,6 +52,15 @@ export const longProductByIdQuery = graphql(`
         nodes {
           id
           title
+          availableForSale
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          price {
+            amount
+            currencyCode
+          }
           selectedOptions {
             name
             value

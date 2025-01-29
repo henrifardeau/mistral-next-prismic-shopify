@@ -1,21 +1,18 @@
-import {
-  AddToCartLine,
-  RemoveToCartLine,
-  UpdateToCartLine,
-} from '@/types/cart';
+import {} from '@/types/cart';
 
 import {
-  addVariantToCartMutation,
+  addCartLineMutation,
   createCartMutation,
-  removeVariantToCartMutation,
-  updateVariantToCartMutation,
+  removeCartLineMutation,
+  updateCartLineMutation,
 } from './mutations';
 import {
-  cartByIdQuery,
+  getCartQuery,
   longProductByIdQuery,
   shortProductByIdQuery,
 } from './queries';
 import { Shopify } from './Shopify';
+import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
 
 const PREFIXES = Object.freeze({
   cart: 'gid://shopify/Cart/',
@@ -26,32 +23,29 @@ const PREFIXES = Object.freeze({
 });
 
 export class ShopifyInstance extends Shopify {
-  public async createCart(cartLines: AddToCartLine[]) {
+  public async createCart(cartLines: AddCartLine[]) {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
-      merchandiseId: line.merchandiseId.startsWith(PREFIXES.variant)
-        ? line.merchandiseId
-        : PREFIXES.variant + line.merchandiseId,
+      merchandiseId: line.variantId.startsWith(PREFIXES.variant)
+        ? line.variantId
+        : PREFIXES.variant + line.variantId,
     }));
 
     return this.client().request(createCartMutation, { input: { lines } });
   }
 
-  public async addVariantToCart(cartId: string, cartLines: AddToCartLine[]) {
+  public async addCartLines(cartId: string, cartLines: AddCartLine[]) {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
-      merchandiseId: line.merchandiseId.startsWith(PREFIXES.variant)
-        ? line.merchandiseId
-        : PREFIXES.variant + line.merchandiseId,
+      merchandiseId: line.variantId.startsWith(PREFIXES.variant)
+        ? line.variantId
+        : PREFIXES.variant + line.variantId,
     }));
 
-    return this.client().request(addVariantToCartMutation, { cartId, lines });
+    return this.client().request(addCartLineMutation, { cartId, lines });
   }
 
-  public async updateVariantToCart(
-    cartId: string,
-    cartLines: UpdateToCartLine[],
-  ) {
+  public async updateCartLines(cartId: string, cartLines: UpdateCartLine[]) {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       id: line.lineId.startsWith(PREFIXES.line)
@@ -59,16 +53,13 @@ export class ShopifyInstance extends Shopify {
         : PREFIXES.line + line.lineId,
     }));
 
-    return this.client().request(updateVariantToCartMutation, {
+    return this.client().request(updateCartLineMutation, {
       cartId,
       lines,
     });
   }
 
-  public async removeVariantToCart(
-    cartId: string,
-    cartLineIds: RemoveToCartLine[],
-  ) {
+  public async removeCartLines(cartId: string, cartLineIds: RemoveCartLine[]) {
     const lineIds = cartLineIds.reduce((acc, cur) => {
       const prefixedCur = cur.lineId.startsWith(PREFIXES.line)
         ? cur.lineId
@@ -77,7 +68,7 @@ export class ShopifyInstance extends Shopify {
       return acc.includes(prefixedCur) ? acc : [...acc, prefixedCur];
     }, [] as string[]);
 
-    return this.client().request(removeVariantToCartMutation, {
+    return this.client().request(removeCartLineMutation, {
       cartId,
       lineIds,
     });
@@ -92,7 +83,7 @@ export class ShopifyInstance extends Shopify {
       ? cartId
       : PREFIXES.cart + cartId;
 
-    return this.client(next, cache).request(cartByIdQuery, { id });
+    return this.client(next, cache).request(getCartQuery, { id });
   }
 
   public async getShortProductById(

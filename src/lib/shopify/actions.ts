@@ -1,18 +1,14 @@
 'use server';
 
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { shopify } from '@/lib/shopify';
 import { safeJSON } from '@/lib/utils';
-import {
-  AddToCartLine,
-  Cart,
-  RemoveToCartLine,
-  UpdateToCartLine,
-} from '@/types/cart';
-import { revalidateTag } from 'next/cache';
+
+import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
 
 type CartCookie = z.infer<typeof cartCookieSchema>;
 
@@ -25,7 +21,7 @@ function revalidateCart() {
   revalidateTag('getCart');
 }
 
-async function getCartCookie(): Promise<CartCookie | undefined> {
+async function getCartCookie() {
   const cookiesStore = await cookies();
 
   const existingCart = cookiesStore.get(shopify.cartCookieName);
@@ -47,7 +43,7 @@ async function getCartCookie(): Promise<CartCookie | undefined> {
   }
 }
 
-export async function getCart(): Promise<Cart | undefined> {
+export async function getCart() {
   const cartFromCookie = await getCartCookie();
   if (!cartFromCookie) {
     return undefined;
@@ -61,10 +57,10 @@ export async function getCart(): Promise<Cart | undefined> {
     return undefined;
   }
 
-  return shopify.reshapeCart(shopifyCart.cart);
+  return shopify.reshapeCart(shopifyCart);
 }
 
-export async function createCart(lines?: AddToCartLine[]): Promise<Cart> {
+export async function createCart(lines?: AddCartLine[]) {
   const cookiesStore = await cookies();
 
   const shopifyCart = await shopify.createCart(lines || []);
@@ -81,14 +77,14 @@ export async function createCart(lines?: AddToCartLine[]): Promise<Cart> {
     ...shopify.cartCookieOptions,
   });
 
-  return shopify.reshapeCart(shopifyCart.cartCreate.cart);
+  return shopify.reshapeCart(shopifyCart.cartCreate);
 }
 
-export async function addVariantToCart(lines: AddToCartLine[]) {
+export async function addCartLines(lines: AddCartLine[]) {
   try {
     const existingCart = (await getCart()) as { id: string };
     if (existingCart) {
-      await shopify.addVariantToCart(existingCart.id, lines);
+      await shopify.addCartLines(existingCart.id, lines);
     } else {
       await createCart(lines);
     }
@@ -100,14 +96,14 @@ export async function addVariantToCart(lines: AddToCartLine[]) {
   }
 }
 
-export async function updateVariantToCart(lines: UpdateToCartLine[]) {
+export async function updateCartLines(lines: UpdateCartLine[]) {
   try {
     const cartFromCookie = await getCartCookie();
     if (!cartFromCookie) {
       throw new Error('Cart not found');
     }
 
-    await shopify.updateVariantToCart(cartFromCookie.cartId, lines);
+    await shopify.updateCartLines(cartFromCookie.cartId, lines);
 
     revalidateCart();
   } catch (err) {
@@ -116,14 +112,14 @@ export async function updateVariantToCart(lines: UpdateToCartLine[]) {
   }
 }
 
-export async function removeVariantToCart(lines: RemoveToCartLine[]) {
+export async function removeCartLines(lines: RemoveCartLine[]) {
   try {
     const cartFromCookie = await getCartCookie();
     if (!cartFromCookie) {
       throw new Error('Cart not found');
     }
 
-    await shopify.removeVariantToCart(cartFromCookie.cartId, lines);
+    await shopify.removeCartLines(cartFromCookie.cartId, lines);
 
     revalidateCart();
   } catch (err) {

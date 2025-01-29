@@ -4,8 +4,8 @@ import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
 import {
   redirectToCheckout,
-  removeVariantToCart,
-  updateVariantToCart,
+  removeCartLines,
+  updateCartLines,
 } from '@/lib/shopify';
 
 import {
@@ -22,6 +22,7 @@ export function CartDrawer() {
   const { isCartOpen, setCartOpen, closeCart } = useCartDrawer();
   const {
     optimisticCart,
+    cartLength,
     incrementCartLine,
     decrementCartLine,
     removeCartLine,
@@ -35,7 +36,7 @@ export function CartDrawer() {
           <div className="grid grid-cols-[auto_auto_1fr] items-center gap-6 pt-5 pb-6">
             <DrawerTitle className="text-4xl">Cart</DrawerTitle>
             <DrawerDescription className="mt-1 rounded-full border border-black px-2 py-1 text-xs text-black uppercase">
-              {`CART_LINES_LENGTH`} items
+              {cartLength} items
             </DrawerDescription>
             <button
               onClick={closeCart}
@@ -53,8 +54,8 @@ export function CartDrawer() {
                 <li key={line.id} className="space-y-2 border p-2">
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                      <span>{line.merchandise.product.title}</span>
-                      <span>{line.merchandise.title}</span>
+                      <span>{line.product.title}</span>
+                      <span>{line.variant.title}</span>
                     </div>
                     <div className="flex items-center justify-center">
                       <span className="rounded-full bg-black p-2 text-white">
@@ -62,47 +63,50 @@ export function CartDrawer() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <form
-                      action={async () => {
-                        decrementCartLine(line.id);
-                        await updateVariantToCart([
-                          {
-                            lineId: line.id,
-                            quantity: line.quantity - 1,
-                          },
-                        ]);
-                      }}
-                    >
-                      <button className="rounded-full bg-black p-2 text-xs text-white">
-                        Minus
-                      </button>
-                    </form>
-                    <form
-                      action={async () => {
-                        incrementCartLine(line.id);
-                        await updateVariantToCart([
-                          {
-                            lineId: line.id,
-                            quantity: line.quantity + 1,
-                          },
-                        ]);
-                      }}
-                    >
-                      <button className="rounded-full bg-black p-2 text-xs text-white">
-                        Plus
-                      </button>
-                    </form>
-                    <form
-                      action={async () => {
-                        removeCartLine(line.id);
-                        await removeVariantToCart([{ lineId: line.id }]);
-                      }}
-                    >
-                      <button className="rounded-full bg-black p-2 text-xs text-white">
-                        Remove
-                      </button>
-                    </form>
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-2">
+                      <form
+                        action={async () => {
+                          decrementCartLine({ lineId: line.id });
+                          await updateCartLines([
+                            {
+                              lineId: line.id,
+                              quantity: line.quantity - 1,
+                            },
+                          ]);
+                        }}
+                      >
+                        <button className="rounded-full bg-black p-2 text-xs text-white">
+                          Minus
+                        </button>
+                      </form>
+                      <form
+                        action={async () => {
+                          incrementCartLine({ lineId: line.id });
+                          await updateCartLines([
+                            {
+                              lineId: line.id,
+                              quantity: line.quantity + 1,
+                            },
+                          ]);
+                        }}
+                      >
+                        <button className="rounded-full bg-black p-2 text-xs text-white">
+                          Plus
+                        </button>
+                      </form>
+                      <form
+                        action={async () => {
+                          removeCartLine({ lineId: line.id });
+                          await removeCartLines([{ lineId: line.id }]);
+                        }}
+                      >
+                        <button className="rounded-full bg-black p-2 text-xs text-white">
+                          Remove
+                        </button>
+                      </form>
+                    </div>
+                    <span>{line.variant.price.amount}€</span>
                   </div>
                 </li>
               ))}

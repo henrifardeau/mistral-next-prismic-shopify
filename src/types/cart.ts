@@ -1,21 +1,3 @@
-export type AddToCartLine = {
-  merchandiseId: string;
-  quantity?: number;
-};
-
-export type UpdateToCartLine = {
-  lineId: string;
-  quantity?: number;
-};
-
-export type RemoveToCartLine = {
-  lineId: string;
-};
-
-export interface RawCart extends Omit<Cart, 'lines'> {
-  lines: { edges: { node: CartLine }[] };
-}
-
 export type Cart = {
   id?: string;
   checkoutUrl: string;
@@ -25,11 +7,20 @@ export type Cart = {
 export type CartLine = {
   id: string;
   quantity: number;
-  merchandise: {
+  availableForSale: boolean;
+  product: {
+    title: string;
+  };
+  variant: {
     id: string;
     title: string;
-    product: {
-      title: string;
+    compareAtPrice?: {
+      amount: string;
+      currencyCode: string;
+    } | null;
+    price: {
+      amount: string;
+      currencyCode: string;
     };
   };
 };

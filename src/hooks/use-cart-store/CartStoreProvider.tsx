@@ -113,17 +113,17 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
   switch (action.type) {
     case 'ADD': {
-      const { quantity = 1, merchandiseId } = action.payload;
+      const { quantity = 1, product, variant } = action.payload;
 
       const existingLine = currentState.lines.find(
-        (line) => line.merchandise.id === merchandiseId,
+        (line) => line.variant.id === variant.id,
       );
 
       if (existingLine) {
         return {
           ...currentState,
           lines: currentState.lines.map((line) =>
-            line.merchandise.id === merchandiseId
+            line.variant.id === variant.id
               ? {
                   ...line,
                   quantity: line.quantity + quantity,
@@ -138,14 +138,17 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
         lines: [
           {
             id: String(Math.random()),
-            merchandise: {
-              id: merchandiseId,
-              title: action.payload.merchandiseTitle,
-              product: {
-                title: action.payload.productTitle,
-              },
-            },
+            availableForSale: true,
             quantity: quantity,
+            product: {
+              title: product.title,
+            },
+            variant: {
+              id: variant.id,
+              title: variant.title,
+              compareAtPrice: variant.compareAtPrice,
+              price: variant.price,
+            },
           },
           ...currentState.lines,
         ],
