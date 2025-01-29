@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 
 import '@/styles/globals.css';
 
-import { CartButton } from '@/components/cart-button';
 import { CartDrawer } from '@/components/cart-drawer';
+import { Footer, Main, Navigation } from '@/components/layout';
+import { CartDrawerProvider } from '@/hooks/use-cart-drawer';
 import { CartStoreProvider } from '@/hooks/use-cart-store';
 import { prismic, repositoryName } from '@/lib/prismic';
 import { getCart } from '@/lib/shopify';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
-import { CartDrawerProvider } from '@/hooks/use-cart-drawer';
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await prismic.getSingle('settings');
@@ -47,14 +47,14 @@ export default async function RootLayout({
       <body>
         <CartStoreProvider cartPromise={cartPromise}>
           <CartDrawerProvider>
-            <header className="sticky top-0">
-              <CartButton />
-            </header>
-            <main>{children}</main>
-            <footer>Foot</footer>
+            <Navigation />
+            <Main>{children}</Main>
+            <Footer />
+
             <CartDrawer />
           </CartDrawerProvider>
         </CartStoreProvider>
+
         <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>
