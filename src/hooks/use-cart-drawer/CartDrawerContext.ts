@@ -12,8 +12,12 @@ type CartDrawerContextProps = {
 export const CartDrawerContext = createContext<CartDrawerContextProps>({
   isCartOpen: false,
   setCartOpen: () => {
-    console.log('TOTO');
+    throw new Error('useCartDrawer must be used within a CartDrawerProvider');
   },
-  openCart: () => {},
-  closeCart: () => {},
+  openCart: () => {
+    throw new Error('useCartDrawer must be used within a CartDrawerProvider');
+  },
+  closeCart: () => {
+    throw new Error('useCartDrawer must be used within a CartDrawerProvider');
+  },
 });
