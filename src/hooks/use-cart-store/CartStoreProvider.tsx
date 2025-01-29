@@ -4,7 +4,13 @@ import { use, useCallback, useMemo, useOptimistic } from 'react';
 
 import { Cart, CartLine } from '@/types/cart';
 
-import { CartAction, CartStoreContext } from './CartStoreContext';
+import {
+  CartAction,
+  CartAddPayload,
+  CartLinePayload,
+  CartStoreContext,
+  CartUpdatePayload,
+} from './CartStoreContext';
 
 export function CartStoreProvider({
   children,
@@ -20,49 +26,39 @@ export function CartStoreProvider({
   );
 
   const addCartLine = useCallback(
-    (
-      merchandiseId: string,
-      merchandiseTitle: string,
-      productTitle: string,
-      quantity: number = 1,
-    ) => {
+    (payload: CartAddPayload) => {
       updateOptimisticCart({
         type: 'ADD',
-        payload: {
-          merchandiseId,
-          merchandiseTitle,
-          productTitle,
-          quantity,
-        },
+        payload,
       });
     },
     [updateOptimisticCart],
   );
 
   const incrementCartLine = useCallback(
-    (lineId: string) => {
-      updateOptimisticCart({ type: 'INCREMENT', payload: { lineId } });
+    (payload: CartLinePayload) => {
+      updateOptimisticCart({ type: 'INCREMENT', payload });
     },
     [updateOptimisticCart],
   );
 
   const decrementCartLine = useCallback(
-    (lineId: string) => {
-      updateOptimisticCart({ type: 'DECREMENT', payload: { lineId } });
+    (payload: CartLinePayload) => {
+      updateOptimisticCart({ type: 'DECREMENT', payload });
     },
     [updateOptimisticCart],
   );
 
   const updateCartLine = useCallback(
-    (lineId: string, quantity: number) => {
-      updateOptimisticCart({ type: 'UPDATE', payload: { lineId, quantity } });
+    (payload: CartUpdatePayload) => {
+      updateOptimisticCart({ type: 'UPDATE', payload });
     },
     [updateOptimisticCart],
   );
 
   const removeCartLine = useCallback(
-    (lineId: string) => {
-      updateOptimisticCart({ type: 'REMOVE', payload: { lineId } });
+    (payload: CartLinePayload) => {
+      updateOptimisticCart({ type: 'REMOVE', payload });
     },
     [updateOptimisticCart],
   );
@@ -117,18 +113,20 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
   switch (action.type) {
     case 'ADD': {
+      const { quantity = 1, merchandiseId } = action.payload;
+
       const existingLine = currentState.lines.find(
-        (line) => line.merchandise.id === action.payload.merchandiseId,
+        (line) => line.merchandise.id === merchandiseId,
       );
 
       if (existingLine) {
         return {
           ...currentState,
           lines: currentState.lines.map((line) =>
-            line.merchandise.id === action.payload.merchandiseId
+            line.merchandise.id === merchandiseId
               ? {
                   ...line,
-                  quantity: line.quantity + action.payload.quantity,
+                  quantity: line.quantity + quantity,
                 }
               : line,
           ),
@@ -141,13 +139,13 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
           {
             id: String(Math.random()),
             merchandise: {
-              id: action.payload.merchandiseId,
+              id: merchandiseId,
               title: action.payload.merchandiseTitle,
               product: {
                 title: action.payload.productTitle,
               },
             },
-            quantity: action.payload.quantity,
+            quantity: quantity,
           },
           ...currentState.lines,
         ],

@@ -108,11 +108,11 @@ export default function VariantSelector({
       {selectedVariant && (
         <form
           action={async () => {
-            addCartLine(
-              selectedVariant.id,
-              selectedVariant.title,
-              shopifyProduct.product?.title || '',
-            );
+            addCartLine({
+              merchandiseId: selectedVariant.id,
+              merchandiseTitle: selectedVariant.title,
+              productTitle: shopifyProduct.product?.title || '',
+            });
             await addVariantToCart([{ merchandiseId: selectedVariant.id }]);
           }}
         >
