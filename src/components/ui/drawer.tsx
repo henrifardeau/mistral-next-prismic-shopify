@@ -119,7 +119,10 @@ export const DrawerBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('scrollbar-none flex-1 overflow-y-scroll px-6', className)}
+    className={cn(
+      'scrollbar-none flex flex-1 flex-col overflow-y-scroll px-6',
+      className,
+    )}
     {...props}
   />
 );
@@ -154,7 +157,7 @@ export const DrawerDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
     ref={ref}
-    className={cn('text-muted-foreground text-sm', className)}
+    className={cn('text-sm', className)}
     {...props}
   />
 ));

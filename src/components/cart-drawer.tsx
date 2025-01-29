@@ -2,12 +2,19 @@
 
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
-import {
-  redirectToCheckout,
-  removeCartLines,
-  updateCartLines,
-} from '@/lib/shopify';
+import { removeCartLines, updateCartLines } from '@/lib/shopify';
 
+import {
+  CartCheckout,
+  CartClose,
+  CartContent,
+  CartHeader,
+  CartLength,
+  CartLine,
+  CartLines,
+  CartSeparator,
+  CartSummary,
+} from './cart';
 import {
   Drawer,
   DrawerBody,
@@ -19,10 +26,9 @@ import {
 } from './ui/drawer';
 
 export function CartDrawer() {
-  const { isCartOpen, setCartOpen, closeCart } = useCartDrawer();
+  const { isCartOpen, setCartOpen } = useCartDrawer();
   const {
     optimisticCart,
-    cartLength,
     incrementCartLine,
     decrementCartLine,
     removeCartLine,
@@ -32,85 +38,59 @@ export function CartDrawer() {
     <Drawer open={isCartOpen} onOpenChange={setCartOpen}>
       <DrawerContent className="w-full max-w-[478px]">
         <DrawerHeader>
-          <hr className="border-black" />
-          <div className="grid grid-cols-[auto_auto_1fr] items-center gap-6 pt-5 pb-6">
+          <CartSeparator />
+          <CartHeader>
             <DrawerTitle className="text-4xl">Cart</DrawerTitle>
-            <DrawerDescription className="mt-1 rounded-full border border-black px-2 py-1 text-xs text-black uppercase">
-              {cartLength} items
+            <DrawerDescription>
+              <CartLength />
             </DrawerDescription>
-            <button
-              onClick={closeCart}
-              className="flex h-6 w-6 items-center justify-center justify-self-end rounded-full border border-black text-xs"
-            >
-              X
-            </button>
-          </div>
+            <CartClose />
+          </CartHeader>
         </DrawerHeader>
 
         {!!optimisticCart?.lines.length && (
           <DrawerBody>
-            <ul className="space-y-4">
-              {optimisticCart.lines.map((line) => (
-                <li key={line.id} className="space-y-2 border p-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span>{line.product.title}</span>
-                      <span>{line.variant.title}</span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <span className="rounded-full bg-black p-2 text-white">
-                        {line.quantity}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <form
-                        action={async () => {
-                          decrementCartLine({ lineId: line.id });
-                          await updateCartLines([
-                            {
-                              lineId: line.id,
-                              quantity: line.quantity - 1,
-                            },
-                          ]);
-                        }}
-                      >
-                        <button className="rounded-full bg-black p-2 text-xs text-white">
-                          Minus
-                        </button>
-                      </form>
-                      <form
-                        action={async () => {
-                          incrementCartLine({ lineId: line.id });
-                          await updateCartLines([
-                            {
-                              lineId: line.id,
-                              quantity: line.quantity + 1,
-                            },
-                          ]);
-                        }}
-                      >
-                        <button className="rounded-full bg-black p-2 text-xs text-white">
-                          Plus
-                        </button>
-                      </form>
-                      <form
-                        action={async () => {
-                          removeCartLine({ lineId: line.id });
-                          await removeCartLines([{ lineId: line.id }]);
-                        }}
-                      >
-                        <button className="rounded-full bg-black p-2 text-xs text-white">
-                          Remove
-                        </button>
-                      </form>
-                    </div>
-                    <span>{line.variant.price.amount}€</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <CartContent>
+              <CartLines>
+                {optimisticCart.lines.map((line) => (
+                  <CartLine
+                    key={line.id}
+                    product={{
+                      title: line.product.title,
+                      slug: 'dad',
+                    }}
+                    variant={{
+                      title: line.variant.title,
+                    }}
+                    quantity={line.quantity}
+                    price={line.variant.price.amount}
+                    currencyCode={line.variant.price.currencyCode}
+                    incrementAction={async () => {
+                      incrementCartLine({ lineId: line.id });
+                      await updateCartLines([
+                        {
+                          lineId: line.id,
+                          quantity: line.quantity + 1,
+                        },
+                      ]);
+                    }}
+                    decrementAction={async () => {
+                      decrementCartLine({ lineId: line.id });
+                      await updateCartLines([
+                        {
+                          lineId: line.id,
+                          quantity: line.quantity - 1,
+                        },
+                      ]);
+                    }}
+                    removeAction={async () => {
+                      removeCartLine({ lineId: line.id });
+                      await removeCartLines([{ lineId: line.id }]);
+                    }}
+                  />
+                ))}
+              </CartLines>
+            </CartContent>
           </DrawerBody>
         )}
 
@@ -122,26 +102,12 @@ export function CartDrawer() {
           </DrawerBody>
         )}
 
-        {!!optimisticCart?.lines.length && (
-          <DrawerFooter>
-            <hr className="border-black" />
-            <div className="pt-5">
-              <div className="flex items-center justify-between text-sm uppercase">
-                <span>Subtotal</span>
-                <span>{`CART_SUBTOTAL`}€</span>
-              </div>
-
-              <form action={redirectToCheckout} className="pt-4">
-                <button
-                  type="submit"
-                  className="flex w-full items-center justify-center rounded-full bg-black p-4 text-xs text-white uppercase"
-                >
-                  Continue to Checkout
-                </button>
-              </form>
-            </div>
-          </DrawerFooter>
-        )}
+        <DrawerFooter>
+          <CartSeparator />
+          <CartSummary>
+            <CartCheckout disabled={!!optimisticCart?.lines} />
+          </CartSummary>
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );

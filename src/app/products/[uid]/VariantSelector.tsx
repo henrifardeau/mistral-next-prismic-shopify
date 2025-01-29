@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 
 import { useCartStore } from '@/hooks/use-cart-store';
-import { addVariantToCart } from '@/lib/shopify';
+import { addCartLines } from '@/lib/shopify';
 import { LongProductByIdQuery } from '@/lib/shopify/gql/graphql';
 
 type ProductVariant = {
@@ -133,7 +133,11 @@ export default function VariantSelector({
                 price: selectedVariant.price,
               },
             });
-            await addVariantToCart([{ merchandiseId: selectedVariant.id }]);
+            await addCartLines([
+              {
+                variantId: selectedVariant.id,
+              },
+            ]);
           }}
         >
           <button className="rounded-full bg-black px-4 py-2 text-white">

@@ -8,6 +8,8 @@ import { RawCart } from './types';
 export class Shopify {
   protected readonly storefrontURL: string;
 
+  protected formatterCache = new Map<string, Intl.NumberFormat>();
+
   constructor(
     private readonly domain: string,
     private readonly apiVersion: string,
@@ -70,5 +72,33 @@ export class Shopify {
 
   public removeEdgesAndNodes<T>(array: Connection<T>): T[] {
     return array.edges.map((edge) => edge?.node);
+  }
+
+  public formatPrice(
+    price: number,
+    currencyCode: string,
+    options: Intl.NumberFormatOptions = {
+      style: 'currency',
+      currency: currencyCode,
+    },
+  ): string {
+    const formatter = this.getLazyFormatter('fr-CA', options);
+
+    return formatter.format(price);
+  }
+
+  private getLazyFormatter(
+    locale: string,
+    options?: Intl.NumberFormatOptions,
+  ): Intl.NumberFormat {
+    const key = JSON.stringify([locale, options]);
+
+    let formatter = this.formatterCache.get(key);
+    if (!formatter) {
+      formatter = new Intl.NumberFormat(locale, options);
+      this.formatterCache.set(key, formatter);
+    }
+
+    return formatter;
   }
 }

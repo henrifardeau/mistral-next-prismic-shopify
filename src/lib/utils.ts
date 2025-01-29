@@ -20,3 +20,7 @@ export function safeJSON<T>(data: string): T | null {
     return null;
   }
 }
+
+export function toNumber(n: string): number {
+  return parseFloat(n);
+}
