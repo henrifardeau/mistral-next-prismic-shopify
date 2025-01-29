@@ -26,7 +26,7 @@ import {
 } from './ui/drawer';
 
 export function CartDrawer() {
-  const { isCartOpen, setCartOpen } = useCartDrawer();
+  const { isCartOpen, setCartOpen, closeCart } = useCartDrawer();
   const {
     optimisticCart,
     incrementCartLine,
@@ -56,8 +56,8 @@ export function CartDrawer() {
                   <CartLine
                     key={line.id}
                     product={{
+                      handle: line.product.handle,
                       title: line.product.title,
-                      slug: 'dad',
                     }}
                     variant={{
                       title: line.variant.title,
@@ -87,6 +87,7 @@ export function CartDrawer() {
                       removeCartLine({ lineId: line.id });
                       await removeCartLines([{ lineId: line.id }]);
                     }}
+                    closeCart={closeCart}
                   />
                 ))}
               </CartLines>
@@ -105,7 +106,7 @@ export function CartDrawer() {
         <DrawerFooter>
           <CartSeparator />
           <CartSummary>
-            <CartCheckout disabled={!!optimisticCart?.lines} />
+            <CartCheckout disabled={!optimisticCart?.lines.length} />
           </CartSummary>
         </DrawerFooter>
       </DrawerContent>

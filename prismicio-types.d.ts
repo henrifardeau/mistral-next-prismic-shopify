@@ -189,6 +189,17 @@ type ProductsDocumentDataSlicesSlice = never;
  */
 interface ProductsDocumentData {
   /**
+   * Shopify Handle field in *Products*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.shopify_handle
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  shopify_handle: prismic.KeyTextField;
+
+  /**
    * Shopify Product Id field in *Products*
    *
    * - **Field Type**: Text

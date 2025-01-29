@@ -8,8 +8,8 @@ import {
 } from './mutations';
 import {
   getCartQuery,
-  longProductByIdQuery,
-  shortProductByIdQuery,
+  longProductByHandleQuery,
+  shortProductByHandleQuery,
 } from './queries';
 import { Shopify } from './Shopify';
 import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
@@ -86,27 +86,23 @@ export class ShopifyInstance extends Shopify {
     return this.client(next, cache).request(getCartQuery, { id });
   }
 
-  public async getShortProductById(
-    productId: string,
+  public async getShortProductByHandle(
+    handle: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ) {
-    const id = productId.startsWith(PREFIXES.product)
-      ? productId
-      : PREFIXES.product + productId;
-
-    return this.client(next, cache).request(shortProductByIdQuery, { id });
+    return this.client(next, cache).request(shortProductByHandleQuery, {
+      handle,
+    });
   }
 
-  public async getLongProductById(
-    productId: string,
+  public async getLongProductByHandle(
+    handle: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ) {
-    const id = productId.startsWith(PREFIXES.product)
-      ? productId
-      : PREFIXES.product + productId;
-
-    return this.client(next, cache).request(longProductByIdQuery, { id });
+    return this.client(next, cache).request(longProductByHandleQuery, {
+      handle,
+    });
   }
 }

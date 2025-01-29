@@ -12,6 +12,13 @@
           "label": "slug"
         }
       },
+      "shopify_handle": {
+        "type": "Text",
+        "config": {
+          "label": "Shopify Handle",
+          "placeholder": ""
+        }
+      },
       "shopify_product_id": {
         "type": "Text",
         "config": {

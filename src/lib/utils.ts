@@ -1,3 +1,11 @@
+export function delay(duration: number) {
+  return new Promise((res) => {
+    setTimeout(() => {
+      res('OK');
+    }, duration);
+  });
+}
+
 export function chunk<T>(array: T[], chunkSize: number = 20): T[][] {
   const chunks = [];
 

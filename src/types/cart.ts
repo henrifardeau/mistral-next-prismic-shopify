@@ -9,6 +9,7 @@ export type CartLine = {
   quantity: number;
   availableForSale: boolean;
   product: {
+    handle: string;
     title: string;
   };
   variant: {

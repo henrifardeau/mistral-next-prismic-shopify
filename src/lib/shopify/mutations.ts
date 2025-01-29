@@ -26,6 +26,7 @@ export const createCartMutation = graphql(`
                   }
                   product {
                     title
+                    handle
                   }
                 }
               }

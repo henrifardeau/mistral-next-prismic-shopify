@@ -97,7 +97,7 @@ CartLines.displayName = 'CartLines';
 interface CartLineProps {
   product: {
     title: string;
-    slug: string;
+    handle: string;
   };
   variant: {
     title: string;
@@ -108,6 +108,7 @@ interface CartLineProps {
   incrementAction: () => Promise<void>;
   decrementAction: () => Promise<void>;
   removeAction: () => Promise<void>;
+  closeCart: () => void;
 }
 
 export const CartLine = ({
@@ -119,6 +120,7 @@ export const CartLine = ({
   incrementAction,
   decrementAction,
   removeAction,
+  closeCart,
 }: CartLineProps) => {
   const totalPrice = useCallback(() => {
     try {
@@ -135,7 +137,9 @@ export const CartLine = ({
     <li className="space-y-2 border p-2">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <Link href={`/products/${product.slug}`}>{product.title}</Link>
+          <Link href={`/products/${product.handle}`} onClick={closeCart}>
+            {product.title}
+          </Link>
           <span>{variant.title}</span>
         </div>
         <div className="flex items-center justify-center">
@@ -170,11 +174,13 @@ export const CartLine = ({
 CartLine.displayName = 'CartLine';
 
 export const CartSummary = ({ children }: { children: React.ReactNode }) => {
+  const { cartSubTotal } = useCartStore();
+
   return (
     <div className="pt-5">
       <div className="flex items-center justify-between text-sm uppercase">
         <span>Subtotal</span>
-        <span>{`CART_SUBTOTAL`}€</span>
+        <span>{cartSubTotal}</span>
       </div>
       {children}
     </div>

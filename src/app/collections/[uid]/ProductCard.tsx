@@ -4,22 +4,20 @@ import { shopify } from '@/lib/shopify';
 import { isFilled, KeyTextField } from '@prismicio/client';
 
 export default async function ProductCard({
-  uid,
   title,
-  shopifyId,
+  shopifyHandle,
 }: {
-  uid: string;
   title: KeyTextField;
-  shopifyId?: KeyTextField;
+  shopifyHandle?: KeyTextField;
 }) {
-  if (!isFilled.keyText(shopifyId)) {
+  if (!isFilled.keyText(shopifyHandle)) {
     throw Error('Product is not linked with Shopify');
   }
 
-  const shopifyProduct = await shopify.getShortProductById('9624120394058');
+  const shopifyProduct = await shopify.getShortProductByHandle(shopifyHandle);
 
   return (
-    <Link href={`/products/${uid}`}>
+    <Link href={`/products/${shopifyHandle}`}>
       <h1>{title}</h1>
       <pre className="hidden">
         {JSON.stringify({ shopifyProduct }, null, 2)}

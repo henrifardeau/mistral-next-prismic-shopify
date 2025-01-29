@@ -58,6 +58,7 @@ export class Shopify {
         quantity: line.quantity,
         availableForSale: line.merchandise.availableForSale,
         product: {
+          handle: line.merchandise.product.handle,
           title: line.merchandise.product.title,
         },
         variant: {

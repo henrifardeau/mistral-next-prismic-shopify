@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { useCartStore } from '@/hooks/use-cart-store';
 import { addCartLines } from '@/lib/shopify';
-import { LongProductByIdQuery } from '@/lib/shopify/gql/graphql';
+import { LongProductByHandleQuery } from '@/lib/shopify/gql/graphql';
 
 type ProductVariant = {
   id: string;
@@ -20,7 +20,7 @@ type ProductVariant = {
   };
 };
 
-function getOptions(shopifyProduct: LongProductByIdQuery) {
+function getOptions(shopifyProduct: LongProductByHandleQuery) {
   if (!shopifyProduct.product?.variants) {
     return [];
   }
@@ -67,7 +67,7 @@ function initialOptions(
 }
 
 function findVariant(
-  shopifyProduct: LongProductByIdQuery,
+  shopifyProduct: LongProductByHandleQuery,
   options: Record<string, string>,
 ) {
   return shopifyProduct.product?.variants.nodes.find((variant) =>
@@ -78,7 +78,7 @@ function findVariant(
 export default function VariantSelector({
   shopifyProduct,
 }: {
-  shopifyProduct: LongProductByIdQuery;
+  shopifyProduct: LongProductByHandleQuery;
 }) {
   const { addCartLine } = useCartStore();
   const options = useMemo(() => getOptions(shopifyProduct), [shopifyProduct]);
@@ -124,6 +124,7 @@ export default function VariantSelector({
           action={async () => {
             addCartLine({
               product: {
+                handle: shopifyProduct.product?.handle || '',
                 title: shopifyProduct.product?.title || '',
               },
               variant: {

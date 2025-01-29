@@ -2,20 +2,23 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { prismic } from '@/lib/prismic';
+import { shopify } from '@/lib/shopify';
 import { components } from '@/slices';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
-import { shopify } from '@/lib/shopify';
+
 import VariantSelector from './VariantSelector';
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ uid: string }>;
+  params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
-  const { uid } = await params;
+  const { handle } = await params;
 
-  const page = await prismic.getByUID('products', uid).catch(() => notFound());
+  const page = await prismic
+    .getByUID('products', handle)
+    .catch(() => notFound());
 
   return {
     title: page.data.title,
@@ -37,26 +40,21 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: {
-  params: Promise<{ uid: string }>;
+  params: Promise<{ handle: string }>;
 }) {
-  const { uid } = await params;
+  const { handle } = await params;
 
-  const page = await prismic.getByUID('products', uid).catch(() => notFound());
-
-  if (!isFilled.keyText(page.data.shopify_product_id)) {
-    throw Error('Product is not linked with Shopify');
-  }
-
-  const shopifyProduct = await shopify.getLongProductById(
-    page.data.shopify_product_id,
-  );
+  const [page, product] = await Promise.all([
+    prismic.getByUID('products', handle),
+    shopify.getLongProductByHandle(handle),
+  ]);
 
   return (
     <div>
       <h2>
-        {page.data.title} | {page.data.shopify_product_id}
+        {page.data.title} | {page.data.shopify_handle}
       </h2>
-      <VariantSelector shopifyProduct={shopifyProduct} />
+      <VariantSelector shopifyProduct={product} />
       <SliceZone slices={page.data.slices} components={components} />
     </div>
   );

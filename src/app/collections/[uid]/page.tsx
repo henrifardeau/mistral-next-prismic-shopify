@@ -85,9 +85,8 @@ export default async function Page({
             <li key={product.id}>
               <Suspense fallback={<div>Loading</div>}>
                 <ProductCard
-                  uid={product.uid}
                   title={product.data.title}
-                  shopifyId={product.data.shopify_product_id}
+                  shopifyHandle={product.data.shopify_handle}
                 />
               </Suspense>
             </li>

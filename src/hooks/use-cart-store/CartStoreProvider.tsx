@@ -2,15 +2,17 @@
 
 import { use, useCallback, useMemo, useOptimistic } from 'react';
 
+import { shopify } from '@/lib/shopify';
+import { toNumber } from '@/lib/utils';
 import { Cart, CartLine } from '@/types/cart';
 
+import { CartStoreContext } from './CartStoreContext';
 import {
   CartAction,
   CartAddPayload,
   CartLinePayload,
-  CartStoreContext,
   CartUpdatePayload,
-} from './CartStoreContext';
+} from './types';
 
 export function CartStoreProvider({
   children,
@@ -64,13 +66,27 @@ export function CartStoreProvider({
   );
 
   const value = useMemo(() => {
+    const cartCurrencyCode = () => {
+      return optimisticCart?.lines.length
+        ? optimisticCart.lines[0].variant.price.currencyCode
+        : 'EUR';
+    };
+
     const cartLength = (optimisticCart?.lines || []).reduce(
       (acc, cur) => acc + cur.quantity,
       0,
     );
 
+    const cartSubTotal = shopify.formatPrice(
+      (optimisticCart?.lines || []).reduce((acc, cur) => {
+        return acc + toNumber(cur.variant.price.amount) * cur.quantity;
+      }, 0),
+      cartCurrencyCode(),
+    );
+
     return {
       optimisticCart,
+      cartSubTotal,
       cartLength,
       addCartLine,
       incrementCartLine,
@@ -141,6 +157,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
             availableForSale: true,
             quantity: quantity,
             product: {
+              handle: product.handle,
               title: product.title,
             },
             variant: {
