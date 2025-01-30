@@ -2,8 +2,9 @@ import { GraphQLClient } from 'graphql-request';
 
 import { Cart } from '@/types/cart';
 import { Connection } from '@/types/gql';
+import { Product } from '@/types/product';
 
-import { RawCart } from './types';
+import { RawCart, RawProduct } from './types';
 
 export class Shopify {
   protected readonly storefrontURL: string;
@@ -69,6 +70,21 @@ export class Shopify {
           price: line.merchandise.price,
         },
       })),
+    };
+  }
+
+  public reshapeProduct(rawProdct: RawProduct): Product {
+    if (!rawProdct.product) {
+      throw new Error('Reshap empty product forbidden!');
+    }
+
+    const { product } = rawProdct;
+
+    return {
+      id: product.id,
+      handle: product.handle,
+      options: product.options,
+      variants: this.removeEdgesAndNodes(product.variants),
     };
   }
 

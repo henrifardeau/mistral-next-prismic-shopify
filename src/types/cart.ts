@@ -1,3 +1,5 @@
+import { CompareAtPrice, Price } from './common';
+
 export type Cart = {
   id?: string;
   checkoutUrl: string;
@@ -16,14 +18,8 @@ export type CartLine = {
   variant: {
     id: string;
     title: string;
-    compareAtPrice?: {
-      amount: string;
-      currencyCode: string;
-    } | null;
-    price: {
-      amount: string;
-      currencyCode: string;
-    };
+    compareAtPrice?: CompareAtPrice;
+    price: Price;
   };
 };
 

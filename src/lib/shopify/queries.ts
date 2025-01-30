@@ -52,22 +52,35 @@ export const longProductByHandleQuery = graphql(`
       id
       handle
       title
-      variants(first: 20) {
-        nodes {
+      options {
+        id
+        name
+        optionValues {
+          swatch {
+            color
+          }
+          name
           id
-          title
-          availableForSale
-          compareAtPrice {
-            amount
-            currencyCode
-          }
-          price {
-            amount
-            currencyCode
-          }
-          selectedOptions {
-            name
-            value
+        }
+      }
+      variants(first: 250) {
+        edges {
+          node {
+            id
+            title
+            availableForSale
+            compareAtPrice {
+              amount
+              currencyCode
+            }
+            price {
+              amount
+              currencyCode
+            }
+            selectedOptions {
+              name
+              value
+            }
           }
         }
       }
