@@ -12,7 +12,7 @@ import {
   CartAddPayload,
   CartLinePayload,
   CartUpdatePayload,
-} from './types';
+} from '@/types/cart';
 
 export function CartStoreProvider({
   children,
