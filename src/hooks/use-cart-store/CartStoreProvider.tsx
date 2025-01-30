@@ -114,6 +114,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
   const currentState = state || {
     id: undefined,
     checkoutUrl: '',
+    state: 'idle',
     lines: [],
   };
 
@@ -138,6 +139,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
       if (existingLine) {
         return {
           ...currentState,
+          state: 'loading',
           lines: currentState.lines.map((line) =>
             line.variant.id === variant.id
               ? {
@@ -151,6 +153,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
       return {
         ...currentState,
+        state: 'loading',
         lines: [
           {
             id: String(Math.random()),
@@ -174,6 +177,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
     case 'INCREMENT': {
       return {
         ...currentState,
+        state: 'loading',
         lines: updateLine(
           currentState.lines,
           action.payload.lineId,
@@ -187,6 +191,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
     case 'DECREMENT': {
       return {
         ...currentState,
+        state: 'loading',
         lines: updateLine(
           currentState.lines,
           action.payload.lineId,
@@ -200,6 +205,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
     case 'UPDATE': {
       return {
         ...currentState,
+        state: 'loading',
         lines: updateLine(
           currentState.lines,
           action.payload.lineId,
@@ -213,6 +219,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
     case 'REMOVE': {
       return {
         ...currentState,
+        state: 'loading',
         lines: currentState.lines.filter(
           (line) => line.id !== action.payload.lineId,
         ),

@@ -1,6 +1,7 @@
 export type Cart = {
   id?: string;
   checkoutUrl: string;
+  state: 'idle' | 'loading';
   lines: CartLine[];
 };
 

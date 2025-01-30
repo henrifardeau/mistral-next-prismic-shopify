@@ -53,6 +53,7 @@ export class Shopify {
     return {
       id: cart.id,
       checkoutUrl: cart.checkoutUrl,
+      state: 'idle',
       lines: this.removeEdgesAndNodes(cart.lines).map((line) => ({
         id: line.id,
         quantity: line.quantity,

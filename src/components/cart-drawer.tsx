@@ -9,10 +9,9 @@ import {
   CartClose,
   CartContent,
   CartHeader,
+  CartItem,
   CartLength,
-  CartLine,
-  CartLines,
-  CartSeparator,
+  CartList,
   CartSummary,
 } from './cart';
 import {
@@ -26,19 +25,13 @@ import {
 } from './ui/drawer';
 
 export function CartDrawer() {
-  const { isCartOpen, setCartOpen, closeCart } = useCartDrawer();
-  const {
-    optimisticCart,
-    incrementCartLine,
-    decrementCartLine,
-    removeCartLine,
-  } = useCartStore();
+  const { isCartOpen, setCartOpen } = useCartDrawer();
+  const { optimisticCart, updateCartLine, removeCartLine } = useCartStore();
 
   return (
     <Drawer open={isCartOpen} onOpenChange={setCartOpen}>
       <DrawerContent className="w-full max-w-[478px]">
         <DrawerHeader>
-          <CartSeparator />
           <CartHeader>
             <DrawerTitle className="text-4xl">Cart</DrawerTitle>
             <DrawerDescription>
@@ -48,65 +41,36 @@ export function CartDrawer() {
           </CartHeader>
         </DrawerHeader>
 
-        {!!optimisticCart?.lines.length && (
-          <DrawerBody>
+        <DrawerBody>
+          {!!optimisticCart?.lines.length ? (
             <CartContent>
-              <CartLines>
+              <CartList className="divide-y">
                 {optimisticCart.lines.map((line) => (
-                  <CartLine
+                  <CartItem
                     key={line.id}
-                    product={{
-                      handle: line.product.handle,
-                      title: line.product.title,
-                    }}
-                    variant={{
-                      title: line.variant.title,
-                    }}
-                    quantity={line.quantity}
-                    price={line.variant.price.amount}
-                    currencyCode={line.variant.price.currencyCode}
-                    incrementAction={async () => {
-                      incrementCartLine({ lineId: line.id });
-                      await updateCartLines([
-                        {
-                          lineId: line.id,
-                          quantity: line.quantity + 1,
-                        },
-                      ]);
-                    }}
-                    decrementAction={async () => {
-                      decrementCartLine({ lineId: line.id });
-                      await updateCartLines([
-                        {
-                          lineId: line.id,
-                          quantity: line.quantity - 1,
-                        },
-                      ]);
+                    line={line}
+                    updateAction={async (quantity: number) => {
+                      updateCartLine({ lineId: line.id, quantity });
+                      await updateCartLines([{ lineId: line.id, quantity }]);
                     }}
                     removeAction={async () => {
                       removeCartLine({ lineId: line.id });
                       await removeCartLines([{ lineId: line.id }]);
                     }}
-                    closeCart={closeCart}
                   />
                 ))}
-              </CartLines>
+              </CartList>
             </CartContent>
-          </DrawerBody>
-        )}
-
-        {!optimisticCart?.lines.length && (
-          <DrawerBody>
+          ) : (
             <div className="flex h-full items-center justify-center">
               Add product to your cart.
             </div>
-          </DrawerBody>
-        )}
+          )}
+        </DrawerBody>
 
         <DrawerFooter>
-          <CartSeparator />
           <CartSummary>
-            <CartCheckout disabled={!optimisticCart?.lines.length} />
+            <CartCheckout />
           </CartSummary>
         </DrawerFooter>
       </DrawerContent>
