@@ -2,9 +2,12 @@
 
 import { createContext } from 'react';
 
-import { Cart } from '@/types/cart';
-
-import { CartAddPayload, CartLinePayload, CartUpdatePayload } from './types';
+import {
+  Cart,
+  CartAddPayload,
+  CartLinePayload,
+  CartUpdatePayload,
+} from '@/types/cart';
 
 type CartStoreContextProps = {
   optimisticCart: Cart | undefined;
