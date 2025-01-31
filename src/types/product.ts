@@ -9,14 +9,12 @@ export type Product = {
 
 export type ProductOption = {
   name: string;
-  optionValues: ProductOptionValue[];
-};
-
-export type ProductOptionValue = {
-  name: string;
-  swatch?: {
-    color?: string;
-  } | null;
+  optionValues: {
+    name: string;
+    swatch?: {
+      color?: string;
+    } | null;
+  }[];
 };
 
 export type ProductVariant = {

@@ -14,7 +14,8 @@ import {
 import { useMemo } from 'react';
 
 const useOptionHandler = (name: string) => {
-  const { currentOptions, updateOption } = useProduct();
+  const currentOptions = useProduct((state) => state.currentOptions);
+  const updateOption = useProduct((state) => state.updateOption);
 
   const currentOptionValue = useMemo(() => {
     return currentOptions[name];

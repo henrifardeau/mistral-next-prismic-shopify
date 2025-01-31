@@ -1,13 +1,20 @@
 'use client';
 
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
+import { createStore } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 
-import { Product, ProductOption } from '@/types/product';
+import { Product, ProductVariant } from '@/types/product';
 
-import { ProductContext } from './ProductContext';
+import { ProductContext, ProductStore } from './ProductContext';
 
-function selectInitialOptions(options: ProductOption[]) {
-  return options.reduce(
+interface ProductProviderProps {
+  product: Product;
+}
+
+function getInitialOptions(product: Product) {
+  return product.options.reduce(
     (acc, cur) => {
       return {
         ...acc,
@@ -18,58 +25,69 @@ function selectInitialOptions(options: ProductOption[]) {
   );
 }
 
+function getInitialVariant(product: Product) {
+  const initialOptions = getInitialOptions(product);
+
+  const variant = product.variants.find((variant) =>
+    variant.selectedOptions.every(
+      (option) => option.value === initialOptions[option.name],
+    ),
+  );
+
+  if (!variant) {
+    throw new Error('Invalid Options/Variants tuple');
+  }
+
+  return variant;
+}
+
+function getVariantForOptions(
+  variants: ProductVariant[],
+  options: Record<string, string>,
+) {
+  const variant = variants.find((variant) =>
+    variant.selectedOptions.every(
+      (option) => option.value === options[option.name],
+    ),
+  );
+
+  if (!variant) {
+    throw new Error('Invalid Options/Variants tuple');
+  }
+
+  return variant;
+}
+
 export function ProductProvider({
   product,
   children,
-}: PropsWithChildren<{
-  product: Product;
-}>) {
-  const [currentOptions, setCurrentOption] = useState(
-    selectInitialOptions(product.options),
-  );
-
-  const productOptions = useMemo(() => {
-    if (
-      product.options.length === 0 ||
-      product.options.some((opt) => opt.optionValues.length <= 1)
-    ) {
-      return [];
-    }
-
-    return product.options;
-  }, [product.options]);
-
-  const updateOption = useCallback(
-    (optionName: string, optionValue: string) => {
-      setCurrentOption((prevOptions) => ({
-        ...prevOptions,
-        [optionName]: optionValue,
-      }));
-    },
-    [],
-  );
-
-  const value = useMemo(() => {
-    const currentVariant = product.variants.find((variant) =>
-      variant.selectedOptions.every(
-        (option) => option.value === currentOptions[option.name],
+}: PropsWithChildren<ProductProviderProps>) {
+  const [store] = useState(() =>
+    createStore<
+      ProductStore,
+      [['zustand/devtools', ProductStore], ['zustand/immer', ProductStore]]
+    >(
+      devtools(
+        immer((set) => ({
+          options: product.options,
+          variants: product.variants,
+          currentOptions: getInitialOptions(product),
+          currentVariant: getInitialVariant(product),
+          updateOption: (name: string, value: string) => {
+            set((state) => {
+              state.currentVariant = getVariantForOptions(state.variants, {
+                ...state.currentOptions,
+                [name]: value,
+              });
+              state.currentOptions[name] = value;
+            });
+          },
+        })),
       ),
-    );
-
-    if (!currentVariant) {
-      throw new Error('Invalid Options/Variants tuple');
-    }
-
-    return {
-      productVariants: product.variants,
-      productOptions,
-      currentOptions,
-      currentVariant,
-      updateOption,
-    };
-  }, [product.variants, productOptions, currentOptions, updateOption]);
+    ),
+  );
 
   return (
-    <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
+    <ProductContext.Provider value={store}>{children}</ProductContext.Provider>
   );
 }

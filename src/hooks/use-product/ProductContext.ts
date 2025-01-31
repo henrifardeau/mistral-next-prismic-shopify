@@ -1,29 +1,23 @@
 'use client';
 
-import { ProductOption, ProductVariant } from '@/types/product';
 import { createContext } from 'react';
+import { StoreApi } from 'zustand';
 
-type ProductContextProps = {
-  productVariants: ProductVariant[];
-  productOptions: ProductOption[];
+import { ProductOption, ProductVariant } from '@/types/product';
+
+type ProductState = {
+  options: ProductOption[];
   currentOptions: Record<string, string>;
-  updateOption: (optionName: string, optionValue: string) => void;
+  variants: ProductVariant[];
   currentVariant: ProductVariant;
 };
 
-export const ProductContext = createContext<ProductContextProps>({
-  productVariants: [],
-  productOptions: [],
-  currentOptions: {},
-  updateOption: () => {},
-  currentVariant: {
-    id: '',
-    title: '',
-    availableForSale: true,
-    price: {
-      amount: '',
-      currencyCode: '',
-    },
-    selectedOptions: [],
-  },
-});
+type ProductAction = {
+  updateOption: (name: string, value: string) => void;
+};
+
+export type ProductStore = ProductState & ProductAction;
+
+export const ProductContext = createContext<StoreApi<ProductStore> | undefined>(
+  undefined,
+);

@@ -1,15 +1,16 @@
 import { useContext } from 'react';
+import { useStore } from 'zustand';
 
-import { ProductContext } from './ProductContext';
+import { ProductContext, ProductStore } from './ProductContext';
 
 export * from './ProductProvider';
 
-export function useProduct() {
+export function useProduct<T>(selector: (state: ProductStore) => T) {
   const context = useContext(ProductContext);
 
   if (context === undefined) {
     throw new Error('useProduct must be used within a ProductProvider');
   }
 
-  return context;
+  return useStore(context, selector);
 }

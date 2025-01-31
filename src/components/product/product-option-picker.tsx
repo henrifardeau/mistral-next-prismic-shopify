@@ -10,11 +10,11 @@ import {
 } from './product-option-select';
 
 const ProductOptionPicker = () => {
-  const { productOptions } = useProduct();
+  const options = useProduct((state) => state.options);
 
   return (
     <ProductOptionList className="flex flex-col gap-6">
-      {productOptions.map((option) => (
+      {options.map((option) => (
         <ProductOptionGroup
           key={option.name}
           name={option.name}
@@ -41,7 +41,7 @@ const ProductOptionLabel = ({
 }: Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> & {
   name: string;
 }) => {
-  const { currentOptions } = useProduct();
+  const currentOptions = useProduct((state) => state.currentOptions);
 
   return (
     <span className={cn('uppercase', className)} {...props}>
