@@ -2,22 +2,43 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { Product, SelectedOptions } from '@/types/product';
+import { Product, ProductOption } from '@/types/product';
 
 import { ProductContext } from './ProductContext';
 
-type ProductProviderProps = {
-  product: Product;
-  initialOptions: SelectedOptions;
-  children: React.ReactNode;
-};
+function selectInitialOptions(options: ProductOption[]) {
+  return options.reduce(
+    (acc, cur) => {
+      return {
+        ...acc,
+        [cur.name]: cur.optionValues[0].name,
+      };
+    },
+    {} as Record<string, string>,
+  );
+}
 
 export function ProductProvider({
   product,
-  initialOptions,
   children,
-}: ProductProviderProps) {
-  const [currentOptions, setCurrentOption] = useState(initialOptions);
+}: {
+  product: Product;
+  children: React.ReactNode;
+}) {
+  const [currentOptions, setCurrentOption] = useState(
+    selectInitialOptions(product.options),
+  );
+
+  const productOptions = useMemo(() => {
+    if (
+      product.options.length === 0 ||
+      product.options.some((opt) => opt.optionValues.length <= 1)
+    ) {
+      return [];
+    }
+
+    return product.options;
+  }, [product.options]);
 
   const updateOption = useCallback(
     (optionName: string, optionValue: string) => {
@@ -42,12 +63,12 @@ export function ProductProvider({
 
     return {
       productVariants: product.variants,
-      productOptions: product.options,
+      productOptions,
       currentOptions,
       currentVariant,
       updateOption,
     };
-  }, [product.variants, product.options, currentOptions, updateOption]);
+  }, [product.variants, productOptions, currentOptions, updateOption]);
 
   return (
     <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

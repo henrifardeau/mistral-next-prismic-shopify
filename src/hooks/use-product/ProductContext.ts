@@ -1,14 +1,14 @@
 'use client';
 
-import { Option, SelectedOptions, Variant } from '@/types/product';
+import { ProductOption, ProductVariant } from '@/types/product';
 import { createContext } from 'react';
 
 type ProductContextProps = {
-  productVariants: Variant[];
-  productOptions: Option[];
-  currentOptions: SelectedOptions;
+  productVariants: ProductVariant[];
+  productOptions: ProductOption[];
+  currentOptions: Record<string, string>;
   updateOption: (optionName: string, optionValue: string) => void;
-  currentVariant: Variant;
+  currentVariant: ProductVariant;
 };
 
 export const ProductContext = createContext<ProductContextProps>({

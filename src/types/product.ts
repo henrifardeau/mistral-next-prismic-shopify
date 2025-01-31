@@ -1,29 +1,25 @@
 import { CompareAtPrice, Price } from './common';
 
-export type SelectedOptions = Record<string, string>;
-
 export type Product = {
   id: string;
   handle: string;
-  options: Option[];
-  variants: Variant[];
+  options: ProductOption[];
+  variants: ProductVariant[];
 };
 
-export type Option = {
-  id: string;
+export type ProductOption = {
   name: string;
-  optionValues: OptionValue[];
+  optionValues: ProductOptionValue[];
 };
 
-export type OptionValue = {
+export type ProductOptionValue = {
+  name: string;
   swatch?: {
     color?: string;
   } | null;
-  name: string;
-  id: string;
 };
 
-export type Variant = {
+export type ProductVariant = {
   id: string;
   title: string;
   availableForSale: boolean;
