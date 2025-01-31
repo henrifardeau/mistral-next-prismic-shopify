@@ -49,7 +49,7 @@ export const CartClose = ({
   className,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const { closeCart } = useCartDrawer();
+  const closeCart = useCartDrawer((state) => state.closeCart);
 
   return (
     <button

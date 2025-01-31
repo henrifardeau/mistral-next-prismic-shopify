@@ -85,7 +85,7 @@ export const CartItem = ({
 CartItem.displayName = 'CartItem';
 
 const CartItemThumbnail = () => {
-  const { closeCart } = useCartDrawer();
+  const closeCart = useCartDrawer((state) => state.closeCart);
   const { line } = useCartItem();
 
   return (
@@ -109,7 +109,7 @@ const CartItemHeader = ({
 CartItemHeader.displayName = 'CartItemHeader';
 
 const CartItemTitle = () => {
-  const { closeCart } = useCartDrawer();
+  const closeCart = useCartDrawer((state) => state.closeCart);
   const { line } = useCartItem();
 
   return (

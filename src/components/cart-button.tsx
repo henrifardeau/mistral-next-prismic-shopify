@@ -4,7 +4,8 @@ import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
 
 export function CartButton() {
-  const { openCart } = useCartDrawer();
+  const openCart = useCartDrawer((state) => state.openCart);
+
   const { cartLength } = useCartStore();
 
   return (

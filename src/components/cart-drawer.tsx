@@ -25,11 +25,13 @@ import {
 } from './ui/drawer';
 
 export function CartDrawer() {
-  const { isCartOpen, setCartOpen } = useCartDrawer();
+  const cartOpen = useCartDrawer((state) => state.cartOpen);
+  const setCartOpen = useCartDrawer((state) => state.setCartOpen);
+
   const { optimisticCart, updateCartLine, removeCartLine } = useCartStore();
 
   return (
-    <Drawer open={isCartOpen} onOpenChange={setCartOpen}>
+    <Drawer open={cartOpen} onOpenChange={setCartOpen}>
       <DrawerContent className="w-full max-w-[478px]">
         <DrawerHeader>
           <CartHeader>
