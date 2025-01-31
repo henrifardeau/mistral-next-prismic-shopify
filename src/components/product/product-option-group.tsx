@@ -146,7 +146,7 @@ const OptionGroupColorItem = ({
     <label
       htmlFor={`${groupName}_${value}`}
       className={cn(
-        'flex min-h-8 min-w-14 items-center justify-center border border-black p-1 font-medium ring ring-transparent transition-colors peer-focus:ring-black hover:ring-black',
+        'flex h-8 w-14 items-center justify-center border border-black p-1 font-medium ring ring-transparent transition-colors peer-focus:ring-black hover:ring-black',
         groupValue === value && 'ring-black',
       )}
     >
@@ -156,7 +156,7 @@ const OptionGroupColorItem = ({
           backgroundColor: color,
         }}
       >
-        {value}
+        <span className="sr-only">{value}</span>
       </span>
     </label>
   </div>
@@ -184,7 +184,7 @@ const OptionGroupSizeItem = ({
       <label
         htmlFor={`${groupName}_${value}`}
         className={cn(
-          'flex min-h-8 min-w-14 items-center justify-center border border-black font-medium ring ring-transparent transition-colors peer-focus:ring-black hover:ring-black',
+          'flex min-h-8 min-w-14 items-center justify-center border border-black p-1 font-medium ring ring-transparent transition-colors peer-focus:ring-black hover:ring-black',
           groupValue === value && 'bg-black text-white',
         )}
       >
