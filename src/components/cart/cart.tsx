@@ -1,5 +1,5 @@
 import { CircleX } from 'lucide-react';
-import { useCallback } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
@@ -63,7 +63,7 @@ export const CartClose = ({
 };
 CartClose.displayName = 'CartClose';
 
-export const CartSummary = ({ children }: { children: React.ReactNode }) => {
+export const CartSummary = ({ children }: PropsWithChildren) => {
   const { cartSubTotal } = useCartStore();
 
   return (

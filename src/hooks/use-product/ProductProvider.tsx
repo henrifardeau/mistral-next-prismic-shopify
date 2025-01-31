@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 
 import { Product, ProductOption } from '@/types/product';
 
@@ -21,10 +21,9 @@ function selectInitialOptions(options: ProductOption[]) {
 export function ProductProvider({
   product,
   children,
-}: {
+}: PropsWithChildren<{
   product: Product;
-  children: React.ReactNode;
-}) {
+}>) {
   const [currentOptions, setCurrentOption] = useState(
     selectInitialOptions(product.options),
   );

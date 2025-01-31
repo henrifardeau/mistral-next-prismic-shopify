@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import '@/styles/globals.css';
 
+import { PropsWithChildren } from 'react';
+
 import { CartDrawer } from '@/components/cart-drawer';
 import { Footer, Main, Navigation } from '@/components/layout';
 import { CartDrawerProvider } from '@/hooks/use-cart-drawer';
@@ -35,11 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: PropsWithChildren) {
   const cartPromise = getCart();
 
   return (

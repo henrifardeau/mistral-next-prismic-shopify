@@ -1,14 +1,10 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 
 import { CartDrawerContext } from './CartDrawerContext';
 
-export function CartDrawerProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function CartDrawerProvider({ children }: PropsWithChildren) {
   const [isCartOpen, setOpen] = useState<boolean>(false);
 
   const setCartOpen = useCallback((open: boolean) => {

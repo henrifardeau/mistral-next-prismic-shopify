@@ -1,26 +1,32 @@
 'use client';
 
-import { use, useCallback, useMemo, useOptimistic } from 'react';
+import {
+  PropsWithChildren,
+  use,
+  useCallback,
+  useMemo,
+  useOptimistic,
+} from 'react';
 
 import { shopify } from '@/lib/shopify';
 import { toNumber } from '@/lib/utils';
-import { Cart, CartLine } from '@/types/cart';
-
-import { CartStoreContext } from './CartStoreContext';
 import {
+  Cart,
   CartAction,
   CartAddPayload,
+  CartLine,
   CartLinePayload,
   CartUpdatePayload,
 } from '@/types/cart';
 
+import { CartStoreContext } from './CartStoreContext';
+
 export function CartStoreProvider({
   children,
   cartPromise,
-}: {
-  children: React.ReactNode;
+}: PropsWithChildren<{
   cartPromise: Promise<Cart | undefined>;
-}) {
+}>) {
   const initialCart = use(cartPromise);
   const [optimisticCart, updateOptimisticCart] = useOptimistic(
     initialCart,
