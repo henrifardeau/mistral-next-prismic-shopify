@@ -10,17 +10,17 @@ type CartDrawerAction = {
   closeCart: () => void;
 };
 
-export const useCartDrawer = create<CartDrawerState & CartDrawerAction>(
-  (set) => ({
-    cartOpen: false,
-    setCartOpen: (open: boolean) => {
-      set(() => ({ cartOpen: open }));
-    },
-    openCart: () => {
-      set(() => ({ cartOpen: true }));
-    },
-    closeCart: () => {
-      set(() => ({ cartOpen: false }));
-    },
-  }),
-);
+type CartDrawerStore = CartDrawerState & CartDrawerAction;
+
+export const useCartDrawer = create<CartDrawerStore>((set) => ({
+  cartOpen: false,
+  setCartOpen: (open: boolean) => {
+    set(() => ({ cartOpen: open }));
+  },
+  openCart: () => {
+    set(() => ({ cartOpen: true }));
+  },
+  closeCart: () => {
+    set(() => ({ cartOpen: false }));
+  },
+}));
