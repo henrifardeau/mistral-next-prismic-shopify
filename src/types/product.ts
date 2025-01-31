@@ -17,6 +17,38 @@ export type ProductOption = {
   }[];
 };
 
+export type ProductVerifiedOption =
+  | ProductOtherOption
+  | ProductSizeOption
+  | ProductColorOption;
+
+export type ProductOtherOption = {
+  type: 'select';
+  name: string;
+  optionValues: {
+    name: string;
+  }[];
+};
+
+export type ProductSizeOption = {
+  type: 'size';
+  name: string;
+  optionValues: {
+    name: string;
+  }[];
+};
+
+export type ProductColorOption = {
+  type: 'color';
+  name: string;
+  optionValues: {
+    name: string;
+    swatch: {
+      color: string;
+    };
+  }[];
+};
+
 export type ProductVariant = {
   id: string;
   title: string;

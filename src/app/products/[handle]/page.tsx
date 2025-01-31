@@ -1,13 +1,14 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { ProductOptionPicker } from '@/components/product';
 import { ProductProvider } from '@/hooks/use-product';
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { components } from '@/slices';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
+
+import { ProductOptionPicker } from './components';
 
 export async function generateMetadata({
   params,

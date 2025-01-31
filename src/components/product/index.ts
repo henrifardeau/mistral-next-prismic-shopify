@@ -1,2 +1,1 @@
-export * from './product-option-picker';
-export * from './product-option-select';
+export * from './product-option-group';

@@ -5,71 +5,31 @@ import { createStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-import { Product, ProductVariant } from '@/types/product';
+import { Product } from '@/types/product';
 
 import { ProductContext, ProductStore } from './ProductContext';
+import {
+  getInitialOptions,
+  getInitialVariant,
+  getVariantForOptions,
+  getVerifiedOptions,
+} from './utils';
 
-interface ProductProviderProps {
+type ProductProviderProps = PropsWithChildren<{
   product: Product;
-}
+}>;
 
-function getInitialOptions(product: Product) {
-  return product.options.reduce(
-    (acc, cur) => {
-      return {
-        ...acc,
-        [cur.name]: cur.optionValues[0].name,
-      };
-    },
-    {} as Record<string, string>,
-  );
-}
+type ZustandMiddlewares = [
+  ['zustand/devtools', ProductStore],
+  ['zustand/immer', ProductStore],
+];
 
-function getInitialVariant(product: Product) {
-  const initialOptions = getInitialOptions(product);
-
-  const variant = product.variants.find((variant) =>
-    variant.selectedOptions.every(
-      (option) => option.value === initialOptions[option.name],
-    ),
-  );
-
-  if (!variant) {
-    throw new Error('Invalid Options/Variants tuple');
-  }
-
-  return variant;
-}
-
-function getVariantForOptions(
-  variants: ProductVariant[],
-  options: Record<string, string>,
-) {
-  const variant = variants.find((variant) =>
-    variant.selectedOptions.every(
-      (option) => option.value === options[option.name],
-    ),
-  );
-
-  if (!variant) {
-    throw new Error('Invalid Options/Variants tuple');
-  }
-
-  return variant;
-}
-
-export function ProductProvider({
-  product,
-  children,
-}: PropsWithChildren<ProductProviderProps>) {
+export function ProductProvider({ product, children }: ProductProviderProps) {
   const [store] = useState(() =>
-    createStore<
-      ProductStore,
-      [['zustand/devtools', ProductStore], ['zustand/immer', ProductStore]]
-    >(
+    createStore<ProductStore, ZustandMiddlewares>(
       devtools(
         immer((set) => ({
-          options: product.options,
+          options: getVerifiedOptions(product),
           variants: product.variants,
           currentOptions: getInitialOptions(product),
           currentVariant: getInitialVariant(product),

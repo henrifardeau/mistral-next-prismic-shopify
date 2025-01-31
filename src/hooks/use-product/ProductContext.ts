@@ -3,10 +3,10 @@
 import { createContext } from 'react';
 import { StoreApi } from 'zustand';
 
-import { ProductOption, ProductVariant } from '@/types/product';
+import { ProductVariant, ProductVerifiedOption } from '@/types/product';
 
 type ProductState = {
-  options: ProductOption[];
+  options: ProductVerifiedOption[];
   currentOptions: Record<string, string>;
   variants: ProductVariant[];
   currentVariant: ProductVariant;
