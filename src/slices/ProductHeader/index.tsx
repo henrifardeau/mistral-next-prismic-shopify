@@ -9,7 +9,11 @@ import {
 } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 
-import { ProductOptionPicker, ProductVariantImages } from './components';
+import {
+  ProductAddToCart,
+  ProductOptionPicker,
+  ProductVariantImages,
+} from './components';
 
 type ProductImages = { thumbnail: ImageField }[];
 type VariantsImages = {
@@ -75,8 +79,9 @@ const ProductHeader = ({ slice }: ProductHeaderProps) => {
           <PrismicCarousel images={productImages} />
           <ProductVariantImages imagesMap={variantsImages} />
         </div>
-        <aside className="w-full max-w-[348px] shrink-0">
+        <aside className="w-full max-w-[348px] shrink-0 space-y-6">
           <ProductOptionPicker />
+          <ProductAddToCart />
         </aside>
       </header>
     </section>

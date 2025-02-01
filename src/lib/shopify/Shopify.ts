@@ -5,6 +5,7 @@ import { Connection } from '@/types/gql';
 import { Product } from '@/types/product';
 
 import { RawCart, RawProduct } from './types';
+import { toNumber } from '../utils';
 
 const PREFIXES = Object.freeze({
   cart: 'gid://shopify/Cart/',
@@ -101,6 +102,7 @@ export class Shopify {
     return {
       id: product.id,
       handle: product.handle,
+      title: product.title,
       options: product.options,
       variants: this.removeEdgesAndNodes(product.variants),
     };
@@ -111,7 +113,7 @@ export class Shopify {
   }
 
   public formatPrice(
-    price: number,
+    price: number | string,
     currencyCode: string,
     options: Intl.NumberFormatOptions = {
       style: 'currency',
@@ -119,8 +121,9 @@ export class Shopify {
     },
   ): string {
     const formatter = this.getLazyFormatter('fr-CA', options);
+    const priceNumber = typeof price === 'string' ? toNumber(price) : price;
 
-    return formatter.format(price);
+    return formatter.format(priceNumber);
   }
 
   private getLazyFormatter(

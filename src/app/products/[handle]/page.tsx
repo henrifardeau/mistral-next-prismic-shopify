@@ -57,16 +57,17 @@ export default async function Page({
     return notFound();
   }
 
-  const { variants, options } = shopify.reshapeProduct(shopifyProduct);
+  const product = shopify.reshapeProduct(shopifyProduct);
 
-  const productOptions = getVerifiedOptions(options);
+  const productOptions = getVerifiedOptions(product.options);
   const initialOptions = getInitialOptions(productOptions);
-  const initialVariant = getInitialVariant(variants, initialOptions);
+  const initialVariant = getInitialVariant(product.variants, initialOptions);
 
   return (
     <ProductProvider
+      product={product}
       options={productOptions}
-      variants={variants}
+      variants={product.variants}
       initialOptions={initialOptions}
       initialVariant={initialVariant}
     >

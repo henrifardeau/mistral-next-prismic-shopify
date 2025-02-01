@@ -3,6 +3,7 @@ import { CompareAtPrice, Price } from './common';
 export type Product = {
   id: string;
   handle: string;
+  title: string;
   options: ProductOption[];
   variants: ProductVariant[];
 };

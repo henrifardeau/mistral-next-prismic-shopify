@@ -14,6 +14,7 @@ import {
 import { getVariantForOptions } from './utils';
 
 export function ProductProvider({
+  product,
   options,
   variants,
   initialOptions,
@@ -24,6 +25,7 @@ export function ProductProvider({
     createStore<ProductStore, ZustandMiddlewares>(
       devtools(
         immer((set) => ({
+          product,
           options,
           variants,
           currentOptions: initialOptions,
