@@ -6,6 +6,14 @@ import { Product } from '@/types/product';
 
 import { RawCart, RawProduct } from './types';
 
+const PREFIXES = Object.freeze({
+  cart: 'gid://shopify/Cart/',
+  collection: 'gid://shopify/Collection/',
+  product: 'gid://shopify/Product/',
+  variant: 'gid://shopify/ProductVariant/',
+  line: 'gid://shopify/CartLine/',
+});
+
 export class Shopify {
   protected readonly storefrontURL: string;
 
@@ -42,6 +50,16 @@ export class Shopify {
       secure: true,
       sameSite: 'strict' as const,
     };
+  }
+
+  public addPrefix(prefix: keyof typeof PREFIXES, val: string) {
+    return val.startsWith(PREFIXES[prefix]) ? val : PREFIXES[prefix] + val;
+  }
+
+  public removePrefix(prefix: keyof typeof PREFIXES, val: string) {
+    return val.startsWith(PREFIXES[prefix])
+      ? val.slice(PREFIXES[prefix].length)
+      : val;
   }
 
   public reshapeCart(rawCart: RawCart): Cart {
