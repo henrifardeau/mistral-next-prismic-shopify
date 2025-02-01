@@ -1,13 +1,9 @@
-import { FilledImageFieldImage } from '@prismicio/client';
+import { Image } from '@/types/common';
 import { PrismicNextImage } from '@prismicio/next';
 
 import { Carousel, CarouselContent, CarouselItem } from './ui/carousel';
 
-export function PrismicCarousel({
-  images,
-}: {
-  images: FilledImageFieldImage[];
-}) {
+export function PrismicCarousel({ images }: { images: Image[] }) {
   if (images.length <= 1) {
     return (
       <div className="grid gap-4">
