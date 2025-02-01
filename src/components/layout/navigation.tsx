@@ -4,8 +4,8 @@ import { CartButton } from '../cart-button';
 
 export function Navigation() {
   return (
-    <nav className="sticky top-0 z-40 flex h-20 items-center justify-between bg-white">
-      <div className="grid w-full grid-cols-[44px_1fr_44px] px-[4vw]">
+    <nav className="flex h-20 items-center justify-between px-6">
+      <div className="grid w-full grid-cols-[44px_1fr_44px]">
         <div>
           <svg
             viewBox="0 0 24 24"

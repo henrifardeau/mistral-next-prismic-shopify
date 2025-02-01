@@ -15,7 +15,11 @@ import { components } from '@/slices';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
 
-import { ProductOptionPicker } from './components';
+import {
+  ProductImages,
+  ProductOptionPicker,
+  ProductVariantImages,
+} from './components';
 
 export async function generateMetadata({
   params,
@@ -78,12 +82,13 @@ export default async function Page({
       initialOptions={initialOptions}
       initialVariant={initialVariant}
     >
-      <section className="container mx-auto">
+      <section className="px-6">
         <div className="flex flex-col items-start justify-between gap-16 pb-20 sm:flex-row lg:gap-24">
-          <h2>
-            {page.data.title} | {page.data.shopify_handle}
-          </h2>
-          <aside className="w-full shrink-0 sm:max-w-[348px] sm:grow-0 sm:basis-[348px]">
+          <div className="sticky top-6 grid grid-cols-2 gap-6">
+            <ProductImages />
+            <ProductVariantImages />
+          </div>
+          <aside className="w-full max-w-[348px] shrink-0">
             <ProductOptionPicker />
           </aside>
         </div>
