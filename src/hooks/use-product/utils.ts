@@ -1,5 +1,6 @@
 import { COLOR_TYPE, SIZE_TYPE } from '@/constants/option-types';
 import { shopify } from '@/lib/shopify';
+import { Image } from '@/types/common';
 import {
   ExtendedProductVariant,
   ProductColorOption,
@@ -11,12 +12,17 @@ import {
   ProductVariantImage,
   ProductVerifiedOption,
 } from '@/types/product';
-import { ImageField, isFilled } from '@prismicio/client';
+import { isFilled } from '@prismicio/client';
 
 export function assignProductImages(images: ProductImage[]) {
-  return images
-    .filter((img) => isFilled.image(img.thumbnail))
-    .map((img) => img.thumbnail);
+  return images.reduce((acc, cur) => {
+    if (!isFilled.image(cur.thumbnail)) {
+      return acc;
+    }
+    acc.push(cur.thumbnail);
+
+    return acc;
+  }, [] as Image[]);
 }
 
 export function assignVariantsImages(
@@ -25,21 +31,21 @@ export function assignVariantsImages(
 ) {
   const variantsImagesMap = variantsImages.reduce(
     (acc, cur) => {
-      if (
-        !isFilled.keyText(cur.shopify_variant_ids) ||
-        !isFilled.image(cur.thumbnail)
-      ) {
+      if (!isFilled.keyText(cur.shopify_variant_ids)) {
         return acc;
       }
 
       cur.shopify_variant_ids.split('_').forEach((id) => {
         const variantId = shopify.addPrefix('variant', id);
-        (acc[variantId] ||= []).push(cur.thumbnail);
+
+        if (isFilled.image(cur.thumbnail)) {
+          (acc[variantId] ||= []).push(cur.thumbnail);
+        }
       });
 
       return acc;
     },
-    {} as Record<string, ImageField[]>,
+    {} as Record<string, Image[]>,
   );
 
   return variants.map((v) => ({

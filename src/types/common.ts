@@ -1,6 +1,6 @@
-import { ImageField } from '@prismicio/client';
+import { FilledImageFieldImage } from '@prismicio/client';
 
-export type Image = ImageField;
+export type Image = FilledImageFieldImage;
 
 export type CompareAtPrice = Price | null;
 
