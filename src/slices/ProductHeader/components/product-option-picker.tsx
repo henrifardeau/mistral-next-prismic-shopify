@@ -8,6 +8,13 @@ export function ProductOptionPicker() {
   const currentOptions = useProduct((state) => state.currentOptions);
   const updateOption = useProduct((state) => state.updateOption);
 
+  if (
+    !options.length ||
+    (options.length === 1 && options[0]?.optionValues.length === 1)
+  ) {
+    return null;
+  }
+
   return (
     <div className="grid gap-4">
       {options.map((groupOption) => (

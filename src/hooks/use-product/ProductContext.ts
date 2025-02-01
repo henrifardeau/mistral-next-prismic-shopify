@@ -3,8 +3,7 @@
 import { createContext, PropsWithChildren } from 'react';
 import { StoreApi } from 'zustand';
 
-import { Image } from '@/types/common';
-import { ExtendedProductVariant, ProductVerifiedOption } from '@/types/product';
+import { ProductVariant, ProductVerifiedOption } from '@/types/product';
 
 export type ZustandMiddlewares = [
   ['zustand/devtools', ProductStore],
@@ -12,19 +11,17 @@ export type ZustandMiddlewares = [
 ];
 
 export type ProductProviderProps = PropsWithChildren<{
-  images: Image[];
   options: ProductVerifiedOption[];
-  variants: ExtendedProductVariant[];
+  variants: ProductVariant[];
   initialOptions: Record<string, string>;
-  initialVariant: ExtendedProductVariant;
+  initialVariant: ProductVariant;
 }>;
 
 type ProductState = {
-  images: Image[];
   options: ProductVerifiedOption[];
-  variants: ExtendedProductVariant[];
+  variants: ProductVariant[];
   currentOptions: Record<string, string>;
-  currentVariant: ExtendedProductVariant;
+  currentVariant: ProductVariant;
 };
 
 type ProductAction = {

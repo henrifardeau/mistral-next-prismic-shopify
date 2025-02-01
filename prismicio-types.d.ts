@@ -182,47 +182,7 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
-/**
- * Item in *Products → Thumbnails*
- */
-export interface ProductsDocumentDataThumbnailsItem {
-  /**
-   * Thumbnail field in *Products → Thumbnails*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: products.thumbnails[].thumbnail
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  thumbnail: prismic.ImageField<never>;
-}
-
-/**
- * Item in *Products → Variant Thumbnails*
- */
-export interface ProductsDocumentDataVariantThumbnailsItem {
-  /**
-   * Shopify Variant Ids field in *Products → Variant Thumbnails*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: products.variant_thumbnails[].shopify_variant_ids
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  shopify_variant_ids: prismic.KeyTextField;
-
-  /**
-   * Thumbnail field in *Products → Variant Thumbnails*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: products.variant_thumbnails[].thumbnail
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  thumbnail: prismic.ImageField<never>;
-}
-
-type ProductsDocumentDataSlicesSlice = never;
+type ProductsDocumentDataSlicesSlice = ProductHeaderSlice;
 
 /**
  * Content for Products documents
@@ -260,30 +220,6 @@ interface ProductsDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   title: prismic.KeyTextField;
-
-  /**
-   * Thumbnails field in *Products*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: products.thumbnails[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  thumbnails: prismic.GroupField<Simplify<ProductsDocumentDataThumbnailsItem>>;
-
-  /**
-   * Variant Thumbnails field in *Products*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: products.variant_thumbnails[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  variant_thumbnails: prismic.GroupField<
-    Simplify<ProductsDocumentDataVariantThumbnailsItem>
-  >;
 
   /**
    * Slice Zone field in *Products*
@@ -405,6 +341,115 @@ export type AllDocumentTypes =
   | SettingsDocument;
 
 /**
+ * Item in *ProductHeader → Default → Primary → Thumbnails*
+ */
+export interface ProductHeaderSliceDefaultPrimaryThumbnailsItem {
+  /**
+   * Thumbnail field in *ProductHeader → Default → Primary → Thumbnails*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_header.default.primary.thumbnails[].thumbnail
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  thumbnail: prismic.ImageField<never>;
+}
+
+/**
+ * Item in *ProductHeader → Default → Primary → Variant Thumbnails*
+ */
+export interface ProductHeaderSliceDefaultPrimaryVariantThumbnailsItem {
+  /**
+   * Shopify Variant Ids field in *ProductHeader → Default → Primary → Variant Thumbnails*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_header.default.primary.variant_thumbnails[].shopify_variant_ids
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  shopify_variant_ids: prismic.KeyTextField;
+
+  /**
+   * Thumbnail field in *ProductHeader → Default → Primary → Variant Thumbnails*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_header.default.primary.variant_thumbnails[].thumbnail
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  thumbnail: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *ProductHeader → Default → Primary*
+ */
+export interface ProductHeaderSliceDefaultPrimary {
+  /**
+   * Title field in *ProductHeader → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_header.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Thumbnails field in *ProductHeader → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_header.default.primary.thumbnails[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  thumbnails: prismic.GroupField<
+    Simplify<ProductHeaderSliceDefaultPrimaryThumbnailsItem>
+  >;
+
+  /**
+   * Variant Thumbnails field in *ProductHeader → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_header.default.primary.variant_thumbnails[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  variant_thumbnails: prismic.GroupField<
+    Simplify<ProductHeaderSliceDefaultPrimaryVariantThumbnailsItem>
+  >;
+}
+
+/**
+ * Default variation for ProductHeader Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ProductHeaderSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<ProductHeaderSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ProductHeader*
+ */
+type ProductHeaderSliceVariation = ProductHeaderSliceDefault;
+
+/**
+ * ProductHeader Shared Slice
+ *
+ * - **API ID**: `product_header`
+ * - **Description**: ProductHeader
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ProductHeaderSlice = prismic.SharedSlice<
+  'product_header',
+  ProductHeaderSliceVariation
+>;
+
+/**
  * Item in *ProductHightlight → Default → Primary → Products*
  */
 export interface ProductHightlightSliceDefaultPrimaryProductsItem {
@@ -516,12 +561,16 @@ declare module '@prismicio/client' {
       HomepageDocumentDataSlicesSlice,
       ProductsDocument,
       ProductsDocumentData,
-      ProductsDocumentDataThumbnailsItem,
-      ProductsDocumentDataVariantThumbnailsItem,
       ProductsDocumentDataSlicesSlice,
       SettingsDocument,
       SettingsDocumentData,
       AllDocumentTypes,
+      ProductHeaderSlice,
+      ProductHeaderSliceDefaultPrimaryThumbnailsItem,
+      ProductHeaderSliceDefaultPrimaryVariantThumbnailsItem,
+      ProductHeaderSliceDefaultPrimary,
+      ProductHeaderSliceVariation,
+      ProductHeaderSliceDefault,
       ProductHightlightSlice,
       ProductHightlightSliceDefaultPrimaryProductsItem,
       ProductHightlightSliceDefaultPrimary,

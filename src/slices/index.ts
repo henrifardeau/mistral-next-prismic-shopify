@@ -3,5 +3,6 @@
 import dynamic from 'next/dynamic';
 
 export const components = {
+  product_header: dynamic(() => import('./ProductHeader')),
   product_hightlight: dynamic(() => import('./ProductHightlight')),
 };
