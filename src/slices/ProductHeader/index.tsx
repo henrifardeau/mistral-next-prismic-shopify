@@ -24,8 +24,10 @@ type VariantsImages = {
 /**
  * Props for `ProductHeader`.
  */
-export type ProductHeaderProps =
-  SliceComponentProps<Content.ProductHeaderSlice>;
+export type ProductHeaderProps = SliceComponentProps<
+  Content.ProductHeaderSlice,
+  { simulator?: boolean }
+>;
 
 function flatProductImages(images: ProductImages) {
   return (images || []).reduce((acc, cur) => {
@@ -62,7 +64,7 @@ function flatVariantsImages(variantsImages: VariantsImages) {
 /**
  * Component for "ProductHeader" Slices.
  */
-const ProductHeader = ({ slice }: ProductHeaderProps) => {
+const ProductHeader = ({ slice, context }: ProductHeaderProps) => {
   const { thumbnails, variant_thumbnails } = slice.primary;
 
   const productImages = flatProductImages(thumbnails);
@@ -73,9 +75,13 @@ const ProductHeader = ({ slice }: ProductHeaderProps) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className="px-6"
+      style={{ marginTop: context?.simulator ? '24px' : '0px' }}
     >
       <header className="flex items-start justify-between gap-6 pb-16">
-        <div className="sticky top-6 grid grid-cols-2 gap-6">
+        <div
+          className="sticky top-6 grid grid-cols-2 gap-6"
+          style={{ height: context?.simulator ? '768px' : 'auto' }}
+        >
           <PrismicCarousel images={productImages} />
           <ProductVariantImages imagesMap={variantsImages} />
         </div>
