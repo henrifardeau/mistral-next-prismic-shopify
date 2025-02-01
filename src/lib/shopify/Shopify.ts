@@ -115,13 +115,15 @@ export class Shopify {
   public formatPrice(
     price: number | string,
     currencyCode: string,
+    quantity: number = 1,
     options: Intl.NumberFormatOptions = {
       style: 'currency',
       currency: currencyCode,
     },
   ): string {
     const formatter = this.getLazyFormatter('fr-CA', options);
-    const priceNumber = typeof price === 'string' ? toNumber(price) : price;
+    const priceNumber =
+      typeof price === 'string' ? toNumber(price) * quantity : price * quantity;
 
     return formatter.format(priceNumber);
   }

@@ -5,7 +5,6 @@ import {
   useCallback,
   useContext,
   useMemo,
-  useState,
   useTransition,
 } from 'react';
 
@@ -22,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { QuantityInput } from '../quantity-input';
 
 interface CartItemContextProps {
   line: CartLine;
@@ -131,38 +131,45 @@ const CartItemDescription = () => {
 };
 CartItemDescription.displayName = 'CartItemDescription';
 
-const CartItemQuantitySelect = () => {
+const CartItemQuantitySelect = ({ as }: { as?: 'input' | 'select' }) => {
+  const [, startUpdate] = useTransition();
   const { line, updateAction } = useCartItem();
 
-  const [, startUpdate] = useTransition();
-  const [quantity, setQuantity] = useState<number>(line.quantity);
-
-  const handleChange = async (value: string) => {
-    setQuantity(toNumber(value));
+  const handleUpdate = async (value: number) => {
     startUpdate(async () => {
-      await updateAction(toNumber(value));
+      await updateAction(value);
     });
   };
 
+  const handleSelectChange = (value: string) => {
+    handleUpdate(toNumber(value));
+  };
+
+  if (as === 'select') {
+    return (
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Select
+          name="quantity"
+          value={`${line.quantity}`}
+          onValueChange={handleSelectChange}
+        >
+          <SelectTrigger className="w-16">
+            <SelectValue placeholder="1" />
+          </SelectTrigger>
+          <SelectContent>
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((option) => (
+              <SelectItem key={option} value={`${option}`}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </form>
+    );
+  }
+
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <Select
-        name="quantity"
-        value={`${quantity}`}
-        onValueChange={handleChange}
-      >
-        <SelectTrigger className="w-16">
-          <SelectValue placeholder="1" />
-        </SelectTrigger>
-        <SelectContent>
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((option) => (
-            <SelectItem key={option} value={`${option}`}>
-              {option}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </form>
+    <QuantityInput quantity={line.quantity} updateQuantity={handleUpdate} />
   );
 };
 CartItemQuantitySelect.displayName = 'CartItemQuantitySelect';
@@ -184,7 +191,7 @@ const CartItemRemoveButton = ({
   return (
     <form onSubmit={handleSubmit}>
       <button
-        className={cn('h-10 bg-black p-2 text-xs text-white', className)}
+        className={cn('bg-black px-2 py-4 text-xs text-white', className)}
         {...props}
       >
         Remove
@@ -199,11 +206,10 @@ const CartItemPrice = () => {
 
   const totalPrice = useCallback(() => {
     try {
-      const priceAsNumber = toNumber(line.variant.price.amount);
-
       return shopify.formatPrice(
-        priceAsNumber * line.quantity,
+        line.variant.price.amount,
         line.variant.price.currencyCode,
+        line.quantity,
       );
     } catch (err) {
       console.error(err);
