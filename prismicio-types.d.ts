@@ -182,6 +182,46 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Item in *Products → Thumbnails*
+ */
+export interface ProductsDocumentDataThumbnailsItem {
+  /**
+   * Thumbnail field in *Products → Thumbnails*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.thumbnails[].thumbnail
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  thumbnail: prismic.ImageField<never>;
+}
+
+/**
+ * Item in *Products → Variant Thumbnails*
+ */
+export interface ProductsDocumentDataVariantThumbnailsItem {
+  /**
+   * Shopify Variant Ids field in *Products → Variant Thumbnails*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.variant_thumbnails[].shopify_variant_ids
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  shopify_variant_ids: prismic.KeyTextField;
+
+  /**
+   * Thumbnail field in *Products → Variant Thumbnails*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.variant_thumbnails[].thumbnail
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  thumbnail: prismic.ImageField<never>;
+}
+
 type ProductsDocumentDataSlicesSlice = never;
 
 /**
@@ -220,6 +260,30 @@ interface ProductsDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   title: prismic.KeyTextField;
+
+  /**
+   * Thumbnails field in *Products*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.thumbnails[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  thumbnails: prismic.GroupField<Simplify<ProductsDocumentDataThumbnailsItem>>;
+
+  /**
+   * Variant Thumbnails field in *Products*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: products.variant_thumbnails[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  variant_thumbnails: prismic.GroupField<
+    Simplify<ProductsDocumentDataVariantThumbnailsItem>
+  >;
 
   /**
    * Slice Zone field in *Products*
@@ -452,6 +516,8 @@ declare module '@prismicio/client' {
       HomepageDocumentDataSlicesSlice,
       ProductsDocument,
       ProductsDocumentData,
+      ProductsDocumentDataThumbnailsItem,
+      ProductsDocumentDataVariantThumbnailsItem,
       ProductsDocumentDataSlicesSlice,
       SettingsDocument,
       SettingsDocumentData,

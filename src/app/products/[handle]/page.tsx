@@ -1,7 +1,14 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { ProductProvider } from '@/hooks/use-product';
+import {
+  assignProductImages,
+  assignVariantsImages,
+  getInitialOptions,
+  getInitialVariant,
+  getVerifiedOptions,
+  ProductProvider,
+} from '@/hooks/use-product';
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { components } from '@/slices';
@@ -54,8 +61,23 @@ export default async function Page({
     return notFound();
   }
 
+  const { thumbnails, variant_thumbnails } = page.data;
+  const { variants, options } = shopify.reshapeProduct(shopifyProduct);
+
+  const productImages = assignProductImages(thumbnails);
+  const productOptions = getVerifiedOptions(options);
+  const productVariants = assignVariantsImages(variants, variant_thumbnails);
+  const initialOptions = getInitialOptions(productOptions);
+  const initialVariant = getInitialVariant(productVariants, initialOptions);
+
   return (
-    <ProductProvider product={shopify.reshapeProduct(shopifyProduct)}>
+    <ProductProvider
+      images={productImages}
+      options={productOptions}
+      variants={productVariants}
+      initialOptions={initialOptions}
+      initialVariant={initialVariant}
+    >
       <section className="container mx-auto">
         <div className="flex flex-col items-start justify-between gap-16 pb-20 sm:flex-row lg:gap-24">
           <h2>

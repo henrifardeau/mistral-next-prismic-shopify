@@ -33,6 +33,47 @@
           "placeholder": ""
         }
       },
+      "thumbnails": {
+        "type": "Group",
+        "config": {
+          "label": "Thumbnails",
+          "repeat": true,
+          "fields": {
+            "thumbnail": {
+              "type": "Image",
+              "config": {
+                "label": "Thumbnail",
+                "constraint": {},
+                "thumbnails": []
+              }
+            }
+          }
+        }
+      },
+      "variant_thumbnails": {
+        "type": "Group",
+        "config": {
+          "label": "Variant Thumbnails",
+          "repeat": true,
+          "fields": {
+            "shopify_variant_ids": {
+              "type": "Text",
+              "config": {
+                "label": "Shopify Variant Ids",
+                "placeholder": ""
+              }
+            },
+            "thumbnail": {
+              "type": "Image",
+              "config": {
+                "label": "Thumbnail",
+                "constraint": {},
+                "thumbnails": []
+              }
+            }
+          }
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

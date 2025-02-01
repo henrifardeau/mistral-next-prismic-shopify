@@ -4,6 +4,7 @@ import { useStore } from 'zustand';
 import { ProductContext, ProductStore } from './ProductContext';
 
 export * from './ProductProvider';
+export * from './utils';
 
 export function useProduct<T>(selector: (state: ProductStore) => T) {
   const context = useContext(ProductContext);

@@ -1,4 +1,11 @@
-import { CompareAtPrice, Price } from './common';
+import {
+  ProductsDocumentDataThumbnailsItem,
+  ProductsDocumentDataVariantThumbnailsItem,
+} from '../../prismicio-types';
+import { CompareAtPrice, Image, Price } from './common';
+
+export type ProductImage = ProductsDocumentDataThumbnailsItem;
+export type ProductVariantImage = ProductsDocumentDataVariantThumbnailsItem;
 
 export type Product = {
   id: string;
@@ -60,3 +67,5 @@ export type ProductVariant = {
     value: string;
   }[];
 };
+
+export type ExtendedProductVariant = ProductVariant & { images: Image[] };

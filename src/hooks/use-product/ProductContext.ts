@@ -1,14 +1,33 @@
 'use client';
 
-import { createContext } from 'react';
+import { createContext, PropsWithChildren } from 'react';
 import { StoreApi } from 'zustand';
 
-import { ProductVariant, ProductVerifiedOption } from '@/types/product';
+import { Image } from '@/types/common';
+import {
+  ExtendedProductVariant,
+  ProductVariant,
+  ProductVerifiedOption,
+} from '@/types/product';
+
+export type ZustandMiddlewares = [
+  ['zustand/devtools', ProductStore],
+  ['zustand/immer', ProductStore],
+];
+
+export type ProductProviderProps = PropsWithChildren<{
+  images: Image[];
+  options: ProductVerifiedOption[];
+  variants: ExtendedProductVariant[];
+  initialOptions: Record<string, string>;
+  initialVariant: ProductVariant;
+}>;
 
 type ProductState = {
+  images: Image[];
   options: ProductVerifiedOption[];
+  variants: ExtendedProductVariant[];
   currentOptions: Record<string, string>;
-  variants: ProductVariant[];
   currentVariant: ProductVariant;
 };
 

@@ -1,14 +1,55 @@
 import { COLOR_TYPE, SIZE_TYPE } from '@/constants/option-types';
+import { shopify } from '@/lib/shopify';
 import {
-  Product,
+  ExtendedProductVariant,
   ProductColorOption,
+  ProductImage,
+  ProductOption,
   ProductOtherOption,
   ProductSizeOption,
   ProductVariant,
+  ProductVariantImage,
+  ProductVerifiedOption,
 } from '@/types/product';
+import { ImageField, isFilled } from '@prismicio/client';
 
-export function getVerifiedOptions(product: Product) {
-  return product.options.map((option) => {
+export function assignProductImages(images: ProductImage[]) {
+  return images
+    .filter((img) => isFilled.image(img.thumbnail))
+    .map((img) => img.thumbnail);
+}
+
+export function assignVariantsImages(
+  variants: ProductVariant[],
+  variantsImages: ProductVariantImage[],
+) {
+  const variantsImagesMap = variantsImages.reduce(
+    (acc, cur) => {
+      if (
+        !isFilled.keyText(cur.shopify_variant_ids) ||
+        !isFilled.image(cur.thumbnail)
+      ) {
+        return acc;
+      }
+
+      cur.shopify_variant_ids.split('_').forEach((id) => {
+        const variantId = shopify.addPrefix('variant', id);
+        (acc[variantId] ||= []).push(cur.thumbnail);
+      });
+
+      return acc;
+    },
+    {} as Record<string, ImageField[]>,
+  );
+
+  return variants.map((v) => ({
+    ...v,
+    images: variantsImagesMap[v.id] ?? [],
+  }));
+}
+
+export function getVerifiedOptions(options: ProductOption[]) {
+  return options.map((option) => {
     if (
       COLOR_TYPE.includes(option.name.toLowerCase()) &&
       option.optionValues.every(
@@ -43,9 +84,7 @@ export function getVerifiedOptions(product: Product) {
   });
 }
 
-export function getInitialOptions(product: Product) {
-  const options = getVerifiedOptions(product);
-
+export function getInitialOptions(options: ProductVerifiedOption[]) {
   return options.reduce(
     (acc, cur) => {
       return {
@@ -57,12 +96,13 @@ export function getInitialOptions(product: Product) {
   );
 }
 
-export function getInitialVariant(product: Product) {
-  const initialOptions = getInitialOptions(product);
-
-  const variant = product.variants.find((variant) =>
+export function getInitialVariant(
+  variants: ExtendedProductVariant[],
+  options: Record<string, string>,
+) {
+  const variant = variants.find((variant) =>
     variant.selectedOptions.every(
-      (option) => option.value === initialOptions[option.name],
+      (option) => option.value === options[option.name],
     ),
   );
 
@@ -74,7 +114,7 @@ export function getInitialVariant(product: Product) {
 }
 
 export function getVariantForOptions(
-  variants: ProductVariant[],
+  variants: ExtendedProductVariant[],
   options: Record<string, string>,
 ) {
   const variant = variants.find((variant) =>
