@@ -23,6 +23,10 @@ export const getCartQuery = graphql(`
                   amount
                   currencyCode
                 }
+                image {
+                  url
+                  altText
+                }
                 product {
                   handle
                   title
@@ -76,6 +80,10 @@ export const longProductByHandleQuery = graphql(`
             price {
               amount
               currencyCode
+            }
+            image {
+              url
+              altText
             }
             selectedOptions {
               name

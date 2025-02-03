@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   createContext,
@@ -14,6 +15,7 @@ import { shopify } from '@/lib/shopify';
 import { toNumber } from '@/lib/utils';
 import { CartLine } from '@/types/cart';
 
+import { QuantityInput } from '../quantity-input';
 import {
   Select,
   SelectContent,
@@ -21,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { QuantityInput } from '../quantity-input';
 
 interface CartItemContextProps {
   line: CartLine;
@@ -59,7 +60,7 @@ export const CartItem = ({
   return (
     <CartItemContext.Provider value={value}>
       <li className="space-y-6 not-first:pt-4 not-last:pb-4">
-        <div className="grid grid-cols-[112px_1fr] grid-rows-[144px] gap-2">
+        <div className="grid grid-cols-[112px_1fr] gap-2">
           <CartItemThumbnail />
 
           <div className="flex flex-col justify-between">
@@ -92,9 +93,14 @@ const CartItemThumbnail = () => {
     <Link
       href={`/products/${line.product.handle}`}
       onClick={closeCart}
-      className="flex items-center justify-center bg-gray-100"
+      className="flex items-center justify-center"
     >
-      Image
+      <Image
+        width={112}
+        height={112}
+        src={line.variant.image.src || 'https://placehold.co/112x112'}
+        alt={line.variant.image.altText || 'Placeholder image'}
+      />
     </Link>
   );
 };

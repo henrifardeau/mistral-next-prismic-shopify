@@ -174,6 +174,7 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
               title: variant.title,
               compareAtPrice: variant.compareAtPrice,
               price: variant.price,
+              image: variant.image,
             },
           },
           ...currentState.lines,

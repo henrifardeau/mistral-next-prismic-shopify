@@ -56,6 +56,10 @@ export type ProductVariant = {
   availableForSale: boolean;
   compareAtPrice?: CompareAtPrice;
   price: Price;
+  image: {
+    src?: string;
+    altText?: string;
+  };
   selectedOptions: {
     name: string;
     value: string;

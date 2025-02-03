@@ -20,6 +20,10 @@ export type CartLine = {
     title: string;
     compareAtPrice?: CompareAtPrice;
     price: Price;
+    image: {
+      src?: string;
+      altText?: string;
+    };
   };
 };
 
@@ -65,6 +69,10 @@ export type CartAddPayload = {
     price: {
       amount: string;
       currencyCode: string;
+    };
+    image: {
+      src?: string;
+      alt?: string;
     };
   };
 };

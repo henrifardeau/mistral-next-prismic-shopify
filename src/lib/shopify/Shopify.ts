@@ -87,6 +87,10 @@ export class Shopify {
           title: line.merchandise.title,
           compareAtPrice: line.merchandise.compareAtPrice,
           price: line.merchandise.price,
+          image: {
+            src: line.merchandise.image?.url,
+            alt: line.merchandise.image?.altText,
+          },
         },
       })),
     };
@@ -104,7 +108,13 @@ export class Shopify {
       handle: product.handle,
       title: product.title,
       options: product.options,
-      variants: this.removeEdgesAndNodes(product.variants),
+      variants: this.removeEdgesAndNodes(product.variants).map((variant) => ({
+        ...variant,
+        image: {
+          src: variant.image?.url,
+          alt: variant.image?.altText,
+        },
+      })),
     };
   }
 

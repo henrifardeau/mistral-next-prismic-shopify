@@ -24,6 +24,10 @@ export const createCartMutation = graphql(`
                     amount
                     currencyCode
                   }
+                  image {
+                    url
+                    altText
+                  }
                   product {
                     title
                     handle
