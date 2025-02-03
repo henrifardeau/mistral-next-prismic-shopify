@@ -11,6 +11,7 @@ import { SliceComponentProps } from '@prismicio/react';
 
 import {
   ProductAddToCart,
+  ProductAddToCartStick,
   ProductOptionPicker,
   ProductVariantImages,
 } from './components';
@@ -77,7 +78,10 @@ const ProductHeader = ({ slice, context }: ProductHeaderProps) => {
       className="px-6"
       style={{ marginTop: context?.simulator ? '24px' : '0px' }}
     >
-      <header className="flex items-start justify-between gap-6 pb-16">
+      <header
+        id="header"
+        className="flex items-start justify-between gap-6 pb-16"
+      >
         <div
           className="sticky top-6 grid grid-cols-2 gap-6"
           style={{ height: context?.simulator ? '768px' : 'auto' }}
@@ -89,6 +93,7 @@ const ProductHeader = ({ slice, context }: ProductHeaderProps) => {
           <ProductOptionPicker />
           <ProductAddToCart />
         </aside>
+        <ProductAddToCartStick />
       </header>
     </section>
   );

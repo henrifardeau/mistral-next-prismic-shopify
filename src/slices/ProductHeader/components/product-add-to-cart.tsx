@@ -27,7 +27,7 @@ export function ProductAddToCart() {
         quantity={quantity}
         updateQuantity={(quantity: number) => setQuantity(quantity)}
       />
-      <button className="w-full cursor-pointer space-x-2 bg-black py-3 font-medium text-white transition-colors hover:bg-neutral-700 focus:bg-neutral-700">
+      <button className="w-full cursor-pointer space-x-2 bg-black px-3 py-3 font-medium text-white transition-colors hover:bg-neutral-700 focus:bg-neutral-700">
         <span>Add to cart</span>
         <span>-</span>
         <span>
