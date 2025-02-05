@@ -92,6 +92,8 @@ const ProductHeader = ({ slice, context }: ProductHeaderProps) => {
         <aside className="w-full max-w-[348px] shrink-0 space-y-6">
           <ProductOptionPicker />
           <ProductAddToCart />
+          <div className="h-96 rounded-xl border border-neutral-100 bg-neutral-50"></div>
+          <div className="h-96 rounded-xl border border-neutral-100 bg-neutral-50"></div>
         </aside>
         <ProductAddToCartStick />
       </header>
