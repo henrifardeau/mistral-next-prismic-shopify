@@ -20,7 +20,11 @@ export default async function SliceSimulatorPage({
   const { state } = await searchParams;
   const slices = getSlices(state);
 
-  const product = shopify.reshapeProduct(SIMULATOR_PRODUCT);
+  const shopifyProduct = process.env.PRISMIC_MOCK_PRODUCT
+    ? await shopify.getLongProductByHandle(process.env.PRISMIC_MOCK_PRODUCT)
+    : SIMULATOR_PRODUCT;
+
+  const product = shopify.reshapeProduct(shopifyProduct);
 
   const productOptions = getVerifiedOptions(product.options);
   const initialOptions = getInitialOptions(productOptions);
