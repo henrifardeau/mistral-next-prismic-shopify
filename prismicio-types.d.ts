@@ -4,21 +4,6 @@ import type * as prismic from '@prismicio/client';
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-/**
- * Item in *Collections → Products*
- */
-export interface CollectionsDocumentDataProductsItem {
-  /**
-   * Product field in *Collections → Products*
-   *
-   * - **Field Type**: Content Relationship
-   * - **Placeholder**: *None*
-   * - **API ID Path**: collections.products[].product
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  product: prismic.ContentRelationshipField<'products'>;
-}
-
 type CollectionsDocumentDataSlicesSlice = ProductHightlightSlice;
 
 /**
@@ -35,17 +20,6 @@ interface CollectionsDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   title: prismic.KeyTextField;
-
-  /**
-   * Products field in *Collections*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: collections.products[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  products: prismic.GroupField<Simplify<CollectionsDocumentDataProductsItem>>;
 
   /**
    * Slice Zone field in *Collections*
@@ -554,7 +528,6 @@ declare module '@prismicio/client' {
     export type {
       CollectionsDocument,
       CollectionsDocumentData,
-      CollectionsDocumentDataProductsItem,
       CollectionsDocumentDataSlicesSlice,
       HomepageDocument,
       HomepageDocumentData,
