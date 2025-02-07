@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import { PrismicCarousel } from '@/components/prismic-carousel';
 import { shopify } from '@/lib/shopify';
 import {
@@ -65,7 +67,7 @@ function flatVariantsImages(variantsImages: VariantsImages) {
 /**
  * Component for "ProductHeader" Slices.
  */
-const ProductHeader = ({ slice, context }: ProductHeaderProps) => {
+const ProductHeader: FC<ProductHeaderProps> = ({ slice, context }) => {
   const { thumbnails, variant_thumbnails } = slice.primary;
 
   const productImages = flatProductImages(thumbnails);
