@@ -4,7 +4,9 @@ import type * as prismic from '@prismicio/client';
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type CollectionsDocumentDataSlicesSlice = ProductHightlightSlice;
+type CollectionsDocumentDataSlicesSlice =
+  | CollectionHeaderSlice
+  | ProductGridSlice;
 
 /**
  * Content for Collections documents
@@ -315,6 +317,182 @@ export type AllDocumentTypes =
   | SettingsDocument;
 
 /**
+ * Item in *CollectionHeader → Default → Primary → Collections*
+ */
+export interface CollectionHeaderSliceDefaultPrimaryCollectionsItem {
+  /**
+   * Thumbnail field in *CollectionHeader → Default → Primary → Collections*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collection_header.default.primary.collections[].thumbnail
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  thumbnail: prismic.ImageField<never>;
+
+  /**
+   * Link Text field in *CollectionHeader → Default → Primary → Collections*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collection_header.default.primary.collections[].link_text
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  link_text: prismic.KeyTextField;
+
+  /**
+   * Collection field in *CollectionHeader → Default → Primary → Collections*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collection_header.default.primary.collections[].collection
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  collection: prismic.ContentRelationshipField<'collections'>;
+}
+
+/**
+ * Primary content in *CollectionHeader → Default → Primary*
+ */
+export interface CollectionHeaderSliceDefaultPrimary {
+  /**
+   * Links field in *CollectionHeader → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collection_header.default.primary.links
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  links: prismic.Repeatable<
+    prismic.LinkField<string, string, unknown, prismic.FieldState, never>
+  >;
+
+  /**
+   * Title field in *CollectionHeader → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collection_header.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Collections field in *CollectionHeader → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: collection_header.default.primary.collections[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  collections: prismic.GroupField<
+    Simplify<CollectionHeaderSliceDefaultPrimaryCollectionsItem>
+  >;
+}
+
+/**
+ * Default variation for CollectionHeader Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type CollectionHeaderSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<CollectionHeaderSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *CollectionHeader*
+ */
+type CollectionHeaderSliceVariation = CollectionHeaderSliceDefault;
+
+/**
+ * CollectionHeader Shared Slice
+ *
+ * - **API ID**: `collection_header`
+ * - **Description**: CollectionHeader
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type CollectionHeaderSlice = prismic.SharedSlice<
+  'collection_header',
+  CollectionHeaderSliceVariation
+>;
+
+/**
+ * Item in *ProductGrid → Default → Primary → Products*
+ */
+export interface ProductGridSliceDefaultPrimaryProductsItem {
+  /**
+   * Product field in *ProductGrid → Default → Primary → Products*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_grid.default.primary.products[].product
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  product: prismic.ContentRelationshipField<'products'>;
+}
+
+/**
+ * Primary content in *ProductGrid → Default → Primary*
+ */
+export interface ProductGridSliceDefaultPrimary {
+  /**
+   * Page Size field in *ProductGrid → Default → Primary*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_grid.default.primary.page_size
+   * - **Documentation**: https://prismic.io/docs/field#number
+   */
+  page_size: prismic.NumberField;
+
+  /**
+   * Products field in *ProductGrid → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_grid.default.primary.products[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  products: prismic.GroupField<
+    Simplify<ProductGridSliceDefaultPrimaryProductsItem>
+  >;
+}
+
+/**
+ * Default variation for ProductGrid Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ProductGridSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<ProductGridSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ProductGrid*
+ */
+type ProductGridSliceVariation = ProductGridSliceDefault;
+
+/**
+ * ProductGrid Shared Slice
+ *
+ * - **API ID**: `product_grid`
+ * - **Description**: ProductGrid
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ProductGridSlice = prismic.SharedSlice<
+  'product_grid',
+  ProductGridSliceVariation
+>;
+
+/**
  * Item in *ProductHeader → Default → Primary → Thumbnails*
  */
 export interface ProductHeaderSliceDefaultPrimaryThumbnailsItem {
@@ -538,6 +716,16 @@ declare module '@prismicio/client' {
       SettingsDocument,
       SettingsDocumentData,
       AllDocumentTypes,
+      CollectionHeaderSlice,
+      CollectionHeaderSliceDefaultPrimaryCollectionsItem,
+      CollectionHeaderSliceDefaultPrimary,
+      CollectionHeaderSliceVariation,
+      CollectionHeaderSliceDefault,
+      ProductGridSlice,
+      ProductGridSliceDefaultPrimaryProductsItem,
+      ProductGridSliceDefaultPrimary,
+      ProductGridSliceVariation,
+      ProductGridSliceDefault,
       ProductHeaderSlice,
       ProductHeaderSliceDefaultPrimaryThumbnailsItem,
       ProductHeaderSliceDefaultPrimaryVariantThumbnailsItem,

@@ -2,8 +2,8 @@ import { env } from '@/env';
 import { Client, ClientConfig, createClient } from '@prismicio/client';
 import { CreateClientConfig, enableAutoPreviews } from '@prismicio/next';
 
-import { AllDocumentTypes } from '../../prismicio-types';
-import config from '../../slicemachine.config.json';
+import { AllDocumentTypes } from '../../../prismicio-types';
+import config from '../../../slicemachine.config.json';
 
 export const repositoryName = config.repositoryName;
 
@@ -11,6 +11,10 @@ const routes: ClientConfig['routes'] = [
   {
     type: 'homepage',
     path: '/',
+  },
+  {
+    type: 'collections',
+    path: '/collections/:uid',
   },
   {
     type: 'products',
