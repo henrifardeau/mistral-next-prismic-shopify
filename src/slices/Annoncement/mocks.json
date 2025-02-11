@@ -1,0 +1,14 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"annoncement": {
+				"__TYPE__": "FieldContent",
+				"value": "tropical",
+				"type": "Text"
+			}
+		},
+		"items": []
+	}
+]

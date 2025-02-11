@@ -1,30 +1,38 @@
-import Link from 'next/link';
+import { MenuDrawer } from '@/components/menu-drawer';
+import { prismic } from '@/lib/prismic';
+import { components } from '@/slices';
+import { SecondaryLinks } from '@/types/menu';
+import { Content } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
 
-import { CartButton } from '../cart-button';
+function groupLinks(menu: Content.MenuDocument) {
+  return menu.data.primary_links.reduce((acc, cur) => {
+    if (!cur.uid) {
+      return acc;
+    }
 
-export function Navigation() {
+    const childs = menu.data.secondary_links.filter(
+      (sl) => sl.parent_uid === cur.uid,
+    );
+
+    return {
+      ...acc,
+      [cur.uid]: childs,
+    };
+  }, {} as SecondaryLinks);
+}
+
+export async function Navigation() {
+  const page = await prismic.getSingle('navigation');
+  const menu = await prismic.getSingle('menu');
+
   return (
-    <nav className="flex h-20 items-center justify-between px-6">
-      <div className="grid w-full grid-cols-[44px_1fr_44px]">
-        <div>
-          <svg
-            viewBox="0 0 24 24"
-            className="size-6 fill-none stroke-current stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 9h16.5m-16.5 6.75h16.5"
-            />
-          </svg>
-        </div>
-        <div className="flex items-center justify-center">
-          <Link href="/">Mistral</Link>
-        </div>
-        <div>
-          <CartButton />
-        </div>
-      </div>
-    </nav>
+    <>
+      <SliceZone slices={page.data.slices} components={components} />
+      <MenuDrawer
+        primaryLinks={menu.data.primary_links}
+        secondaryLinks={groupLinks(menu)}
+      />
+    </>
   );
 }

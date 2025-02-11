@@ -117,10 +117,7 @@ const DrawerBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn(
-      'scrollbar-none flex flex-1 flex-col overflow-y-scroll px-6',
-      className,
-    )}
+    className={cn('scrollbar-none flex-1 overflow-y-scroll px-6', className)}
     {...props}
   />
 );

@@ -1,0 +1,26 @@
+{
+  "id": "navigation_annoncement",
+  "type": "SharedSlice",
+  "name": "Annoncement",
+  "description": "NavigationAnnoncement",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "annoncement": {
+          "type": "Text",
+          "config": {
+            "label": "Annoncement",
+            "placeholder": ""
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

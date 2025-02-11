@@ -156,6 +156,153 @@ export type HomepageDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Item in *Menu → Primary Links*
+ */
+export interface MenuDocumentDataPrimaryLinksItem {
+  /**
+   * UID field in *Menu → Primary Links*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.primary_links[].uid
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  uid: prismic.KeyTextField;
+
+  /**
+   * Link field in *Menu → Primary Links*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.primary_links[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+  /**
+   * Icon field in *Menu → Primary Links*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.primary_links[].icon
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  icon: prismic.ImageField<never>;
+}
+
+/**
+ * Item in *Menu → Secondary Links*
+ */
+export interface MenuDocumentDataSecondaryLinksItem {
+  /**
+   * Parent UID field in *Menu → Secondary Links*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.secondary_links[].parent_uid
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  parent_uid: prismic.KeyTextField;
+
+  /**
+   * Link field in *Menu → Secondary Links*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.secondary_links[].link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+  /**
+   * Icon field in *Menu → Secondary Links*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.secondary_links[].icon
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  icon: prismic.ImageField<never>;
+}
+
+/**
+ * Content for Menu documents
+ */
+interface MenuDocumentData {
+  /**
+   * Primary Links field in *Menu*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.primary_links[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  primary_links: prismic.GroupField<Simplify<MenuDocumentDataPrimaryLinksItem>>;
+
+  /**
+   * Secondary Links field in *Menu*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: menu.secondary_links[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  secondary_links: prismic.GroupField<
+    Simplify<MenuDocumentDataSecondaryLinksItem>
+  >;
+}
+
+/**
+ * Menu document from Prismic
+ *
+ * - **API ID**: `menu`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type MenuDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<MenuDocumentData>, 'menu', Lang>;
+
+type NavigationDocumentDataSlicesSlice =
+  | NavigationSlice
+  | NavigationAnnoncementSlice;
+
+/**
+ * Content for Navigation documents
+ */
+interface NavigationDocumentData {
+  /**
+   * Slice Zone field in *Navigation*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#slices
+   */
+  slices: prismic.SliceZone<NavigationDocumentDataSlicesSlice>;
+}
+
+/**
+ * Navigation document from Prismic
+ *
+ * - **API ID**: `navigation`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type NavigationDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<NavigationDocumentData>,
+    'navigation',
+    Lang
+  >;
+
 type ProductsDocumentDataSlicesSlice = ProductHeaderSlice;
 
 /**
@@ -311,8 +458,85 @@ export type SettingsDocument<Lang extends string = string> =
 export type AllDocumentTypes =
   | CollectionsDocument
   | HomepageDocument
+  | MenuDocument
+  | NavigationDocument
   | ProductsDocument
   | SettingsDocument;
+
+/**
+ * Default variation for Navigation Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type NavigationSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Record<string, never>,
+  never
+>;
+
+/**
+ * Slice variation for *Navigation*
+ */
+type NavigationSliceVariation = NavigationSliceDefault;
+
+/**
+ * Navigation Shared Slice
+ *
+ * - **API ID**: `navigation`
+ * - **Description**: Navigation
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type NavigationSlice = prismic.SharedSlice<
+  'navigation',
+  NavigationSliceVariation
+>;
+
+/**
+ * Primary content in *Annoncement → Default → Primary*
+ */
+export interface NavigationAnnoncementSliceDefaultPrimary {
+  /**
+   * Annoncement field in *Annoncement → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: navigation_annoncement.default.primary.annoncement
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  annoncement: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Annoncement Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type NavigationAnnoncementSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<NavigationAnnoncementSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Annoncement*
+ */
+type NavigationAnnoncementSliceVariation = NavigationAnnoncementSliceDefault;
+
+/**
+ * Annoncement Shared Slice
+ *
+ * - **API ID**: `navigation_annoncement`
+ * - **Description**: NavigationAnnoncement
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type NavigationAnnoncementSlice = prismic.SharedSlice<
+  'navigation_annoncement',
+  NavigationAnnoncementSliceVariation
+>;
 
 /**
  * Item in *ProductGrid → Default → Primary → Products*
@@ -604,12 +828,26 @@ declare module '@prismicio/client' {
       HomepageDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,
+      MenuDocument,
+      MenuDocumentData,
+      MenuDocumentDataPrimaryLinksItem,
+      MenuDocumentDataSecondaryLinksItem,
+      NavigationDocument,
+      NavigationDocumentData,
+      NavigationDocumentDataSlicesSlice,
       ProductsDocument,
       ProductsDocumentData,
       ProductsDocumentDataSlicesSlice,
       SettingsDocument,
       SettingsDocumentData,
       AllDocumentTypes,
+      NavigationSlice,
+      NavigationSliceVariation,
+      NavigationSliceDefault,
+      NavigationAnnoncementSlice,
+      NavigationAnnoncementSliceDefaultPrimary,
+      NavigationAnnoncementSliceVariation,
+      NavigationAnnoncementSliceDefault,
       ProductGridSlice,
       ProductGridSliceDefaultPrimaryProductsItem,
       ProductGridSliceDefaultPrimary,
