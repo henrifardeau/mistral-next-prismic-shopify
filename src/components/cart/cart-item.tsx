@@ -11,7 +11,7 @@ import {
 
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { cn } from '@/lib/cn';
-import { shopify } from '@/lib/shopify';
+import { formatPrice } from '@/lib/shopify/utils';
 import { toNumber } from '@/lib/utils';
 import { CartLine } from '@/types/cart';
 
@@ -212,7 +212,7 @@ const CartItemPrice = () => {
 
   const totalPrice = useCallback(() => {
     try {
-      return shopify.formatPrice(
+      return formatPrice(
         line.variant.price.amount,
         line.variant.price.currencyCode,
         line.quantity,

@@ -2,7 +2,7 @@
 
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
-import { removeCartLines, updateCartLines } from '@/lib/shopify';
+import { removeCartLines, updateCartLines } from '@/lib/shopify/actions';
 
 import {
   CartCheckout,

@@ -1,4 +1,4 @@
-import { RawProduct } from '@/lib/shopify';
+import { RawProduct } from '@/lib/shopify/types';
 import { CurrencyCode } from '@/lib/shopify/gql/graphql';
 
 export const SIMULATOR_PRODUCT: RawProduct = {

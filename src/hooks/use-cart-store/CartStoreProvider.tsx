@@ -8,7 +8,7 @@ import {
   useOptimistic,
 } from 'react';
 
-import { shopify } from '@/lib/shopify';
+import { formatPrice } from '@/lib/shopify/utils';
 import { toNumber } from '@/lib/utils';
 import {
   Cart,
@@ -83,7 +83,7 @@ export function CartStoreProvider({
       0,
     );
 
-    const cartSubTotal = shopify.formatPrice(
+    const cartSubTotal = formatPrice(
       (optimisticCart?.lines || []).reduce((acc, cur) => {
         return acc + toNumber(cur.variant.price.amount) * cur.quantity;
       }, 0),

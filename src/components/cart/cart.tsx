@@ -4,7 +4,7 @@ import { PropsWithChildren, useCallback } from 'react';
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
 import { cn } from '@/lib/cn';
-import { redirectToCheckout } from '@/lib/shopify';
+import { redirectToCheckout } from '@/lib/shopify/actions';
 
 export const CartHeader = ({
   className,

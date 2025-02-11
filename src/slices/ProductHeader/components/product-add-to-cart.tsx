@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { QuantityInput } from '@/components/quantity-input';
 import { useCartStore } from '@/hooks/use-cart-store';
 import { useProduct } from '@/hooks/use-product';
-import { addCartLines, shopify } from '@/lib/shopify';
+import { addCartLines } from '@/lib/shopify/actions';
+import { formatPrice } from '@/lib/shopify/utils';
 
 export function ProductAddToCart() {
   const { addCartLine } = useCartStore();
@@ -27,11 +28,14 @@ export function ProductAddToCart() {
         quantity={quantity}
         updateQuantity={(quantity: number) => setQuantity(quantity)}
       />
-      <button className="w-full cursor-pointer space-x-2 bg-black px-3 py-3 font-medium text-white transition-colors hover:bg-neutral-700 focus:bg-neutral-700">
+      <button
+        type="submit"
+        className="w-full cursor-pointer space-x-2 bg-black px-3 py-3 font-medium text-white transition-colors hover:bg-neutral-700 focus:bg-neutral-700"
+      >
         <span>Add to cart</span>
         <span>-</span>
         <span>
-          {shopify.formatPrice(
+          {formatPrice(
             variant.price.amount,
             variant.price.currencyCode,
             quantity,

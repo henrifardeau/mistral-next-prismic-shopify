@@ -18,6 +18,7 @@ export function QuantityInput({
   return (
     <div className="flex items-center border p-1">
       <button
+        type="button"
         aria-label="Decrement"
         onClick={() => handleInputChange(quantity - 1)}
         disabled={quantity <= 1}
@@ -33,6 +34,7 @@ export function QuantityInput({
         className="mx-1 w-8 [appearance:textfield] text-center text-lg font-medium focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
       <button
+        type="button"
         aria-label="Increment"
         onClick={() => handleInputChange(quantity + 1)}
         disabled={quantity >= 99}

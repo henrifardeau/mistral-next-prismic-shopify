@@ -8,7 +8,7 @@ import { CartDrawer } from '@/components/cart-drawer';
 import { Footer, Main, Navigation } from '@/components/layout';
 import { CartStoreProvider } from '@/hooks/use-cart-store';
 import { prismic, repositoryName } from '@/lib/prismic';
-import { getCart } from '@/lib/shopify';
+import { getCart } from '@/lib/shopify/actions';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
 
