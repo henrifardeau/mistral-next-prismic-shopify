@@ -4,15 +4,15 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 loadEnvConfig(process.cwd());
 
 const URL = () => {
-  const domain = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN!;
-  const apiVersion = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION!;
+  const domain = process.env.SHOPIFY_STOREFRONT_DOMAIN!;
+  const apiVersion = process.env.SHOPIFY_STOREFRONT_API_VERSION!;
 
   return domain.startsWith('https://')
     ? domain + `/api/${apiVersion}/graphql`
     : 'https://' + domain + `/api/${apiVersion}/graphql`;
 };
 
-const TOKEN = () => process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!;
+const TOKEN = () => process.env.SHOPIFY_STOREFRONT_API_TOKEN!;
 
 const config: CodegenConfig = {
   overwrite: true,
