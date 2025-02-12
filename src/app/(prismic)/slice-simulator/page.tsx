@@ -21,7 +21,7 @@ export default async function SliceSimulatorPage({
   const slices = getSlices(state);
 
   const shopifyProduct = process.env.PRISMIC_MOCK_PRODUCT
-    ? await shopify.getLongProductByHandle(process.env.PRISMIC_MOCK_PRODUCT)
+    ? await shopify.getProductByHandle(process.env.PRISMIC_MOCK_PRODUCT)
     : SIMULATOR_PRODUCT;
 
   const product = shopify.reshapeProduct(shopifyProduct);

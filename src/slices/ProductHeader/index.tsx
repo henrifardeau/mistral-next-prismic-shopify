@@ -1,28 +1,16 @@
 import { FC } from 'react';
 
 import { PrismicCarousel } from '@/components/prismic-carousel';
-import { shopify } from '@/lib/shopify';
-import {
-  Content,
-  FilledImageFieldImage,
-  ImageField,
-  isFilled,
-  KeyTextField,
-} from '@prismicio/client';
+import { ProductVariantImages } from '@/components/product';
+import { flatProductImages, flatVariantsImages } from '@/lib/prismic';
+import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 
 import {
   ProductAddToCart,
   ProductAddToCartStick,
   ProductOptionPicker,
-  ProductVariantImages,
 } from './components';
-
-type ProductImages = { thumbnail: ImageField }[];
-type VariantsImages = {
-  shopify_variant_ids: KeyTextField;
-  thumbnail: ImageField;
-}[];
 
 /**
  * Props for `ProductHeader`.
@@ -31,38 +19,6 @@ export type ProductHeaderProps = SliceComponentProps<
   Content.ProductHeaderSlice,
   { simulator?: boolean }
 >;
-
-function flatProductImages(images: ProductImages) {
-  return (images || []).reduce((acc, cur) => {
-    if (!isFilled.image(cur.thumbnail)) {
-      return acc;
-    }
-    acc.push(cur.thumbnail);
-
-    return acc;
-  }, [] as FilledImageFieldImage[]);
-}
-
-function flatVariantsImages(variantsImages: VariantsImages) {
-  return (variantsImages || []).reduce(
-    (acc, cur) => {
-      if (!isFilled.keyText(cur.shopify_variant_ids)) {
-        return acc;
-      }
-
-      cur.shopify_variant_ids.split('_').forEach((id) => {
-        const variantId = shopify.addPrefix('variant', id);
-
-        if (isFilled.image(cur.thumbnail)) {
-          (acc[variantId] ||= []).push(cur.thumbnail);
-        }
-      });
-
-      return acc;
-    },
-    {} as Record<string, FilledImageFieldImage[]>,
-  );
-}
 
 /**
  * Component for "ProductHeader" Slices.
@@ -86,10 +42,16 @@ const ProductHeader: FC<ProductHeaderProps> = ({ slice, context }) => {
       >
         <div
           className="sticky top-6 grid grid-cols-2 gap-6"
-          style={{ height: context?.simulator ? '768px' : 'auto' }}
+          style={{
+            height: context?.simulator ? '768px' : 'calc(100vh - 3rem)',
+          }}
         >
-          <PrismicCarousel images={productImages} />
-          <ProductVariantImages imagesMap={variantsImages} />
+          <div className="h-full w-full overflow-hidden rounded-xl">
+            <PrismicCarousel images={productImages} />
+          </div>
+          <div className="h-full w-full overflow-hidden rounded-xl">
+            <ProductVariantImages variantsImages={variantsImages} />
+          </div>
         </div>
         <aside className="w-full max-w-[348px] shrink-0 space-y-6">
           <ProductOptionPicker />

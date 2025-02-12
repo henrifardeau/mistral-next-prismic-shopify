@@ -7,15 +7,17 @@ import { useProduct } from '@/hooks/use-product';
 import { FilledImageFieldImage } from '@prismicio/client';
 
 export function ProductVariantImages({
-  imagesMap,
+  variantsImages,
+  productImages,
 }: {
-  imagesMap: Record<string, FilledImageFieldImage[]>;
+  variantsImages: Record<string, FilledImageFieldImage[]>;
+  productImages?: FilledImageFieldImage[];
 }) {
   const variant = useProduct((state) => state.currentVariant);
 
   const images = useMemo(() => {
-    return imagesMap[variant.id] || [];
-  }, [variant.id, imagesMap]);
+    return (variantsImages[variant.id] || []).concat(productImages || []);
+  }, [variant.id, variantsImages, productImages]);
 
   return <PrismicCarousel images={images} />;
 }

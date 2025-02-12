@@ -10,16 +10,11 @@ export function PrismicCarousel({
 }) {
   if (images.length <= 1) {
     return (
-      <div className="grid gap-4">
-        {images.map((image, index) => (
-          <PrismicNextImage
-            key={index}
-            field={image}
-            fallbackAlt=""
-            className="h-[calc(100vh-3rem)] rounded-xl object-cover select-none"
-          />
-        ))}
-      </div>
+      <PrismicNextImage
+        field={images[0]}
+        fallbackAlt=""
+        className="h-full object-cover select-none"
+      />
     );
   }
 
@@ -31,7 +26,7 @@ export function PrismicCarousel({
             <PrismicNextImage
               field={image}
               fallbackAlt=""
-              className="h-[calc(100vh-3rem)] object-cover select-none"
+              className="h-full object-cover select-none"
             />
           </CarouselItem>
         ))}

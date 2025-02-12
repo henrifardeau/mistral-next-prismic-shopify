@@ -19,4 +19,8 @@
     font-size: 100%;
     @apply antialiased;
   }
+
+  body {
+    @apply bg-[#f2f2f2];
+  }
 }

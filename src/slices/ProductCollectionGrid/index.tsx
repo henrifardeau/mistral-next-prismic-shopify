@@ -110,8 +110,8 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
         <SwitchGridItem
           items={items}
           components={{
-            products: ({ data }) => <ProductGridItem product={data} />,
-            collections: ({ data }) => <CollectionGridItem collection={data} />,
+            products: ({ data }) => <ProductGridItem item={data} />,
+            collections: ({ data }) => <CollectionGridItem item={data} />,
           }}
         />
       </div>
