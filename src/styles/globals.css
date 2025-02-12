@@ -4,9 +4,13 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 
-  &::-webkit-scrollbar: {
+  &::-webkit-scrollbar {
     display: none;
   }
+}
+
+@utility container {
+  @apply mx-auto max-w-[96rem] px-4;
 }
 
 @layer base {
