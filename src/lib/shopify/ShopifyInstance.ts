@@ -6,11 +6,7 @@ import {
   removeCartLineMutation,
   updateCartLineMutation,
 } from './mutations';
-import {
-  getCartQuery,
-  longProductByHandleQuery,
-  shortProductByHandleQuery,
-} from './queries';
+import { getCartQuery, productByHandleQuery } from './queries';
 import { Shopify } from './Shopify';
 import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
 
@@ -68,22 +64,12 @@ export class ShopifyInstance extends Shopify {
     return this.client(next, cache).request(getCartQuery, { id });
   }
 
-  public async getShortProductByHandle(
+  public async getProductByHandle(
     handle: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ) {
-    return this.client(next, cache).request(shortProductByHandleQuery, {
-      handle,
-    });
-  }
-
-  public async getLongProductByHandle(
-    handle: string,
-    next?: NextFetchRequestConfig,
-    cache?: RequestCache,
-  ) {
-    return this.client(next, cache).request(longProductByHandleQuery, {
+    return this.client(next, cache).request(productByHandleQuery, {
       handle,
     });
   }

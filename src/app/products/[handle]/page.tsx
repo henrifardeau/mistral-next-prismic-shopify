@@ -50,7 +50,7 @@ export default async function Page({
 
   const [page, shopifyProduct] = await Promise.all([
     prismic.getByUID('products', handle),
-    shopify.getLongProductByHandle(handle),
+    shopify.getProductByHandle(handle),
   ]);
 
   if (!shopifyProduct.product) {

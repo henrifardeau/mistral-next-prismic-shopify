@@ -40,18 +40,8 @@ export const getCartQuery = graphql(`
   }
 `);
 
-export const shortProductByHandleQuery = graphql(`
-  query ShortProductById($handle: String!) {
-    product(handle: $handle) {
-      id
-      handle
-      title
-    }
-  }
-`);
-
-export const longProductByHandleQuery = graphql(`
-  query LongProductByHandle($handle: String!) {
+export const productByHandleQuery = graphql(`
+  query productByHandle($handle: String!) {
     product(handle: $handle) {
       id
       handle

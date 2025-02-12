@@ -1,10 +1,10 @@
 import {
   CreateCartMutation,
   GetCartQuery,
-  LongProductByHandleQuery,
+  ProductByHandleQuery,
 } from './gql/graphql';
 
-export type RawProduct = LongProductByHandleQuery;
+export type RawProduct = ProductByHandleQuery;
 
 export type AddCartLine = {
   variantId: string;
