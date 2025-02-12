@@ -4,7 +4,7 @@ import type * as prismic from '@prismicio/client';
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type CollectionsDocumentDataSlicesSlice = ProductGridSlice;
+type CollectionsDocumentDataSlicesSlice = never;
 
 /**
  * Content for Collections documents
@@ -539,78 +539,6 @@ export type NavigationAnnoncementSlice = prismic.SharedSlice<
 >;
 
 /**
- * Item in *ProductGrid → Default → Primary → Products*
- */
-export interface ProductGridSliceDefaultPrimaryProductsItem {
-  /**
-   * Product field in *ProductGrid → Default → Primary → Products*
-   *
-   * - **Field Type**: Content Relationship
-   * - **Placeholder**: *None*
-   * - **API ID Path**: product_grid.default.primary.products[].product
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  product: prismic.ContentRelationshipField<'products'>;
-}
-
-/**
- * Primary content in *ProductGrid → Default → Primary*
- */
-export interface ProductGridSliceDefaultPrimary {
-  /**
-   * Page Size field in *ProductGrid → Default → Primary*
-   *
-   * - **Field Type**: Number
-   * - **Placeholder**: *None*
-   * - **API ID Path**: product_grid.default.primary.page_size
-   * - **Documentation**: https://prismic.io/docs/field#number
-   */
-  page_size: prismic.NumberField;
-
-  /**
-   * Products field in *ProductGrid → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: product_grid.default.primary.products[]
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  products: prismic.GroupField<
-    Simplify<ProductGridSliceDefaultPrimaryProductsItem>
-  >;
-}
-
-/**
- * Default variation for ProductGrid Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type ProductGridSliceDefault = prismic.SharedSliceVariation<
-  'default',
-  Simplify<ProductGridSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *ProductGrid*
- */
-type ProductGridSliceVariation = ProductGridSliceDefault;
-
-/**
- * ProductGrid Shared Slice
- *
- * - **API ID**: `product_grid`
- * - **Description**: ProductGrid
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type ProductGridSlice = prismic.SharedSlice<
-  'product_grid',
-  ProductGridSliceVariation
->;
-
-/**
  * Item in *ProductHeader → Default → Primary → Thumbnails*
  */
 export interface ProductHeaderSliceDefaultPrimaryThumbnailsItem {
@@ -848,11 +776,6 @@ declare module '@prismicio/client' {
       NavigationAnnoncementSliceDefaultPrimary,
       NavigationAnnoncementSliceVariation,
       NavigationAnnoncementSliceDefault,
-      ProductGridSlice,
-      ProductGridSliceDefaultPrimaryProductsItem,
-      ProductGridSliceDefaultPrimary,
-      ProductGridSliceVariation,
-      ProductGridSliceDefault,
       ProductHeaderSlice,
       ProductHeaderSliceDefaultPrimaryThumbnailsItem,
       ProductHeaderSliceDefaultPrimaryVariantThumbnailsItem,
