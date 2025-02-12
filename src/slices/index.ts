@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 export const components = {
   navigation: dynamic(() => import('./Navigation')),
   navigation_annoncement: dynamic(() => import('./Annoncement')),
+  product_collection_grid: dynamic(() => import('./ProductCollectionGrid')),
   product_header: dynamic(() => import('./ProductHeader')),
   product_hightlight: dynamic(() => import('./ProductHightlight')),
 };

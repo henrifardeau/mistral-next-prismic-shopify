@@ -1,0 +1,47 @@
+{
+  "id": "product_collection_grid",
+  "type": "SharedSlice",
+  "name": "ProductCollectionGrid",
+  "description": "ProductCollectionGrid",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "page_size": {
+          "type": "Number",
+          "config": {
+            "label": "Page Size",
+            "placeholder": ""
+          }
+        },
+        "items": {
+          "type": "Group",
+          "config": {
+            "label": "Items",
+            "repeat": true,
+            "fields": {
+              "item": {
+                "type": "Link",
+                "config": {
+                  "label": "Item",
+                  "select": "document",
+                  "repeat": false,
+                  "customtypes": [
+                    "collections",
+                    "products"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

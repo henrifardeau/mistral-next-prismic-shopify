@@ -23,7 +23,11 @@
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
-          "choices": {}
+          "choices": {
+            "product_collection_grid": {
+              "type": "SharedSlice"
+            }
+          }
         }
       }
     },
