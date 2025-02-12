@@ -90,7 +90,6 @@ function mergeItemRefs(
 const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
   slice,
 }) => {
-  // console.log(slice.primary.items);
   const rawItems = filterItems(slice.primary.items);
   const itemIds = getItemIds(rawItems);
 
