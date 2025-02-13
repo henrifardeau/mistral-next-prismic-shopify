@@ -1,6 +1,9 @@
 import Link from 'next/link';
 
-import { ProductVariantImages } from '@/components/product';
+import {
+  ProductColorSwatchOptionPicker,
+  ProductVariantImages,
+} from '@/components/product';
 import {
   getInitialOptions,
   getInitialVariant,
@@ -10,8 +13,6 @@ import {
 import { flatProductImages, flatVariantsImages } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { Content, isFilled } from '@prismicio/client';
-
-import { ProductColorPicker } from './product-color-picker';
 
 function getProductSlice(product: Content.ProductsDocument) {
   return product.data.slices.find((s) => s.slice_type === 'product_header');
@@ -70,7 +71,7 @@ export async function ProductGridItem({
           <h2 className="overflow-hidden text-xl font-semibold text-ellipsis whitespace-nowrap">
             {item.data.title}
           </h2>
-          <ProductColorPicker />
+          <ProductColorSwatchOptionPicker />
         </div>
       </article>
     </ProductProvider>

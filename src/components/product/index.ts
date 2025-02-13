@@ -1,2 +1,2 @@
-export * from './product-option-group';
+export * from './options';
 export * from './product-variant-images';

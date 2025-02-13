@@ -19,11 +19,11 @@ export type ProductOption = {
 };
 
 export type ProductVerifiedOption =
-  | ProductOtherOption
+  | ProductSelectOption
   | ProductSizeOption
   | ProductColorOption;
 
-export type ProductOtherOption = {
+export type ProductSelectOption = {
   type: 'select';
   name: string;
   optionValues: {

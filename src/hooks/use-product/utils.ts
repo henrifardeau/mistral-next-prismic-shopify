@@ -1,8 +1,8 @@
 import { COLOR_TYPE, SIZE_TYPE } from '@/constants/option-types';
 import {
   ProductColorOption,
+  ProductSelectOption,
   ProductOption,
-  ProductOtherOption,
   ProductSizeOption,
   ProductVariant,
   ProductVerifiedOption,
@@ -40,7 +40,7 @@ export function getVerifiedOptions(options: ProductOption[]) {
       type: 'select',
       name: option.name,
       optionValues: option.optionValues.map((value) => ({ name: value.name })),
-    } as ProductOtherOption;
+    } as ProductSelectOption;
   });
 }
 
