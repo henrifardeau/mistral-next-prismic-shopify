@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 
 import { Content } from '@prismicio/client';
 
-import { ProductGridItemSkeleton } from './product-grid-item-skeleton';
+import { ProductItemSkeleton } from './product-item-skeleton';
 
 interface SwitchGridItemProps {
   items: (Content.ProductsDocument | Content.CollectionsDocument)[];
@@ -17,7 +17,7 @@ export function SwitchGridItem({ items, components }: SwitchGridItemProps) {
     switch (item.type) {
       case 'products': {
         return (
-          <Suspense fallback={<ProductGridItemSkeleton />}>
+          <Suspense fallback={<ProductItemSkeleton />}>
             <components.products key={index} data={item} />
           </Suspense>
         );

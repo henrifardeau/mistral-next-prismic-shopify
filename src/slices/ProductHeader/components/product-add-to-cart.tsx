@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 
+import { Price } from '@/components/price';
 import { QuantityInput } from '@/components/quantity-input';
 import { useCartStore } from '@/hooks/use-cart-store';
 import { useProduct } from '@/hooks/use-product';
 import { addCartLines } from '@/lib/shopify/actions';
-import { formatPrice } from '@/lib/shopify/utils';
 
 export function ProductAddToCart() {
   const { addCartLine } = useCartStore();
@@ -34,13 +34,11 @@ export function ProductAddToCart() {
       >
         <span>Add to cart</span>
         <span>-</span>
-        <span>
-          {formatPrice(
-            variant.price.amount,
-            variant.price.currencyCode,
-            quantity,
-          )}
-        </span>
+        <Price
+          amount={variant.price.amount}
+          currencyCode={variant.price.currencyCode}
+          quantity={quantity}
+        />
       </button>
     </form>
   );

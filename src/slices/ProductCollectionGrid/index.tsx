@@ -10,11 +10,7 @@ import {
 import { SliceComponentProps } from '@prismicio/react';
 
 import { Simplify } from '../../../prismicio-types';
-import {
-  CollectionGridItem,
-  ProductGridItem,
-  SwitchGridItem,
-} from './components';
+import { CollectionItem, ProductItem, SwitchGridItem } from './components';
 
 /**
  * Props for `ProductCollectionGrid`.
@@ -110,8 +106,8 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
         <SwitchGridItem
           items={items}
           components={{
-            products: ({ data }) => <ProductGridItem item={data} />,
-            collections: ({ data }) => <CollectionGridItem item={data} />,
+            products: ({ data }) => <ProductItem item={data} />,
+            collections: ({ data }) => <CollectionItem item={data} />,
           }}
         />
       </div>

@@ -13,12 +13,13 @@ import {
 import { flatProductImages, flatVariantsImages } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { Content, isFilled } from '@prismicio/client';
+import { ProductPrice } from '@/components/product/product-price';
 
 function getProductSlice(product: Content.ProductsDocument) {
   return product.data.slices.find((s) => s.slice_type === 'product_header');
 }
 
-export async function ProductGridItem({
+export async function ProductItem({
   item,
 }: {
   item: Content.ProductsDocument;
@@ -72,6 +73,7 @@ export async function ProductGridItem({
             {item.data.title}
           </h2>
           <ProductColorSwatchOptionPicker />
+          <ProductPrice />
         </div>
       </article>
     </ProductProvider>

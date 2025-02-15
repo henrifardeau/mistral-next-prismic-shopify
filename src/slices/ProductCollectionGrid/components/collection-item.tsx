@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Content } from '@prismicio/client';
 
-export async function CollectionGridItem({
+export async function CollectionItem({
   item,
 }: {
   item: Content.CollectionsDocument;
