@@ -9,7 +9,6 @@ import {
   useTransition,
 } from 'react';
 
-import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { cn } from '@/lib/cn';
 import { formatPrice } from '@/lib/shopify/utils';
 import { toNumber } from '@/lib/utils';
@@ -28,6 +27,7 @@ interface CartItemContextProps {
   line: CartLine;
   updateAction: (newQuantity: number) => Promise<void>;
   removeAction: () => Promise<void>;
+  closeCart: () => void;
 }
 
 const CartItemContext = createContext<CartItemContextProps | undefined>(
@@ -48,14 +48,16 @@ export const CartItem = ({
   line,
   updateAction,
   removeAction,
+  closeCart,
 }: CartItemContextProps) => {
   const value = useMemo(() => {
     return {
       line,
       updateAction,
       removeAction,
+      closeCart,
     };
-  }, [line, updateAction, removeAction]);
+  }, [line, updateAction, removeAction, closeCart]);
 
   return (
     <CartItemContext.Provider value={value}>
@@ -86,8 +88,7 @@ export const CartItem = ({
 CartItem.displayName = 'CartItem';
 
 const CartItemThumbnail = () => {
-  const closeCart = useCartDrawer((state) => state.closeCart);
-  const { line } = useCartItem();
+  const { line, closeCart } = useCartItem();
 
   return (
     <Link
@@ -115,8 +116,7 @@ const CartItemHeader = ({
 CartItemHeader.displayName = 'CartItemHeader';
 
 const CartItemTitle = () => {
-  const closeCart = useCartDrawer((state) => state.closeCart);
-  const { line } = useCartItem();
+  const { line, closeCart } = useCartItem();
 
   return (
     <Link

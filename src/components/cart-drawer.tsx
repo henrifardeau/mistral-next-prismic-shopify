@@ -1,8 +1,14 @@
 'use client';
 
+import { useCallback } from 'react';
+
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
-import { removeCartLines, updateCartLines } from '@/lib/shopify/actions';
+import {
+  redirectToCheckout,
+  removeCartLines,
+  updateCartLines,
+} from '@/lib/shopify/actions';
 
 import {
   CartCheckout,
@@ -27,8 +33,19 @@ import {
 export function CartDrawer() {
   const cartOpen = useCartDrawer((state) => state.cartOpen);
   const setCartOpen = useCartDrawer((state) => state.setCartOpen);
+  const closeCart = useCartDrawer((state) => state.closeCart);
 
-  const { optimisticCart, updateCartLine, removeCartLine } = useCartStore();
+  const {
+    optimisticCart,
+    cartLength,
+    cartSubTotal,
+    updateCartLine,
+    removeCartLine,
+  } = useCartStore();
+
+  const disableCheckout = useCallback(() => {
+    return !optimisticCart?.lines.length || optimisticCart.state !== 'idle';
+  }, [optimisticCart?.lines.length, optimisticCart?.state]);
 
   return (
     <Drawer open={cartOpen} onOpenChange={setCartOpen}>
@@ -37,9 +54,9 @@ export function CartDrawer() {
           <CartHeader>
             <DrawerTitle className="text-4xl">Cart</DrawerTitle>
             <DrawerDescription>
-              <CartLength />
+              <CartLength>{cartLength} items</CartLength>
             </DrawerDescription>
-            <CartClose />
+            <CartClose onClick={closeCart} />
           </CartHeader>
         </DrawerHeader>
 
@@ -59,6 +76,7 @@ export function CartDrawer() {
                       removeCartLine({ lineId: line.id });
                       await removeCartLines([{ lineId: line.id }]);
                     }}
+                    closeCart={closeCart}
                   />
                 ))}
               </CartList>
@@ -71,8 +89,13 @@ export function CartDrawer() {
         </DrawerBody>
 
         <DrawerFooter>
-          <CartSummary>
-            <CartCheckout />
+          <CartSummary subTotal={cartSubTotal}>
+            <CartCheckout
+              action={redirectToCheckout}
+              disabled={disableCheckout()}
+            >
+              Continue to Checkout
+            </CartCheckout>
           </CartSummary>
         </DrawerFooter>
       </DrawerContent>
