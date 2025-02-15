@@ -22,32 +22,54 @@ export function ProductOptionsPickers() {
   const switchComponents: SwitchComponents = useMemo(() => {
     return {
       color: ({ option, value, onValueChange }) => (
-        <ProductColorSwatchPicker
-          option={option}
-          value={value}
-          onValueChange={onValueChange}
-        />
+        <div className="space-y-2">
+          <div className="flex space-x-2 text-sm">
+            <span>{option.name} :</span>
+            <span>{value}</span>
+          </div>
+          <ProductColorSwatchPicker
+            option={option}
+            value={value}
+            onValueChange={onValueChange}
+          />
+        </div>
       ),
       image: ({ option, value, onValueChange }) => (
-        <ProductImagePicker
-          option={option}
-          value={value}
-          onValueChange={onValueChange}
-        />
+        <div className="space-y-2">
+          <div className="flex space-x-2 text-sm">
+            <span>{option.name} :</span>
+            <span>{value}</span>
+          </div>
+          <ProductImagePicker
+            option={option}
+            value={value}
+            onValueChange={onValueChange}
+          />
+        </div>
       ),
       size: ({ option, value, onValueChange }) => (
-        <ProductSizePicker
-          option={option}
-          value={value}
-          onValueChange={onValueChange}
-        />
+        <div className="space-y-2">
+          <div className="flex text-sm">
+            <span>{option.name} :</span>
+          </div>
+          <ProductSizePicker
+            option={option}
+            value={value}
+            onValueChange={onValueChange}
+          />
+        </div>
       ),
       select: ({ option, value, onValueChange }) => (
-        <ProductSelectPicker
-          option={option}
-          value={value}
-          onValueChange={onValueChange}
-        />
+        <div className="space-y-2">
+          <div className="flex text-sm">
+            <span>{option.name} :</span>
+          </div>
+          <ProductSelectPicker
+            option={option}
+            value={value}
+            onValueChange={onValueChange}
+          />
+        </div>
       ),
     };
   }, []);
