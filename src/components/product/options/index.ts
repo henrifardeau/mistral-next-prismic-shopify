@@ -2,6 +2,8 @@ export * from './product-color-select-option-picker';
 export * from './product-color-select-picker';
 export * from './product-color-swatch-option-picker';
 export * from './product-color-swatch-picker';
+export * from './product-image-option-picker';
+export * from './product-image-picker';
 export * from './product-select-option-picker';
 export * from './product-select-picker';
 export * from './product-size-option-picker';

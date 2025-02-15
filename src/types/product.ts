@@ -21,6 +21,7 @@ export type ProductOption = {
 export type ProductVerifiedOption =
   | ProductSelectOption
   | ProductSizeOption
+  | ProductImageOption
   | ProductColorOption;
 
 export type ProductSelectOption = {
@@ -36,6 +37,18 @@ export type ProductSizeOption = {
   name: string;
   optionValues: {
     name: string;
+  }[];
+};
+
+export type ProductImageOption = {
+  type: 'image';
+  name: string;
+  optionValues: {
+    name: string;
+    image: {
+      src: string;
+      alt?: string;
+    };
   }[];
 };
 

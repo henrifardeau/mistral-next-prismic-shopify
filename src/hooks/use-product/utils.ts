@@ -1,20 +1,34 @@
-import { COLOR_TYPE, SIZE_TYPE } from '@/constants/option-types';
+import { IMAGES_OPTIONS } from '@/constants/option-images';
+import { COLOR_TYPE, IMAGE_TYPE, SIZE_TYPE } from '@/constants/option-types';
 import {
   ProductColorOption,
-  ProductSelectOption,
+  ProductImageOption,
   ProductOption,
+  ProductSelectOption,
   ProductSizeOption,
   ProductVariant,
   ProductVerifiedOption,
 } from '@/types/product';
 
+function hasSwatchForEveryOption(option: ProductOption) {
+  return option.optionValues.every(
+    (value) => value.swatch && typeof value.swatch.color === 'string',
+  );
+}
+
+function hasImageForEveryOption(option: ProductOption) {
+  const imageNames = Object.keys(IMAGES_OPTIONS);
+
+  return option.optionValues.every((optionValue) =>
+    imageNames.includes(optionValue.name),
+  );
+}
+
 export function getVerifiedOptions(options: ProductOption[]) {
   return options.map((option) => {
     if (
       COLOR_TYPE.includes(option.name.toLowerCase()) &&
-      option.optionValues.every(
-        (value) => value.swatch && typeof value.swatch.color === 'string',
-      )
+      hasSwatchForEveryOption(option)
     ) {
       return {
         type: 'color',
@@ -24,6 +38,23 @@ export function getVerifiedOptions(options: ProductOption[]) {
           swatch: { color: value.swatch!.color },
         })),
       } as ProductColorOption;
+    }
+
+    if (
+      IMAGE_TYPE.includes(option.name.toLowerCase()) &&
+      hasImageForEveryOption(option)
+    ) {
+      return {
+        type: 'image',
+        name: option.name,
+        optionValues: option.optionValues.map((value) => ({
+          name: value.name,
+          image: {
+            src: IMAGES_OPTIONS[value.name].src,
+            alt: IMAGES_OPTIONS[value.name].alt,
+          },
+        })),
+      } as ProductImageOption;
     }
 
     if (SIZE_TYPE.includes(option.name.toLowerCase())) {

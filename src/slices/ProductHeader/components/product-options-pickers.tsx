@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 
 import {
   ProductColorSwatchPicker,
+  ProductImagePicker,
   ProductSelectPicker,
   ProductSizePicker,
   ProductSwitchOptionPicker,
@@ -22,6 +23,13 @@ export function ProductOptionsPickers() {
     return {
       color: ({ option, value, onValueChange }) => (
         <ProductColorSwatchPicker
+          option={option}
+          value={value}
+          onValueChange={onValueChange}
+        />
+      ),
+      image: ({ option, value, onValueChange }) => (
+        <ProductImagePicker
           option={option}
           value={value}
           onValueChange={onValueChange}
