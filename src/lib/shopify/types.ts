@@ -4,6 +4,8 @@ import {
   ProductByHandleQuery,
 } from './gql/graphql';
 
+export type RawCart = GetCartQuery | CreateCartMutation['cartCreate'];
+
 export type RawProduct = ProductByHandleQuery;
 
 export type AddCartLine = {
@@ -19,5 +21,3 @@ export type UpdateCartLine = {
 export type RemoveCartLine = {
   lineId: string;
 };
-
-export type RawCart = GetCartQuery | CreateCartMutation['cartCreate'];

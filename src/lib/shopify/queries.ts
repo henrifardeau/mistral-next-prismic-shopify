@@ -41,7 +41,7 @@ export const getCartQuery = graphql(`
 `);
 
 export const productByHandleQuery = graphql(`
-  query productByHandle($handle: String!) {
+  query ProductByHandle($handle: String!) {
     product(handle: $handle) {
       id
       handle

@@ -35,10 +35,7 @@ export class ShopifyInstance extends Shopify {
       id: this.addPrefix('line', line.lineId),
     }));
 
-    return this.client().request(updateCartLineMutation, {
-      cartId,
-      lines,
-    });
+    return this.client().request(updateCartLineMutation, { cartId, lines });
   }
 
   public async removeCartLines(cartId: string, cartLineIds: RemoveCartLine[]) {
@@ -48,10 +45,7 @@ export class ShopifyInstance extends Shopify {
       return acc.includes(prefixedCur) ? acc : [...acc, prefixedCur];
     }, [] as string[]);
 
-    return this.client().request(removeCartLineMutation, {
-      cartId,
-      lineIds,
-    });
+    return this.client().request(removeCartLineMutation, { cartId, lineIds });
   }
 
   public async getCart(
@@ -69,8 +63,6 @@ export class ShopifyInstance extends Shopify {
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ) {
-    return this.client(next, cache).request(productByHandleQuery, {
-      handle,
-    });
+    return this.client(next, cache).request(productByHandleQuery, { handle });
   }
 }

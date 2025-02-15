@@ -26,7 +26,7 @@ export function formatPrice(
     currency: currencyCode,
   },
 ): string {
-  const formatter = getLazyFormatter('fr-CA', options);
+  const formatter = getLazyFormatter('fr-FR', options);
   const priceNumber =
     typeof price === 'string' ? toNumber(price) * quantity : price * quantity;
 

@@ -1,6 +1,6 @@
 import { ShopifyInstance } from './ShopifyInstance';
 
-import '@/env';
+import { env } from '@/env';
 
 // const globalForShopify = global as unknown as {
 //   shopify: ShopifyInstance;
@@ -9,15 +9,15 @@ import '@/env';
 // export const shopify =
 //   globalForShopify.shopify ||
 //   new ShopifyInstance(
-//     process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_DOMAIN!,
-//     process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION!,
-//     process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
+//     env.SHOPIFY_STOREFRONT_DOMAIN!,
+//     env.SHOPIFY_STOREFRONT_API_VERSION!,
+//     env.SHOPIFY_STOREFRONT_API_TOKEN!,
 //   );
 
-// if (process.env.NODE_ENV !== 'production') globalForShopify.shopify = shopify;
+// if (env.NODE_ENV !== 'production') globalForShopify.shopify = shopify;
 
 export const shopify = new ShopifyInstance(
-  process.env.SHOPIFY_STOREFRONT_DOMAIN!,
-  process.env.SHOPIFY_STOREFRONT_API_VERSION!,
-  process.env.SHOPIFY_STOREFRONT_API_TOKEN!,
+  env.SHOPIFY_STOREFRONT_DOMAIN!,
+  env.SHOPIFY_STOREFRONT_API_VERSION!,
+  env.SHOPIFY_STOREFRONT_API_TOKEN!,
 );
