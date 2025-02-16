@@ -1,7 +1,7 @@
 import {
   RadioGroup,
   RadioGroupItem,
-  RadioGroupItemColor,
+  RadioGroupItemButtonColor,
 } from '@/components/ui/radio-group';
 import { ProductColorOption } from '@/types/product';
 
@@ -18,12 +18,12 @@ export function ProductColorSwatchPicker({
     <RadioGroup value={value} onValueChange={onValueChange}>
       {option.optionValues.map((optionValue) => (
         <RadioGroupItem key={optionValue.name} value={optionValue.name}>
-          <RadioGroupItemColor
+          <RadioGroupItemButtonColor
             value={optionValue.name}
             color={optionValue.swatch.color}
           >
             {optionValue.name}
-          </RadioGroupItemColor>
+          </RadioGroupItemButtonColor>
         </RadioGroupItem>
       ))}
     </RadioGroup>

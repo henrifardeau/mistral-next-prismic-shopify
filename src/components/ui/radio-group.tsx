@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useId } from 'react';
+import * as React from 'react';
 
 import { cn } from '@/lib/cn';
 
@@ -10,12 +10,12 @@ interface RadioGroupContextProps {
   onValueChange: (value: string) => void;
 }
 
-const RadioGroupContext = createContext<RadioGroupContextProps | undefined>(
-  undefined,
-);
+const RadioGroupContext = React.createContext<
+  RadioGroupContextProps | undefined
+>(undefined);
 
 const useRadioGroup = () => {
-  const context = useContext(RadioGroupContext);
+  const context = React.useContext(RadioGroupContext);
 
   if (context === undefined) {
     throw new Error('useRadioGroup must be used within a RadioGroupProvider');
@@ -29,13 +29,13 @@ interface RadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   onValueChange: (value: string) => void;
 }
 
-export const RadioGroup = ({
+const RadioGroup = ({
   className,
   value,
   onValueChange,
   ...props
 }: RadioGroupProps) => {
-  const id = useId();
+  const id = React.useId();
 
   return (
     <RadioGroupContext.Provider value={{ id, value, onValueChange }}>
@@ -53,11 +53,7 @@ interface RadioGroupItemProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string;
 }
 
-export const RadioGroupItem = ({
-  value,
-  children,
-  ...props
-}: RadioGroupItemProps) => {
+const RadioGroupItem = ({ value, children, ...props }: RadioGroupItemProps) => {
   const radioGroup = useRadioGroup();
 
   return (
@@ -83,7 +79,7 @@ interface RadioGroupItemButtonProps
   value: string;
 }
 
-export const RadioGroupItemButton = ({
+const RadioGroupItemButton = ({
   value,
   className,
   children,
@@ -106,17 +102,18 @@ export const RadioGroupItemButton = ({
 };
 RadioGroupItemButton.displayName = 'RadioGroupItemButton';
 
-interface RadioGroupItemColor extends React.HTMLAttributes<HTMLLabelElement> {
+interface RadioGroupItemButtonColorProps
+  extends React.HTMLAttributes<HTMLLabelElement> {
   value: string;
   color: string;
 }
 
-export const RadioGroupItemColor = ({
+const RadioGroupItemButtonColor = ({
   value,
   color,
   className,
   ...props
-}: RadioGroupItemColor) => {
+}: RadioGroupItemButtonColorProps) => {
   const radioGroup = useRadioGroup();
   return (
     <label
@@ -138,4 +135,11 @@ export const RadioGroupItemColor = ({
     </label>
   );
 };
-RadioGroupItemColor.displayName = 'RadioGroupItemColor';
+RadioGroupItemButtonColor.displayName = 'RadioGroupItemButtonColor';
+
+export {
+  RadioGroup,
+  RadioGroupItem,
+  RadioGroupItemButton,
+  RadioGroupItemButtonColor,
+};
