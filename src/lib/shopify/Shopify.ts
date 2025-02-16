@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
+import { SessionOptions } from 'iron-session';
 
 import { Cart } from '@/types/cart';
 import { Connection } from '@/types/gql';
@@ -23,6 +24,8 @@ export class Shopify {
     private readonly domain: string,
     private readonly apiVersion: string,
     private readonly token: string,
+    private readonly customerCookiePassword: string,
+    private readonly cartCookiePassword: string,
   ) {
     this.storefrontURL = this.domain.startsWith('https://')
       ? this.domain + `/api/${this.apiVersion}/graphql`
@@ -39,16 +42,29 @@ export class Shopify {
     });
   }
 
-  public get cartCookieName() {
-    return 'mistral_shopify_cart';
+  public get customerSessionOptions(): SessionOptions {
+    return {
+      password: this.customerCookiePassword,
+      cookieName: '_psp_customer',
+      cookieOptions: {
+        maxAge: 7 * 24 * 60 * 60, // 7 days,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict' as const,
+      },
+    };
   }
 
-  public get cartCookieOptions() {
+  public get cartSessionOptions(): SessionOptions {
     return {
-      maxAge: 7 * 24 * 60 * 60, // 7 days,
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict' as const,
+      password: this.cartCookiePassword,
+      cookieName: '_psp_cart',
+      cookieOptions: {
+        maxAge: 7 * 24 * 60 * 60, // 7 days,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict' as const,
+      },
     };
   }
 
