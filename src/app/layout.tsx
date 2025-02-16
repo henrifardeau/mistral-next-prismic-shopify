@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 
 import { PropsWithChildren } from 'react';
 
+import { AccountDrawer } from '@/components/account-drawer';
 import { CartDrawer } from '@/components/cart-drawer';
 import { Footer, Main, Navigation } from '@/components/layout';
 import { CartStoreProvider } from '@/hooks/use-cart-store';
@@ -47,6 +48,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
           <Main>{children}</Main>
           <Footer />
 
+          <AccountDrawer />
           <CartDrawer />
         </CartStoreProvider>
 

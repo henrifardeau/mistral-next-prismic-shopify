@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FC } from 'react';
 
+import { AccountButton } from '@/components/account-button';
 import { CartButton } from '@/components/cart-button';
 import { MenuButton } from '@/components/menu-button';
 import { Content } from '@prismicio/client';
@@ -32,7 +33,8 @@ const Navigation: FC<NavigationProps> = ({ slice }) => {
           <div className="flex items-center justify-center justify-self-center">
             <Link href="/">Mistral</Link>
           </div>
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-4">
+            <AccountButton />
             <CartButton />
           </div>
         </div>
