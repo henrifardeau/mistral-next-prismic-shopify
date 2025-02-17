@@ -321,17 +321,6 @@ interface ProductsDocumentData {
   shopify_handle: prismic.KeyTextField;
 
   /**
-   * Shopify Product Id field in *Products*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: products.shopify_product_id
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  shopify_product_id: prismic.KeyTextField;
-
-  /**
    * Title field in *Products*
    *
    * - **Field Type**: Text
@@ -539,24 +528,19 @@ export type NavigationAnnoncementSlice = prismic.SharedSlice<
 >;
 
 /**
- * Item in *ProductCollectionGrid → Default → Primary → Items*
- */
-export interface ProductCollectionGridSliceDefaultPrimaryItemsItem {
-  /**
-   * Item field in *ProductCollectionGrid → Default → Primary → Items*
-   *
-   * - **Field Type**: Content Relationship
-   * - **Placeholder**: *None*
-   * - **API ID Path**: product_collection_grid.default.primary.items[].item
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  item: prismic.ContentRelationshipField<'collections' | 'products'>;
-}
-
-/**
  * Primary content in *ProductCollectionGrid → Default → Primary*
  */
 export interface ProductCollectionGridSliceDefaultPrimary {
+  /**
+   * Shopify Collection Handle field in *ProductCollectionGrid → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: product_collection_grid.default.primary.shopify_collection_handle
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  shopify_collection_handle: prismic.KeyTextField;
+
   /**
    * Page Size field in *ProductCollectionGrid → Default → Primary*
    *
@@ -566,18 +550,6 @@ export interface ProductCollectionGridSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#number
    */
   page_size: prismic.NumberField;
-
-  /**
-   * Items field in *ProductCollectionGrid → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: product_collection_grid.default.primary.items[]
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  items: prismic.GroupField<
-    Simplify<ProductCollectionGridSliceDefaultPrimaryItemsItem>
-  >;
 }
 
 /**
@@ -849,7 +821,6 @@ declare module '@prismicio/client' {
       NavigationAnnoncementSliceVariation,
       NavigationAnnoncementSliceDefault,
       ProductCollectionGridSlice,
-      ProductCollectionGridSliceDefaultPrimaryItemsItem,
       ProductCollectionGridSliceDefaultPrimary,
       ProductCollectionGridSliceVariation,
       ProductCollectionGridSliceDefault,

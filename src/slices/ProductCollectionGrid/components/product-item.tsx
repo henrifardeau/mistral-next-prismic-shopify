@@ -4,6 +4,7 @@ import {
   ProductColorSwatchOptionPicker,
   ProductVariantImages,
 } from '@/components/product';
+import { ProductPrice } from '@/components/product/product-price';
 import {
   getInitialOptions,
   getInitialVariant,
@@ -11,34 +12,23 @@ import {
   ProductProvider,
 } from '@/hooks/use-product';
 import { flatProductImages, flatVariantsImages } from '@/lib/prismic';
-import { shopify } from '@/lib/shopify';
-import { Content, isFilled } from '@prismicio/client';
-import { ProductPrice } from '@/components/product/product-price';
+import { Product } from '@/types/product';
+import { Content } from '@prismicio/client';
 
 function getProductSlice(product: Content.ProductsDocument) {
   return product.data.slices.find((s) => s.slice_type === 'product_header');
 }
 
-export async function ProductItem({
-  item,
+export function ProductItem({
+  document,
+  product,
 }: {
-  item: Content.ProductsDocument;
+  document: Content.ProductsDocument;
+  product: Product;
 }) {
-  const { shopify_handle } = item.data;
-  if (!isFilled.keyText(shopify_handle)) {
-    console.error('Missing Shopify Handle for product', item.id);
-    return null;
-  }
-
-  const productSlice = getProductSlice(item);
+  const productSlice = getProductSlice(document);
   if (!productSlice) {
-    console.error('Missing product header slice for product', item.id);
-    return null;
-  }
-
-  const shopifyProduct = await shopify.getProductByHandle(shopify_handle);
-  if (!shopifyProduct.product) {
-    console.error('Shopify product not found', shopify_handle);
+    console.error('Missing product header slice for product', document.id);
     return null;
   }
 
@@ -46,8 +36,6 @@ export async function ProductItem({
 
   const productImages = flatProductImages(thumbnails);
   const variantsImages = flatVariantsImages(variant_thumbnails);
-
-  const product = shopify.reshapeProduct(shopifyProduct);
 
   const productOptions = getVerifiedOptions(product.options);
   const initialOptions = getInitialOptions(productOptions);
@@ -62,7 +50,10 @@ export async function ProductItem({
       initialVariant={initialVariant}
     >
       <article className="flex h-[29rem] flex-col overflow-hidden rounded-xl bg-white sm:min-w-[19rem] xl:h-[40rem]">
-        <Link href={`/products/${item.uid}`} className="h-0 grow select-none">
+        <Link
+          href={`/products/${document.uid}`}
+          className="h-0 grow select-none"
+        >
           <ProductVariantImages
             variantsImages={variantsImages}
             productImages={productImages}
@@ -70,7 +61,7 @@ export async function ProductItem({
         </Link>
         <div className="shrink-0 space-y-4 p-6">
           <h2 className="overflow-hidden text-xl font-semibold text-ellipsis whitespace-nowrap">
-            {item.data.title}
+            {document.data.title}
           </h2>
           <ProductColorSwatchOptionPicker />
           <ProductPrice />

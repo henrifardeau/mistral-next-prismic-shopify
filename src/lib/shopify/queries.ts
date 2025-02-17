@@ -52,6 +52,59 @@ export const getCartQuery = graphql(`
   }
 `);
 
+export const collectionByHandleQuery = graphql(`
+  query CollectionByHandle($handle: String!, $first: Int!) {
+    collection(handle: $handle) {
+      id
+      products(first: $first) {
+        edges {
+          node {
+            id
+            handle
+            title
+            options {
+              id
+              name
+              optionValues {
+                swatch {
+                  color
+                }
+                name
+                id
+              }
+            }
+            variants(first: 250) {
+              edges {
+                node {
+                  id
+                  title
+                  availableForSale
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
 export const productByHandleQuery = graphql(`
   query ProductByHandle($handle: String!) {
     product(handle: $handle) {

@@ -5,7 +5,7 @@ import { Cart } from '@/types/cart';
 import { Connection } from '@/types/gql';
 import { Product } from '@/types/product';
 
-import { RawCart, RawProduct } from './types';
+import { RawCart, RawCollectionProducts, RawProduct } from './types';
 
 const PREFIXES = Object.freeze({
   cart: 'gid://shopify/Cart/',
@@ -111,12 +111,26 @@ export class Shopify {
     };
   }
 
-  public reshapeProduct(rawProdct: RawProduct): Product {
-    if (!rawProdct.product) {
+  public reshapeCollectionProducts(
+    rawProducts: RawCollectionProducts,
+  ): Product[] {
+    if (!rawProducts.collection?.products) {
+      throw new Error('Reshap empty products forbidden!');
+    }
+
+    const { products } = rawProducts.collection;
+
+    return this.removeEdgesAndNodes(products).map((product) =>
+      this.reshapeProduct({ product }),
+    );
+  }
+
+  public reshapeProduct(rawProduct: RawProduct): Product {
+    if (!rawProduct.product) {
       throw new Error('Reshap empty product forbidden!');
     }
 
-    const { product } = rawProdct;
+    const { product } = rawProduct;
 
     return {
       id: product.id,

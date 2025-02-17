@@ -8,6 +8,7 @@ import {
   updateCartLineMutation,
 } from './mutations';
 import {
+  collectionByHandleQuery,
   getCartQuery,
   getCustomerQuery,
   productByHandleQuery,
@@ -118,6 +119,17 @@ export class ShopifyInstance extends Shopify {
       buyerIdentity: {
         customerAccessToken: customerToken,
       },
+    });
+  }
+
+  public async getCollectionByHandle(
+    handle: string,
+    next?: NextFetchRequestConfig,
+    cache?: RequestCache,
+  ) {
+    return this.client(next, cache).request(collectionByHandleQuery, {
+      handle,
+      first: 20,
     });
   }
 

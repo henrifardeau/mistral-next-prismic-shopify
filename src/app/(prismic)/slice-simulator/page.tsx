@@ -14,37 +14,45 @@ import {
   SliceSimulatorParams,
 } from '@slicemachine/adapter-next/simulator';
 
+function wrapWithProduct(slices: { slice_type: string }[]) {
+  return !!slices.find((s) => s.slice_type === 'product_header');
+}
+
 export default async function SliceSimulatorPage({
   searchParams,
 }: SliceSimulatorParams) {
   const { state } = await searchParams;
   const slices = getSlices(state);
 
-  const shopifyProduct = process.env.PRISMIC_MOCK_PRODUCT
-    ? await shopify.getProductByHandle(process.env.PRISMIC_MOCK_PRODUCT)
-    : SIMULATOR_PRODUCT;
+  if (wrapWithProduct(slices)) {
+    const shopifyProduct = process.env.PRISMIC_MOCK_PRODUCT
+      ? await shopify.getProductByHandle(process.env.PRISMIC_MOCK_PRODUCT)
+      : SIMULATOR_PRODUCT;
 
-  const product = shopify.reshapeProduct(shopifyProduct);
+    const product = shopify.reshapeProduct(shopifyProduct);
 
-  const productOptions = getVerifiedOptions(product.options);
-  const initialOptions = getInitialOptions(productOptions);
-  const initialVariant = getInitialVariant(product.variants, initialOptions);
+    const productOptions = getVerifiedOptions(product.options);
+    const initialOptions = getInitialOptions(productOptions);
+    const initialVariant = getInitialVariant(product.variants, initialOptions);
+
+    return (
+      <SliceSimulator>
+        <ProductProvider
+          product={product}
+          options={productOptions}
+          variants={product.variants}
+          initialOptions={initialOptions}
+          initialVariant={initialVariant}
+        >
+          <SliceZone slices={slices} components={components} />
+        </ProductProvider>
+      </SliceSimulator>
+    );
+  }
 
   return (
     <SliceSimulator>
-      <ProductProvider
-        product={product}
-        options={productOptions}
-        variants={product.variants}
-        initialOptions={initialOptions}
-        initialVariant={initialVariant}
-      >
-        <SliceZone
-          slices={slices}
-          components={components}
-          context={{ simulator: true }}
-        />
-      </ProductProvider>
+      <SliceZone slices={slices} components={components} />
     </SliceSimulator>
   );
 }

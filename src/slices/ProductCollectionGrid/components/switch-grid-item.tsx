@@ -1,29 +1,38 @@
-import { Suspense } from 'react';
-
+import { Product } from '@/types/product';
 import { Content } from '@prismicio/client';
 
-import { ProductItemSkeleton } from './product-item-skeleton';
-
 interface SwitchGridItemProps {
-  items: (Content.ProductsDocument | Content.CollectionsDocument)[];
+  products: Product[];
+  documents: Content.ProductsDocument[];
   components: {
-    products: React.FC<{ data: Content.ProductsDocument }>;
-    collections: React.FC<{ data: Content.CollectionsDocument }>;
+    products: React.FC<{
+      document: Content.ProductsDocument;
+      product: Product;
+    }>;
   };
 }
 
-export function SwitchGridItem({ items, components }: SwitchGridItemProps) {
-  return items.map((item, index) => {
-    switch (item.type) {
+export function SwitchGridItem({
+  products,
+  documents,
+  components,
+}: SwitchGridItemProps) {
+  return documents.map((document, index) => {
+    switch (document.type) {
       case 'products': {
+        const product = products.find((p) => p.handle === document.uid);
+        if (!product) {
+          console.error(`Cannot find product ${document.uid}`);
+          return null;
+        }
+
         return (
-          <Suspense fallback={<ProductItemSkeleton />}>
-            <components.products key={index} data={item} />
-          </Suspense>
+          <components.products
+            key={index}
+            document={document}
+            product={product}
+          />
         );
-      }
-      case 'collections': {
-        return <components.collections key={index} data={item} />;
       }
     }
   });

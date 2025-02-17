@@ -19,13 +19,6 @@
           "placeholder": ""
         }
       },
-      "shopify_product_id": {
-        "type": "Text",
-        "config": {
-          "label": "Shopify Product Id",
-          "placeholder": ""
-        }
-      },
       "title": {
         "type": "Text",
         "config": {

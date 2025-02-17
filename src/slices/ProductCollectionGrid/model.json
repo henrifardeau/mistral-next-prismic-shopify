@@ -12,32 +12,18 @@
       "description": "Default",
       "imageUrl": "",
       "primary": {
+        "shopify_collection_handle": {
+          "type": "Text",
+          "config": {
+            "label": "Shopify Collection Handle",
+            "placeholder": ""
+          }
+        },
         "page_size": {
           "type": "Number",
           "config": {
             "label": "Page Size",
             "placeholder": ""
-          }
-        },
-        "items": {
-          "type": "Group",
-          "config": {
-            "label": "Items",
-            "repeat": true,
-            "fields": {
-              "item": {
-                "type": "Link",
-                "config": {
-                  "label": "Item",
-                  "select": "document",
-                  "repeat": false,
-                  "customtypes": [
-                    "collections",
-                    "products"
-                  ]
-                }
-              }
-            }
           }
         }
       },

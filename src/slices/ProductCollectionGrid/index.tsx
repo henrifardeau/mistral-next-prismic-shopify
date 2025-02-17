@@ -1,16 +1,11 @@
 import { FC } from 'react';
 
 import { prismic } from '@/lib/prismic';
-import {
-  Content,
-  FilledContentRelationshipField,
-  GroupField,
-  isFilled,
-} from '@prismicio/client';
+import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 
-import { Simplify } from '../../../prismicio-types';
-import { CollectionItem, ProductItem, SwitchGridItem } from './components';
+import { ProductItem, SwitchGridItem } from './components';
+import { shopify } from '@/lib/shopify';
 
 /**
  * Props for `ProductCollectionGrid`.
@@ -18,83 +13,28 @@ import { CollectionItem, ProductItem, SwitchGridItem } from './components';
 export type ProductCollectionGridProps =
   SliceComponentProps<Content.ProductCollectionGridSlice>;
 
-function filterItems(
-  items: GroupField<
-    Simplify<Content.ProductCollectionGridSliceDefaultPrimaryItemsItem>
-  >,
-) {
-  const filledItems: FilledContentRelationshipField<
-    'collections' | 'products',
-    string,
-    unknown
-  >[] = [];
-
-  items.forEach((item) => {
-    if (
-      item.item.link_type === 'Document' &&
-      isFilled.contentRelationship(item.item)
-    ) {
-      filledItems.push(item.item);
-    }
-  });
-
-  return filledItems;
-}
-
-function getItemIds(
-  items: FilledContentRelationshipField<
-    'collections' | 'products',
-    string,
-    unknown
-  >[],
-) {
-  return items.reduce(
-    (acc, cur) => {
-      return {
-        ...acc,
-        [cur.type]: [...acc[cur.type], cur.id],
-      };
-    },
-    { collections: [], products: [] } as Record<
-      'collections' | 'products',
-      string[]
-    >,
-  );
-}
-
-function mergeItemRefs(
-  items: FilledContentRelationshipField<
-    'collections' | 'products',
-    string,
-    unknown
-  >[],
-  productRefs: Content.ProductsDocument[],
-  collectionsRef: Content.CollectionsDocument[],
-) {
-  return items
-    .map((item) =>
-      item.type === 'products'
-        ? productRefs.find((ref) => ref.id === item.id)
-        : collectionsRef.find((ref) => ref.id === item.id),
-    )
-    .filter((item) => item !== undefined);
-}
-
 /**
  * Component for "ProductCollectionGrid" Slices.
  */
 const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
   slice,
 }) => {
-  const rawItems = filterItems(slice.primary.items);
-  const itemIds = getItemIds(rawItems);
+  if (!slice.primary.shopify_collection_handle) {
+    return null;
+  }
 
-  const itemsRef = await Promise.all([
-    prismic.getAllByIDs<Content.ProductsDocument>(itemIds.products),
-    prismic.getAllByIDs<Content.CollectionsDocument>(itemIds.collections),
-  ]);
+  const shopifyCollection = await shopify.getCollectionByHandle(
+    slice.primary.shopify_collection_handle,
+  );
+  if (!shopifyCollection.collection?.products) {
+    return null;
+  }
 
-  const items = mergeItemRefs(rawItems, itemsRef[0], itemsRef[1]);
+  const products = shopify.reshapeCollectionProducts(shopifyCollection);
+  const documents = await prismic.getAllByUIDs(
+    'products',
+    products.map((p) => p.handle),
+  );
 
   return (
     <section
@@ -104,10 +44,12 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     >
       <div className="mx-auto grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-4 xl:grid-cols-[repeat(auto-fit,minmax(23rem,1fr))]">
         <SwitchGridItem
-          items={items}
+          products={products}
+          documents={documents}
           components={{
-            products: ({ data }) => <ProductItem item={data} />,
-            collections: ({ data }) => <CollectionItem item={data} />,
+            products: ({ document, product }) => (
+              <ProductItem document={document} product={product} />
+            ),
           }}
         />
       </div>
