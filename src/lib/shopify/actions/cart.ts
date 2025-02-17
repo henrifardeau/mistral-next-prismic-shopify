@@ -10,9 +10,10 @@ import { shopify } from '@/lib/shopify';
 import {
   AddCartLine,
   CartSession,
+  CustomerSession,
   RemoveCartLine,
   UpdateCartLine,
-} from './types';
+} from '../types';
 
 function revalidateCart() {
   revalidateTag('getCart');
@@ -39,12 +40,20 @@ export async function getCart() {
 }
 
 export async function createCart(lines?: AddCartLine[]) {
-  const cartSession = await getIronSession<CartSession>(
-    await cookies(),
-    shopify.cartSessionOptions,
-  );
+  const cookieStore = await cookies();
 
-  const shopifyCart = await shopify.createCart(lines || []);
+  const [customerSession, cartSession] = await Promise.all([
+    getIronSession<CustomerSession>(
+      cookieStore,
+      shopify.customerSessionOptions,
+    ),
+    getIronSession<CartSession>(cookieStore, shopify.cartSessionOptions),
+  ]);
+
+  const shopifyCart = await shopify.createCart(
+    lines || [],
+    customerSession.accessToken,
+  );
   if (!shopifyCart.cartCreate?.cart) {
     throw new Error('Fail to create cart');
   }

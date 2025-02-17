@@ -1,23 +1,87 @@
-import {} from '@/types/cart';
-
 import {
   addCartLineMutation,
   createCartMutation,
+  createCustomerMutation,
+  createCustomerTokenMutation,
   removeCartLineMutation,
+  updateCartBuyerIdentityMutation,
   updateCartLineMutation,
 } from './mutations';
-import { getCartQuery, productByHandleQuery } from './queries';
+import {
+  getCartQuery,
+  getCustomerQuery,
+  productByHandleQuery,
+} from './queries';
 import { Shopify } from './Shopify';
 import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
 
 export class ShopifyInstance extends Shopify {
-  public async createCart(cartLines: AddCartLine[]) {
+  public async getCustomer(
+    customerAccessToken: string,
+    next?: NextFetchRequestConfig,
+    cache?: RequestCache,
+  ) {
+    return this.client(next, cache).request(getCustomerQuery, {
+      customerAccessToken,
+    });
+  }
+
+  public async createCustomer(
+    email: string,
+    password: string,
+    firstName?: string,
+    lastName?: string,
+    phone?: string,
+    acceptsMarketing?: boolean,
+  ) {
+    return this.client().request(createCustomerMutation, {
+      input: {
+        email,
+        password,
+        firstName,
+        lastName,
+        phone,
+        acceptsMarketing,
+      },
+    });
+  }
+
+  public async createCustomerToken(email: string, password: string) {
+    return this.client().request(createCustomerTokenMutation, {
+      input: {
+        email,
+        password,
+      },
+    });
+  }
+
+  public async getCart(
+    cartId: string,
+    next?: NextFetchRequestConfig,
+    cache?: RequestCache,
+  ) {
+    const id = this.addPrefix('cart', cartId);
+
+    return this.client(next, cache).request(getCartQuery, { id });
+  }
+
+  public async createCart(
+    cartLines: AddCartLine[],
+    customerAccessToken?: string,
+  ) {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       merchandiseId: this.addPrefix('variant', line.variantId),
     }));
 
-    return this.client().request(createCartMutation, { input: { lines } });
+    return this.client().request(createCartMutation, {
+      input: {
+        lines,
+        buyerIdentity: {
+          customerAccessToken,
+        },
+      },
+    });
   }
 
   public async addCartLines(cartId: string, cartLines: AddCartLine[]) {
@@ -48,14 +112,13 @@ export class ShopifyInstance extends Shopify {
     return this.client().request(removeCartLineMutation, { cartId, lineIds });
   }
 
-  public async getCart(
-    cartId: string,
-    next?: NextFetchRequestConfig,
-    cache?: RequestCache,
-  ) {
-    const id = this.addPrefix('cart', cartId);
-
-    return this.client(next, cache).request(getCartQuery, { id });
+  public async updateCartCustomer(cartId: string, customerToken: string) {
+    return this.client().request(updateCartBuyerIdentityMutation, {
+      cartId,
+      buyerIdentity: {
+        customerAccessToken: customerToken,
+      },
+    });
   }
 
   public async getProductByHandle(

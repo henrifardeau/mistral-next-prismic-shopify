@@ -1,5 +1,17 @@
 import { graphql } from './gql';
 
+export const getCustomerQuery = graphql(`
+  query GetCustomer($customerAccessToken: String!) {
+    customer(customerAccessToken: $customerAccessToken) {
+      id
+      firstName
+      lastName
+      email
+      phone
+    }
+  }
+`);
+
 export const getCartQuery = graphql(`
   query GetCart($id: ID!) {
     cart(id: $id) {

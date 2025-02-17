@@ -1,5 +1,26 @@
 import { graphql } from './gql';
 
+export const createCustomerMutation = graphql(`
+  mutation CreateCustomer($input: CustomerCreateInput!) {
+    customerCreate(input: $input) {
+      customer {
+        id
+      }
+    }
+  }
+`);
+
+export const createCustomerTokenMutation = graphql(`
+  mutation CreateCustomerToken($input: CustomerAccessTokenCreateInput!) {
+    customerAccessTokenCreate(input: $input) {
+      customerAccessToken {
+        accessToken
+        expiresAt
+      }
+    }
+  }
+`);
+
 export const createCartMutation = graphql(`
   mutation CreateCart($input: CartInput) {
     cartCreate(input: $input) {
@@ -67,6 +88,20 @@ export const updateCartLineMutation = graphql(`
 export const removeCartLineMutation = graphql(`
   mutation RemoveCartLine($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        id
+        checkoutUrl
+      }
+    }
+  }
+`);
+
+export const updateCartBuyerIdentityMutation = graphql(`
+  mutation UpdateCartBuyerIdentity(
+    $cartId: ID!
+    $buyerIdentity: CartBuyerIdentityInput!
+  ) {
+    cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
       cart {
         id
         checkoutUrl
