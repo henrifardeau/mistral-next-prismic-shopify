@@ -1,3 +1,4 @@
+import { DEFAULT_SORTING } from '@/constants/collection';
 import {
   addCartLineMutation,
   createCartMutation,
@@ -14,7 +15,12 @@ import {
   productByHandleQuery,
 } from './queries';
 import { Shopify } from './Shopify';
-import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
+import {
+  AddCartLine,
+  CollectionSortKeys,
+  RemoveCartLine,
+  UpdateCartLine,
+} from './types';
 
 export class ShopifyInstance extends Shopify {
   public async getCustomer(
@@ -124,12 +130,18 @@ export class ShopifyInstance extends Shopify {
 
   public async getCollectionByHandle(
     handle: string,
+    sort?: {
+      key?: string;
+      reverse?: boolean;
+    },
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ) {
     return this.client(next, cache).request(collectionByHandleQuery, {
       handle,
       first: 20,
+      sortKey: (sort?.key ?? DEFAULT_SORTING.sortKey) as CollectionSortKeys,
+      sortReverse: sort?.reverse ?? DEFAULT_SORTING.sortReverse,
     });
   }
 

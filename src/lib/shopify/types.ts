@@ -3,6 +3,7 @@ import {
   CreateCartMutation,
   GetCartQuery,
   ProductByHandleQuery,
+  ProductCollectionSortKeys,
 } from './gql/graphql';
 
 export type RawCart = GetCartQuery | CreateCartMutation['cartCreate'];
@@ -10,6 +11,8 @@ export type RawCart = GetCartQuery | CreateCartMutation['cartCreate'];
 export type RawCollectionProducts = CollectionByHandleQuery;
 
 export type RawProduct = ProductByHandleQuery;
+
+export type CollectionSortKeys = ProductCollectionSortKeys;
 
 export type CustomerSession = {
   authenticated: boolean;

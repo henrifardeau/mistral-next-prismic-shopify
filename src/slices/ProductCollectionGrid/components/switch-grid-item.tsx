@@ -17,7 +17,7 @@ export function SwitchGridItem({
   documents,
   components,
 }: SwitchGridItemProps) {
-  return documents.map((document, index) => {
+  return documents.map((document) => {
     switch (document.type) {
       case 'products': {
         const product = products.find((p) => p.handle === document.uid);
@@ -28,7 +28,7 @@ export function SwitchGridItem({
 
         return (
           <components.products
-            key={index}
+            key={product.id}
             document={document}
             product={product}
           />

@@ -10,13 +10,14 @@ import {
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { components } from '@/slices';
+import { Params } from '@/types/common';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ handle: string }>;
+  params: Params<{ handle: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
 
@@ -44,7 +45,7 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: {
-  params: Promise<{ handle: string }>;
+  params: Params<{ handle: string }>;
 }) {
   const { handle } = await params;
 

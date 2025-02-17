@@ -41,6 +41,8 @@ export function ProductItem({
   const initialOptions = getInitialOptions(productOptions);
   const initialVariant = getInitialVariant(product.variants, initialOptions);
 
+  console.log(initialVariant.title, initialVariant.price.amount);
+
   return (
     <ProductProvider
       product={product}

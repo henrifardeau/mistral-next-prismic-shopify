@@ -53,10 +53,15 @@ export const getCartQuery = graphql(`
 `);
 
 export const collectionByHandleQuery = graphql(`
-  query CollectionByHandle($handle: String!, $first: Int!) {
+  query CollectionByHandle(
+    $handle: String!
+    $first: Int!
+    $sortKey: ProductCollectionSortKeys!
+    $sortReverse: Boolean!
+  ) {
     collection(handle: $handle) {
       id
-      products(first: $first) {
+      products(first: $first, sortKey: $sortKey, reverse: $sortReverse) {
         edges {
           node {
             id

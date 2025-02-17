@@ -10,14 +10,17 @@ import { shopify } from '@/lib/shopify';
 /**
  * Props for `ProductCollectionGrid`.
  */
-export type ProductCollectionGridProps =
-  SliceComponentProps<Content.ProductCollectionGridSlice>;
+export type ProductCollectionGridProps = SliceComponentProps<
+  Content.ProductCollectionGridSlice,
+  { sortKey?: string; sortReverse?: boolean }
+>;
 
 /**
  * Component for "ProductCollectionGrid" Slices.
  */
 const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
   slice,
+  context,
 }) => {
   if (!slice.primary.shopify_collection_handle) {
     return null;
@@ -25,6 +28,7 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
 
   const shopifyCollection = await shopify.getCollectionByHandle(
     slice.primary.shopify_collection_handle,
+    { key: context.sortKey, reverse: context.sortReverse },
   );
   if (!shopifyCollection.collection?.products) {
     return null;
