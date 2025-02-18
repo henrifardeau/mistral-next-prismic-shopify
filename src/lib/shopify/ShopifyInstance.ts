@@ -21,6 +21,7 @@ import {
   RemoveCartLine,
   UpdateCartLine,
 } from './types';
+import { SignUpPayload } from './schemas';
 
 export class ShopifyInstance extends Shopify {
   public async getCustomer(
@@ -33,24 +34,8 @@ export class ShopifyInstance extends Shopify {
     });
   }
 
-  public async createCustomer(
-    email: string,
-    password: string,
-    firstName?: string,
-    lastName?: string,
-    phone?: string,
-    acceptsMarketing?: boolean,
-  ) {
-    return this.client().request(createCustomerMutation, {
-      input: {
-        email,
-        password,
-        firstName,
-        lastName,
-        phone,
-        acceptsMarketing,
-      },
-    });
+  public async createCustomer(input: SignUpPayload) {
+    return this.client().request(createCustomerMutation, { input });
   }
 
   public async createCustomerToken(email: string, password: string) {
@@ -119,11 +104,11 @@ export class ShopifyInstance extends Shopify {
     return this.client().request(removeCartLineMutation, { cartId, lineIds });
   }
 
-  public async updateCartCustomer(cartId: string, customerToken: string) {
+  public async updateCartCustomer(cartId: string, customerAccessToken: string) {
     return this.client().request(updateCartBuyerIdentityMutation, {
       cartId,
       buyerIdentity: {
-        customerAccessToken: customerToken,
+        customerAccessToken,
       },
     });
   }

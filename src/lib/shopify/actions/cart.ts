@@ -121,3 +121,43 @@ export async function redirectToCheckout() {
 
   redirect(cartSession.cartCheckoutUrl);
 }
+
+export async function updateCartCustomer(
+  cartId?: string,
+  customerAccessToken?: string,
+) {
+  if (cartId && customerAccessToken) {
+    return await shopify.updateCartCustomer(cartId, customerAccessToken);
+  }
+
+  const cookieStore = await cookies();
+
+  const [customerSession, cartSession] = await Promise.all([
+    getIronSession<CustomerSession>(
+      cookieStore,
+      shopify.customerSessionOptions,
+    ),
+    getIronSession<CartSession>(cookieStore, shopify.cartSessionOptions),
+  ]);
+
+  if (!cartSession.cartId || !customerSession.accessToken) {
+    throw new Error('Cart ID or Customer access token not found');
+  }
+
+  const shopifyCart = await shopify.updateCartCustomer(
+    cartSession.cartId,
+    customerSession.accessToken,
+  );
+
+  if (!shopifyCart.cartBuyerIdentityUpdate?.cart) {
+    throw new Error('Fail to update cart');
+  }
+
+  cartSession.cartId = shopifyCart.cartBuyerIdentityUpdate.cart.id;
+  cartSession.cartCheckoutUrl =
+    shopifyCart.cartBuyerIdentityUpdate.cart.checkoutUrl;
+
+  await cartSession.save();
+
+  return shopifyCart;
+}

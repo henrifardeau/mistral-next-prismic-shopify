@@ -7,6 +7,7 @@ import { PropsWithChildren } from 'react';
 import { AccountDrawer } from '@/components/account-drawer';
 import { CartDrawer } from '@/components/cart-drawer';
 import { Footer, Main, Navigation } from '@/components/layout';
+import { Toaster } from '@/components/ui/toaster';
 import { CartStoreProvider } from '@/hooks/use-cart-store';
 import { prismic, repositoryName } from '@/lib/prismic';
 import { getCart } from '@/lib/shopify/actions';
@@ -48,6 +49,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
           <Main>{children}</Main>
           <Footer />
 
+          <Toaster />
           <AccountDrawer />
           <CartDrawer />
         </CartStoreProvider>

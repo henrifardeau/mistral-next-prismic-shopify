@@ -1,11 +1,20 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { toast } from 'sonner';
 
 import { useAccountDrawer } from '@/hooks/use-account-drawer';
+import { createCustomer } from '@/lib/shopify/actions';
+import {
+  RecoverPayload,
+  recoverSchema,
+  SignInPayload,
+  signInSchema,
+  SignUpPayload,
+  signUpSchema,
+} from '@/lib/shopify/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
@@ -26,47 +35,37 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 
-const signInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-const signUpSchema = signInSchema.extend({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-});
-
-const recoverSchema = z.object({
-  email: z.string().email(),
-});
-
 export function AccountDrawer() {
   const cartOpen = useAccountDrawer((state) => state.accountOpen);
   const setAccountOpen = useAccountDrawer((state) => state.setAccountOpen);
-  const closeAccount = useAccountDrawer((state) => state.closeAccount);
 
-  const [flow, setFlow] = useState<'signIn' | 'signUp' | 'recover'>('signIn');
+  const [flow, setFlow] = useState<'signIn' | 'signUp' | 'recover'>('signUp');
+
+  const beforeClose = useCallback(() => {
+    setAccountOpen(false);
+    setFlow('signUp');
+  }, [setAccountOpen, setFlow]);
 
   return (
-    <Drawer open={cartOpen} onOpenChange={setAccountOpen}>
+    <Drawer open={cartOpen} onOpenChange={beforeClose}>
       <DrawerContent className="w-full max-w-96">
         {flow === 'signIn' && (
           <SignInContent
             setSignUpFlow={() => setFlow('signUp')}
             setRecoverFlow={() => setFlow('recover')}
-            closeAccount={closeAccount}
+            closeAccount={beforeClose}
           />
         )}
         {flow === 'signUp' && (
           <SignUpContent
             setSignInFlow={() => setFlow('signIn')}
-            closeAccount={closeAccount}
+            closeAccount={beforeClose}
           />
         )}
         {flow === 'recover' && (
           <RecoverContent
             setSignInFlow={() => setFlow('signIn')}
-            closeAccount={closeAccount}
+            closeAccount={beforeClose}
           />
         )}
       </DrawerContent>
@@ -83,7 +82,7 @@ function SignInContent({
   setRecoverFlow: () => void;
   closeAccount: () => void;
 }) {
-  const form = useForm<z.infer<typeof signInSchema>>({
+  const form = useForm<SignInPayload>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
@@ -91,7 +90,7 @@ function SignInContent({
     },
   });
 
-  const onSubmit = (data: z.infer<typeof signInSchema>) => {
+  const onSubmit = (data: SignInPayload) => {
     console.log({ data });
   };
 
@@ -174,18 +173,25 @@ function SignUpContent({
   setSignInFlow: () => void;
   closeAccount: () => void;
 }) {
-  const form = useForm<z.infer<typeof signUpSchema>>({
+  const form = useForm<SignUpPayload>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
+      firstName: 'John ',
+      lastName: 'Doe',
+      email: 'jh@test.com',
+      password: '1234567890',
     },
   });
 
-  const onSubmit = (data: z.infer<typeof signUpSchema>) => {
-    console.log({ data });
+  const onSubmit = async (data: SignUpPayload) => {
+    try {
+      await createCustomer(data);
+
+      closeAccount();
+      toast('Account created.');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -213,6 +219,8 @@ function SignUpContent({
                     <Input
                       placeholder="Your first name"
                       autoComplete="given-name"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -230,6 +238,8 @@ function SignUpContent({
                     <Input
                       placeholder="Your last name"
                       autoComplete="family-name"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -247,6 +257,8 @@ function SignUpContent({
                     <Input
                       placeholder="Your email"
                       autoComplete="email"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -265,6 +277,8 @@ function SignUpContent({
                       type="password"
                       placeholder="Your password"
                       autoComplete="new-password"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -274,7 +288,8 @@ function SignUpContent({
             />
             <button
               type="submit"
-              className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75"
+              disabled={form.formState.isSubmitting}
+              className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75 disabled:pointer-events-none disabled:opacity-75"
             >
               Create your account
             </button>
@@ -296,14 +311,14 @@ function RecoverContent({
   setSignInFlow: () => void;
   closeAccount: () => void;
 }) {
-  const form = useForm<z.infer<typeof recoverSchema>>({
+  const form = useForm<RecoverPayload>({
     resolver: zodResolver(recoverSchema),
     defaultValues: {
       email: '',
     },
   });
 
-  const onSubmit = (data: z.infer<typeof recoverSchema>) => {
+  const onSubmit = (data: RecoverPayload) => {
     console.log({ data });
   };
 

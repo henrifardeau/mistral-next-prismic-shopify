@@ -17,6 +17,12 @@ export const getCartQuery = graphql(`
     cart(id: $id) {
       id
       checkoutUrl
+      buyerIdentity {
+        email
+        customer {
+          email
+        }
+      }
       lines(first: 100) {
         edges {
           node {
