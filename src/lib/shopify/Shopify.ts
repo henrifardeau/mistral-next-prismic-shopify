@@ -2,6 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 import { SessionOptions } from 'iron-session';
 
 import { Cart } from '@/types/cart';
+import { Customer } from '@/types/customer';
 import { Connection } from '@/types/gql';
 import { Product } from '@/types/product';
 
@@ -76,6 +77,12 @@ export class Shopify {
     return val.startsWith(PREFIXES[prefix])
       ? val.slice(PREFIXES[prefix].length)
       : val;
+  }
+
+  public reshapeCustomer(rawCustomer: { authenticated: boolean }): Customer {
+    return {
+      authenticated: rawCustomer.authenticated,
+    };
   }
 
   public reshapeCart(rawCart: RawCart): Cart {

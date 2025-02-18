@@ -1,6 +1,6 @@
 'use server';
 
-import { getIronSession } from 'iron-session';
+import { getIronSession, IronSession } from 'iron-session';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -67,19 +67,14 @@ export async function createCart(lines?: AddCartLine[]) {
 }
 
 export async function addCartLines(lines: AddCartLine[]) {
-  try {
-    const existingCart = (await getCart()) as { id: string };
-    if (existingCart) {
-      await shopify.addCartLines(existingCart.id, lines);
-    } else {
-      await createCart(lines);
-    }
-
-    revalidateCart();
-  } catch (err) {
-    console.error(err);
-    return null;
+  const existingCart = (await getCart()) as { id: string };
+  if (existingCart) {
+    await shopify.addCartLines(existingCart.id, lines);
+  } else {
+    await createCart(lines);
   }
+
+  revalidateCart();
 }
 
 export async function updateCartLines(lines: UpdateCartLine[]) {
@@ -123,27 +118,9 @@ export async function redirectToCheckout() {
 }
 
 export async function updateCartCustomer(
-  cartId?: string,
-  customerAccessToken?: string,
+  cartSession: IronSession<CartSession>,
+  customerSession: IronSession<CustomerSession>,
 ) {
-  if (cartId && customerAccessToken) {
-    return await shopify.updateCartCustomer(cartId, customerAccessToken);
-  }
-
-  const cookieStore = await cookies();
-
-  const [customerSession, cartSession] = await Promise.all([
-    getIronSession<CustomerSession>(
-      cookieStore,
-      shopify.customerSessionOptions,
-    ),
-    getIronSession<CartSession>(cookieStore, shopify.cartSessionOptions),
-  ]);
-
-  if (!cartSession.cartId || !customerSession.accessToken) {
-    throw new Error('Cart ID or Customer access token not found');
-  }
-
   const shopifyCart = await shopify.updateCartCustomer(
     cartSession.cartId,
     customerSession.accessToken,

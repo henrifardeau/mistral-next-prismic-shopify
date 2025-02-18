@@ -21,7 +21,7 @@ import {
   RemoveCartLine,
   UpdateCartLine,
 } from './types';
-import { SignUpPayload } from './schemas';
+import { SignInPayload, SignUpPayload } from './schemas';
 
 export class ShopifyInstance extends Shopify {
   public async getCustomer(
@@ -38,13 +38,8 @@ export class ShopifyInstance extends Shopify {
     return this.client().request(createCustomerMutation, { input });
   }
 
-  public async createCustomerToken(email: string, password: string) {
-    return this.client().request(createCustomerTokenMutation, {
-      input: {
-        email,
-        password,
-      },
-    });
+  public async createCustomerToken(input: SignInPayload) {
+    return this.client().request(createCustomerTokenMutation, { input });
   }
 
   public async getCart(

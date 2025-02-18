@@ -9,8 +9,9 @@ import { CartDrawer } from '@/components/cart-drawer';
 import { Footer, Main, Navigation } from '@/components/layout';
 import { Toaster } from '@/components/ui/toaster';
 import { CartStoreProvider } from '@/hooks/use-cart-store';
+import { CustomerStoreProvider } from '@/hooks/use-customer-store';
 import { prismic, repositoryName } from '@/lib/prismic';
-import { getCart } from '@/lib/shopify/actions';
+import { getCart, getCustomer } from '@/lib/shopify/actions';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
 
@@ -39,20 +40,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: PropsWithChildren) {
+  const customerPromise = getCustomer();
   const cartPromise = getCart();
 
   return (
     <html lang="fr">
       <body>
-        <CartStoreProvider cartPromise={cartPromise}>
-          <Navigation />
-          <Main>{children}</Main>
-          <Footer />
-
-          <Toaster />
-          <AccountDrawer />
-          <CartDrawer />
-        </CartStoreProvider>
+        <CustomerStoreProvider customerPromise={customerPromise}>
+          <CartStoreProvider cartPromise={cartPromise}>
+            <Navigation />
+            <Main>{children}</Main>
+            <Footer />
+            <Toaster />
+            <CartDrawer />
+            <AccountDrawer />
+          </CartStoreProvider>
+        </CustomerStoreProvider>
 
         <PrismicPreview repositoryName={repositoryName} />
       </body>

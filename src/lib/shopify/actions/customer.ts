@@ -5,16 +5,39 @@ import { cookies } from 'next/headers';
 
 import { shopify } from '@/lib/shopify';
 
-import { SignUpPayload } from '../schemas';
+import { SignInPayload, SignUpPayload } from '../schemas';
 import { CartSession, CustomerSession } from '../types';
 import { updateCartCustomer } from './cart';
+import { redirect } from 'next/navigation';
+
+export async function getCustomer() {
+  const cookieStore = await cookies();
+
+  const customerSession = await getIronSession<CustomerSession>(
+    cookieStore,
+    shopify.customerSessionOptions,
+  );
+  if (!customerSession.authenticated) {
+    return shopify.reshapeCustomer({
+      authenticated: false,
+    });
+  }
+
+  return shopify.reshapeCustomer({
+    authenticated: true,
+  });
+}
 
 export async function createCustomer(payload: SignUpPayload) {
   await shopify.createCustomer(payload);
-  const { customerAccessTokenCreate } = await shopify.createCustomerToken(
-    payload.email,
-    payload.password,
-  );
+  await getCustomerAccessToken(payload);
+}
+
+export async function getCustomerAccessToken(payload: SignInPayload) {
+  const { customerAccessTokenCreate } = await shopify.createCustomerToken({
+    email: payload.email,
+    password: payload.password,
+  });
 
   if (!customerAccessTokenCreate?.customerAccessToken?.accessToken) {
     throw new Error('Fail to create access token');
@@ -36,6 +59,19 @@ export async function createCustomer(payload: SignUpPayload) {
   await customerSession.save();
 
   if (cartSession.cartId) {
-    updateCartCustomer(cartSession.cartId, accessToken);
+    await updateCartCustomer(cartSession, customerSession);
   }
+}
+
+export async function destroyCustomer() {
+  const cookieStore = await cookies();
+
+  const customerSession = await getIronSession<CustomerSession>(
+    cookieStore,
+    shopify.customerSessionOptions,
+  );
+
+  customerSession.destroy();
+
+  redirect('/');
 }

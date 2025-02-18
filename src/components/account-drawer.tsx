@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { useAccountDrawer } from '@/hooks/use-account-drawer';
-import { createCustomer } from '@/lib/shopify/actions';
+import { createCustomer, getCustomerAccessToken } from '@/lib/shopify/actions';
 import {
   RecoverPayload,
   recoverSchema,
@@ -39,7 +39,7 @@ export function AccountDrawer() {
   const cartOpen = useAccountDrawer((state) => state.accountOpen);
   const setAccountOpen = useAccountDrawer((state) => state.setAccountOpen);
 
-  const [flow, setFlow] = useState<'signIn' | 'signUp' | 'recover'>('signUp');
+  const [flow, setFlow] = useState<'signIn' | 'signUp' | 'recover'>('signIn');
 
   const beforeClose = useCallback(() => {
     setAccountOpen(false);
@@ -90,8 +90,15 @@ function SignInContent({
     },
   });
 
-  const onSubmit = (data: SignInPayload) => {
-    console.log({ data });
+  const onSubmit = async (data: SignInPayload) => {
+    try {
+      await getCustomerAccessToken(data);
+
+      closeAccount();
+      toast('Sign in success.');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -176,10 +183,10 @@ function SignUpContent({
   const form = useForm<SignUpPayload>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      firstName: 'John ',
-      lastName: 'Doe',
-      email: 'jh@test.com',
-      password: '1234567890',
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
     },
   });
 
