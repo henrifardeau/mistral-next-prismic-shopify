@@ -43,7 +43,7 @@ export function AccountDrawer() {
 
   const beforeClose = useCallback(() => {
     setAccountOpen(false);
-    setFlow('signUp');
+    setFlow('signIn');
   }, [setAccountOpen, setFlow]);
 
   return (
