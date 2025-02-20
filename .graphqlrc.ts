@@ -30,6 +30,9 @@ const config: CodegenConfig = {
   generates: {
     './src/lib/shopify/gql/': {
       preset: 'client',
+      presetConfig: {
+        fragmentMasking: false,
+      },
       plugins: [],
     },
   },

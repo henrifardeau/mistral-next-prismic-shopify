@@ -126,6 +126,8 @@ function SignInContent({
                     <Input
                       placeholder="Your email"
                       autoComplete="email"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -149,6 +151,8 @@ function SignInContent({
                       type="password"
                       placeholder="Your password"
                       autoComplete="current-password"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -158,7 +162,7 @@ function SignInContent({
             />
             <button
               type="submit"
-              className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75"
+              className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75 disabled:pointer-events-none disabled:opacity-75"
             >
               Sign In
             </button>
@@ -167,7 +171,13 @@ function SignInContent({
       </DrawerBody>
 
       <DrawerFooter>
-        <button onClick={setSignUpFlow}>Create account</button>
+        <button
+          onClick={setSignUpFlow}
+          disabled={form.formState.isSubmitting}
+          className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75 disabled:pointer-events-none disabled:opacity-75"
+        >
+          Create account
+        </button>
       </DrawerFooter>
     </>
   );
@@ -305,7 +315,13 @@ function SignUpContent({
       </DrawerBody>
 
       <DrawerFooter>
-        <button onClick={setSignInFlow}>Signin</button>
+        <button
+          onClick={setSignInFlow}
+          disabled={form.formState.isSubmitting}
+          className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75 disabled:pointer-events-none disabled:opacity-75"
+        >
+          Signin
+        </button>
       </DrawerFooter>
     </>
   );
@@ -354,6 +370,8 @@ function RecoverContent({
                     <Input
                       placeholder="Your email"
                       autoComplete="email"
+                      disabled={form.formState.isSubmitting}
+                      className="disabled:pointer-events-none disabled:opacity-75"
                       {...field}
                     />
                   </FormControl>
@@ -363,7 +381,8 @@ function RecoverContent({
             />
             <button
               type="submit"
-              className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75"
+              disabled={form.formState.isSubmitting}
+              className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75 disabled:pointer-events-none disabled:opacity-75"
             >
               Send reset email
             </button>
@@ -372,7 +391,13 @@ function RecoverContent({
       </DrawerBody>
 
       <DrawerFooter>
-        <button onClick={setSignInFlow}>Signin</button>
+        <button
+          onClick={setSignInFlow}
+          disabled={form.formState.isSubmitting}
+          className="w-full bg-black py-2 text-white transition-colors hover:bg-black/75 disabled:pointer-events-none disabled:opacity-75"
+        >
+          Signin
+        </button>
       </DrawerFooter>
     </>
   );

@@ -29,7 +29,7 @@ export async function getCart() {
   }
 
   const shopifyCart = await shopify.getCart(cartSession.cartId, {
-    tags: ['getCart'],
+    tags: ['getCart', cartSession.cartId],
   });
   // Old carts becomes `null` when you checkout.
   if (!shopifyCart.cart) {

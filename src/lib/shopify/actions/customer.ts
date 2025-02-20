@@ -21,16 +21,15 @@ export async function getCustomer() {
     return shopify.reshapeCustomer({});
   }
 
-  //TODO: Fetch Shopify customer
-
-  return shopify.reshapeCustomer(
-    {
-      customer: {
-        id: 'ID',
-      },
-    },
+  const shopifyCustomer = await shopify.getCustomer(
     customerSession.accessToken,
+    { tags: ['getCustomer', customerSession.accessToken] },
   );
+  if (!shopifyCustomer.customer) {
+    return shopify.reshapeCustomer({});
+  }
+
+  return shopify.reshapeCustomer(shopifyCustomer, customerSession.accessToken);
 }
 
 export async function createCustomer(payload: SignUpPayload) {

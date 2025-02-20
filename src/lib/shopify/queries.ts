@@ -4,10 +4,14 @@ export const getCustomerQuery = graphql(`
   query GetCustomer($customerAccessToken: String!) {
     customer(customerAccessToken: $customerAccessToken) {
       id
+      acceptsMarketing
       firstName
       lastName
+      displayName
       email
       phone
+      createdAt
+      updatedAt
     }
   }
 `);
