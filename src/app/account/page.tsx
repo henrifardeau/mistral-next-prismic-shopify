@@ -1,6 +1,14 @@
-import { destroyCustomer } from '@/lib/shopify/actions';
+import { redirect } from 'next/navigation';
 
-export default function Page() {
+import { destroyCustomer, getCustomer } from '@/lib/shopify/actions';
+
+export default async function Page() {
+  const customer = await getCustomer();
+
+  if (!customer.authenticated) {
+    return redirect('/');
+  }
+
   return (
     <div>
       <form action={destroyCustomer}>

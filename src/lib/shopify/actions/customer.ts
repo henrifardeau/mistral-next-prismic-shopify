@@ -18,14 +18,19 @@ export async function getCustomer() {
     shopify.customerSessionOptions,
   );
   if (!customerSession.authenticated) {
-    return shopify.reshapeCustomer({
-      authenticated: false,
-    });
+    return shopify.reshapeCustomer({});
   }
 
-  return shopify.reshapeCustomer({
-    authenticated: true,
-  });
+  //TODO: Fetch Shopify customer
+
+  return shopify.reshapeCustomer(
+    {
+      customer: {
+        id: 'ID',
+      },
+    },
+    customerSession.accessToken,
+  );
 }
 
 export async function createCustomer(payload: SignUpPayload) {

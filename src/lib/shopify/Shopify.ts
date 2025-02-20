@@ -6,7 +6,12 @@ import { Customer } from '@/types/customer';
 import { Connection } from '@/types/gql';
 import { Product } from '@/types/product';
 
-import { RawCart, RawCollectionProducts, RawProduct } from './types';
+import {
+  RawCart,
+  RawCollectionProducts,
+  RawCustomer,
+  RawProduct,
+} from './types';
 
 const PREFIXES = Object.freeze({
   cart: 'gid://shopify/Cart/',
@@ -79,9 +84,22 @@ export class Shopify {
       : val;
   }
 
-  public reshapeCustomer(rawCustomer: { authenticated: boolean }): Customer {
+  public reshapeCustomer(
+    rawCustomer: RawCustomer,
+    accessToken?: string,
+  ): Customer {
+    const { customer } = rawCustomer;
+
+    if (!customer || !accessToken) {
+      return {
+        authenticated: false,
+      };
+    }
+
     return {
-      authenticated: rawCustomer.authenticated,
+      authenticated: true,
+      accessToken,
+      ...customer,
     };
   }
 
