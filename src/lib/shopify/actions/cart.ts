@@ -15,8 +15,8 @@ import {
   UpdateCartLine,
 } from '../types';
 
-function revalidateCart() {
-  revalidateTag('getCart');
+function revalidateCart(cartId: string) {
+  revalidateTag(cartId);
 }
 
 export async function getCart() {
@@ -29,7 +29,7 @@ export async function getCart() {
   }
 
   const shopifyCart = await shopify.getCart(cartSession.cartId, {
-    tags: ['getCart', cartSession.cartId],
+    tags: [cartSession.cartId],
   });
   // Old carts becomes `null` when you checkout.
   if (!shopifyCart.cart) {
@@ -68,13 +68,20 @@ export async function createCart(lines?: AddCartLine[]) {
 
 export async function addCartLines(lines: AddCartLine[]) {
   const existingCart = (await getCart()) as { id: string };
+
+  let cartId: string = existingCart.id;
   if (existingCart) {
     await shopify.addCartLines(existingCart.id, lines);
   } else {
-    await createCart(lines);
+    const createdCart = await createCart(lines);
+    if (!createdCart.id) {
+      throw new Error('Fail to create cart');
+    }
+
+    cartId = createdCart.id;
   }
 
-  revalidateCart();
+  revalidateCart(cartId);
 }
 
 export async function updateCartLines(lines: UpdateCartLine[]) {
@@ -88,7 +95,7 @@ export async function updateCartLines(lines: UpdateCartLine[]) {
 
   await shopify.updateCartLines(cartSession.cartId, lines);
 
-  revalidateCart();
+  revalidateCart(cartSession.cartId);
 }
 
 export async function removeCartLines(lines: RemoveCartLine[]) {
@@ -102,7 +109,7 @@ export async function removeCartLines(lines: RemoveCartLine[]) {
 
   await shopify.removeCartLines(cartSession.cartId, lines);
 
-  revalidateCart();
+  revalidateCart(cartSession.cartId);
 }
 
 export async function redirectToCheckout() {
