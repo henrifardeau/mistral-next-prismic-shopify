@@ -39,8 +39,8 @@ export function CartDrawer() {
     optimisticCart,
     cartLength,
     cartSubTotal,
-    updateCartLine,
-    removeCartLine,
+    optimisticUpdateCartLine,
+    optimisticRemoveCartLine,
   } = useCartStore();
 
   const disableCheckout = useCallback(() => {
@@ -69,11 +69,11 @@ export function CartDrawer() {
                     key={line.id}
                     line={line}
                     updateAction={async (quantity: number) => {
-                      updateCartLine({ lineId: line.id, quantity });
+                      optimisticUpdateCartLine({ lineId: line.id, quantity });
                       await updateCartLines([{ lineId: line.id, quantity }]);
                     }}
                     removeAction={async () => {
-                      removeCartLine({ lineId: line.id });
+                      optimisticRemoveCartLine({ lineId: line.id });
                       await removeCartLines([{ lineId: line.id }]);
                     }}
                     closeCart={closeCart}

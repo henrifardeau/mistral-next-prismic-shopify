@@ -9,7 +9,7 @@ import { useProduct } from '@/hooks/use-product';
 import { addCartLines } from '@/lib/shopify/actions';
 
 export function ProductAddToCart() {
-  const { addCartLine } = useCartStore();
+  const { optimisticAddCartLine } = useCartStore();
 
   const product = useProduct((state) => state.product);
   const variant = useProduct((state) => state.currentVariant);
@@ -19,7 +19,7 @@ export function ProductAddToCart() {
   return (
     <form
       action={async () => {
-        addCartLine({ product, variant, quantity });
+        optimisticAddCartLine({ product, variant, quantity });
         await addCartLines([{ variantId: variant.id, quantity }]);
       }}
       className="flex space-x-4"

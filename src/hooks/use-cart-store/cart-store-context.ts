@@ -13,11 +13,11 @@ type CartStoreContextProps = {
   optimisticCart: Cart | undefined;
   cartLength: number;
   cartSubTotal: string;
-  addCartLine: (payload: CartAddPayload) => void;
-  incrementCartLine: (payload: CartLinePayload) => void;
-  decrementCartLine: (payload: CartLinePayload) => void;
-  updateCartLine: (payload: CartUpdatePayload) => void;
-  removeCartLine: (payload: CartLinePayload) => void;
+  optimisticAddCartLine: (payload: CartAddPayload) => void;
+  optimisticIncrementCartLine: (payload: CartLinePayload) => void;
+  optimisticDecrementCartLine: (payload: CartLinePayload) => void;
+  optimisticUpdateCartLine: (payload: CartUpdatePayload) => void;
+  optimisticRemoveCartLine: (payload: CartLinePayload) => void;
 };
 
 export const CartStoreContext = createContext<

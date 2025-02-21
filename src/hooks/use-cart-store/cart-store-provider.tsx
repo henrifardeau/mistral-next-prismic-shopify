@@ -33,7 +33,7 @@ export function CartStoreProvider({
     cartReducer,
   );
 
-  const addCartLine = useCallback(
+  const optimisticAddCartLine = useCallback(
     (payload: CartAddPayload) => {
       updateOptimisticCart({
         type: 'ADD',
@@ -43,28 +43,28 @@ export function CartStoreProvider({
     [updateOptimisticCart],
   );
 
-  const incrementCartLine = useCallback(
+  const optimisticIncrementCartLine = useCallback(
     (payload: CartLinePayload) => {
       updateOptimisticCart({ type: 'INCREMENT', payload });
     },
     [updateOptimisticCart],
   );
 
-  const decrementCartLine = useCallback(
+  const optimisticDecrementCartLine = useCallback(
     (payload: CartLinePayload) => {
       updateOptimisticCart({ type: 'DECREMENT', payload });
     },
     [updateOptimisticCart],
   );
 
-  const updateCartLine = useCallback(
+  const optimisticUpdateCartLine = useCallback(
     (payload: CartUpdatePayload) => {
       updateOptimisticCart({ type: 'UPDATE', payload });
     },
     [updateOptimisticCart],
   );
 
-  const removeCartLine = useCallback(
+  const optimisticRemoveCartLine = useCallback(
     (payload: CartLinePayload) => {
       updateOptimisticCart({ type: 'REMOVE', payload });
     },
@@ -94,19 +94,19 @@ export function CartStoreProvider({
       optimisticCart,
       cartSubTotal,
       cartLength,
-      addCartLine,
-      incrementCartLine,
-      decrementCartLine,
-      updateCartLine,
-      removeCartLine,
+      optimisticAddCartLine,
+      optimisticIncrementCartLine,
+      optimisticDecrementCartLine,
+      optimisticUpdateCartLine,
+      optimisticRemoveCartLine,
     };
   }, [
     optimisticCart,
-    addCartLine,
-    incrementCartLine,
-    decrementCartLine,
-    updateCartLine,
-    removeCartLine,
+    optimisticAddCartLine,
+    optimisticIncrementCartLine,
+    optimisticDecrementCartLine,
+    optimisticUpdateCartLine,
+    optimisticRemoveCartLine,
   ]);
 
   return (
