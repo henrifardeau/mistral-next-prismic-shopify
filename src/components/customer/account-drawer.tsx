@@ -5,6 +5,23 @@ import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { useAccountDrawer } from '@/hooks/use-account-drawer';
 import { createCustomer, getCustomerAccessToken } from '@/lib/shopify/actions';
 import {
@@ -16,24 +33,6 @@ import {
   signUpSchema,
 } from '@/lib/shopify/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import {
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from './ui/drawer';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from './ui/form';
-import { Input } from './ui/input';
 
 export function AccountDrawer() {
   const cartOpen = useAccountDrawer((state) => state.accountOpen);

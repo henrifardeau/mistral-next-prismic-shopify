@@ -2,6 +2,15 @@
 
 import { useCallback } from 'react';
 
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
 import {
@@ -15,20 +24,11 @@ import {
   CartClose,
   CartContent,
   CartHeader,
-  CartItem,
   CartLength,
   CartList,
   CartSummary,
 } from './cart';
-import {
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from './ui/drawer';
+import { CartItem } from './cart-item';
 
 export function CartDrawer() {
   const cartOpen = useCartDrawer((state) => state.cartOpen);

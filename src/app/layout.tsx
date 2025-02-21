@@ -4,8 +4,8 @@ import '@/styles/globals.css';
 
 import { PropsWithChildren } from 'react';
 
-import { AccountDrawer } from '@/components/account-drawer';
-import { CartDrawer } from '@/components/cart-drawer';
+import { AccountDrawer } from '@/components/customer';
+import { CartDrawer } from '@/components/cart';
 import { Footer, Main, Navigation } from '@/components/layout';
 import { Toaster } from '@/components/ui/toaster';
 import { CartStoreProvider } from '@/hooks/use-cart-store';

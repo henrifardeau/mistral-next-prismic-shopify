@@ -1,3 +1,5 @@
+import { AddressPayload } from '@/lib/shopify/schemas';
+
 export type Customer = GuestCustomer | SignCustomer;
 
 type GuestCustomer = {
@@ -16,4 +18,10 @@ type SignCustomer = {
   phone?: string | null;
   createdAt: string;
   updatedAt: string;
+  addresses: [];
+};
+
+export type CustomerAction = {
+  type: 'CREATE_ADDRESS';
+  payload: AddressPayload;
 };

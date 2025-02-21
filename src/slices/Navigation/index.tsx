@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { FC } from 'react';
 
-import { AccountButton } from '@/components/account-button';
-import { CartButton } from '@/components/cart-button';
+import { CartButton } from '@/components/cart';
+import { AccountButton } from '@/components/customer';
 import { MenuButton } from '@/components/menu-button';
 import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';

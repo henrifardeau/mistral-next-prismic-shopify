@@ -1,4 +1,4 @@
-import { CartButton } from '@/components/cart-button';
+import { CartButton } from '@/components/cart';
 
 export default function Page() {
   return (

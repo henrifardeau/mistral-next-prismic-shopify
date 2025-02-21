@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -9,19 +11,19 @@ import {
   useTransition,
 } from 'react';
 
-import { cn } from '@/lib/cn';
-import { formatPrice } from '@/lib/shopify/utils';
-import { toNumber } from '@/lib/utils';
-import { CartLine } from '@/types/cart';
-
-import { QuantityInput } from '../quantity-input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '@/components/ui/select';
+import { cn } from '@/lib/cn';
+import { formatPrice } from '@/lib/shopify/utils';
+import { toNumber } from '@/lib/utils';
+import { CartLine } from '@/types/cart';
+
+import { QuantityInput } from '../quantity-input';
 
 interface CartItemContextProps {
   line: CartLine;
