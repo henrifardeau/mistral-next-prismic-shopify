@@ -1,5 +1,20 @@
 import { graphql } from './gql';
 
+export const MailingAddress = graphql(`
+  fragment MailingAddress on MailingAddress {
+    address1
+    address2
+    city
+    company
+    country
+    firstName
+    lastName
+    phone
+    province
+    zip
+  }
+`);
+
 export const getCustomerQuery = graphql(`
   query GetCustomer($customerAccessToken: String!) {
     customer(customerAccessToken: $customerAccessToken) {
@@ -12,6 +27,16 @@ export const getCustomerQuery = graphql(`
       phone
       createdAt
       updatedAt
+      defaultAddress {
+        ...MailingAddress
+      }
+      addresses(first: 20) {
+        edges {
+          node {
+            ...MailingAddress
+          }
+        }
+      }
     }
   }
 `);

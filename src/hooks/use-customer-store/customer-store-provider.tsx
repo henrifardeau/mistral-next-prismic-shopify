@@ -25,7 +25,7 @@ export function CustomerStoreProvider({
     customerReducer,
   );
 
-  const createAddress = useCallback(
+  const optimisticCreateCustomerAddress = useCallback(
     (payload: AddressPayload) => {
       updateOptimisticCustomer({
         type: 'CREATE_ADDRESS',
@@ -38,9 +38,9 @@ export function CustomerStoreProvider({
   const value = useMemo(() => {
     return {
       optimisticCustomer,
-      createAddress,
+      optimisticCreateCustomerAddress,
     };
-  }, [optimisticCustomer, createAddress]);
+  }, [optimisticCustomer, optimisticCreateCustomerAddress]);
 
   return (
     <CustomerStoreContext.Provider value={value}>

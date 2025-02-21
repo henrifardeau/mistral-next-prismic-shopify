@@ -100,6 +100,32 @@ export class Shopify {
       authenticated: true,
       accessToken,
       ...customer,
+      defaultAddress: {
+        address1: customer.defaultAddress?.address1 ?? '',
+        address2: customer.defaultAddress?.address2 ?? '',
+        city: customer.defaultAddress?.city ?? '',
+        company: customer.defaultAddress?.company ?? '',
+        country: customer.defaultAddress?.country ?? '',
+        firstName: customer.defaultAddress?.firstName ?? '',
+        lastName: customer.defaultAddress?.lastName ?? '',
+        phone: customer.defaultAddress?.phone ?? '',
+        province: customer.defaultAddress?.province ?? '',
+        zip: customer.defaultAddress?.zip ?? '',
+      },
+      addresses: this.removeEdgesAndNodes(customer.addresses).map(
+        (address) => ({
+          address1: address.address1 ?? '',
+          address2: address.address2 ?? '',
+          city: address.city ?? '',
+          company: address.company ?? '',
+          country: address.country ?? '',
+          firstName: address.firstName ?? '',
+          lastName: address.lastName ?? '',
+          phone: address.phone ?? '',
+          province: address.province ?? '',
+          zip: address.zip ?? '',
+        }),
+      ),
     };
   }
 

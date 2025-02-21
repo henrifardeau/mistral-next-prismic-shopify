@@ -6,6 +6,19 @@ type GuestCustomer = {
   authenticated: false;
 };
 
+export type CustomerAddress = {
+  address1: string;
+  address2: string;
+  city: string;
+  company: string;
+  country: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  province: string;
+  zip: string;
+};
+
 type SignCustomer = {
   authenticated: true;
   accessToken: string;
@@ -18,7 +31,8 @@ type SignCustomer = {
   phone?: string | null;
   createdAt: string;
   updatedAt: string;
-  addresses: [];
+  defaultAddress: CustomerAddress;
+  addresses: CustomerAddress[];
 };
 
 export type CustomerAction = {

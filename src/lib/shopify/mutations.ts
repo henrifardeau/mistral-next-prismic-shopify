@@ -21,6 +21,22 @@ export const createCustomerTokenMutation = graphql(`
   }
 `);
 
+export const createCustomerAddressMutation = graphql(`
+  mutation CreateCustomerAddress(
+    $customerAccessToken: String!
+    $address: MailingAddressInput!
+  ) {
+    customerAddressCreate(
+      customerAccessToken: $customerAccessToken
+      address: $address
+    ) {
+      customerAddress {
+        id
+      }
+    }
+  }
+`);
+
 export const createCartMutation = graphql(`
   mutation CreateCart($input: CartInput) {
     cartCreate(input: $input) {

@@ -1,18 +1,19 @@
 'use client';
 
 import { useCustomerStore } from '@/hooks/use-customer-store';
+import { createCustomerAddress } from '@/lib/shopify/actions';
 import { AddressPayload } from '@/lib/shopify/schemas';
 
 import { AddressDialog } from './address-dialog';
 
 export function CreateAddressButton() {
-  const { createAddress } = useCustomerStore();
+  const { optimisticCreateCustomerAddress } = useCustomerStore();
 
   return (
     <AddressDialog
       submitAction={async (data: AddressPayload) => {
-        createAddress(data);
-        // await updateCartLines([{ lineId: line.id, quantity }]);
+        optimisticCreateCustomerAddress(data);
+        await createCustomerAddress(data);
       }}
     />
   );

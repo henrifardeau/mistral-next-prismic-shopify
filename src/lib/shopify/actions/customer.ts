@@ -2,19 +2,22 @@
 
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import { shopify } from '@/lib/shopify';
 
-import { SignInPayload, SignUpPayload } from '../schemas';
+import { AddressPayload, SignInPayload, SignUpPayload } from '../schemas';
 import { CartSession, CustomerSession } from '../types';
 import { updateCartCustomer } from './cart';
-import { redirect } from 'next/navigation';
+import { revalidateTag } from 'next/cache';
+
+function revalidateCustomer(customerAccessToken: string) {
+  revalidateTag(customerAccessToken);
+}
 
 export async function getCustomer() {
-  const cookieStore = await cookies();
-
   const customerSession = await getIronSession<CustomerSession>(
-    cookieStore,
+    await cookies(),
     shopify.customerSessionOptions,
   );
   if (!customerSession.authenticated) {
@@ -23,7 +26,7 @@ export async function getCustomer() {
 
   const shopifyCustomer = await shopify.getCustomer(
     customerSession.accessToken,
-    { tags: ['getCustomer', customerSession.accessToken] },
+    { tags: [customerSession.accessToken] },
   );
   if (!shopifyCustomer.customer) {
     return shopify.reshapeCustomer({});
@@ -78,4 +81,21 @@ export async function destroyCustomer() {
   customerSession.destroy();
 
   redirect('/');
+}
+
+export async function createCustomerAddress(payload: AddressPayload) {
+  const customerSession = await getIronSession<CustomerSession>(
+    await cookies(),
+    shopify.customerSessionOptions,
+  );
+
+  const { markAsDefault, ...address } = payload;
+
+  await shopify.createCustomerAddress(customerSession.accessToken, address);
+
+  if (markAsDefault) {
+    console.log('SHOULD UPDATE DEFAULT ADDRESS');
+  }
+
+  revalidateCustomer(customerSession.accessToken);
 }
