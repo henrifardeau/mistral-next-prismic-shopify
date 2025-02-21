@@ -19,7 +19,7 @@ import {
   CartUpdatePayload,
 } from '@/types/cart';
 
-import { CartStoreContext } from './CartStoreContext';
+import { CartStoreContext } from './cart-store-context';
 
 export function CartStoreProvider({
   children,

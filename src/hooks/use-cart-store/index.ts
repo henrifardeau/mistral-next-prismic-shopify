@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 
-import { CartStoreContext } from './CartStoreContext';
+import { CartStoreContext } from './cart-store-context';
 
-export * from './CartStoreProvider';
+export * from './cart-store-provider';
 
 export function useCartStore() {
   const context = useContext(CartStoreContext);

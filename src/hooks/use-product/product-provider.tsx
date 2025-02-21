@@ -10,7 +10,7 @@ import {
   ProductProviderProps,
   ProductStore,
   ZustandMiddlewares,
-} from './ProductContext';
+} from './product-context';
 import { getVariantForOptions } from './utils';
 
 export function ProductProvider({

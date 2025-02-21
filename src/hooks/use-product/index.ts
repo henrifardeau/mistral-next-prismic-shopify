@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { useStore } from 'zustand';
 
-import { ProductContext, ProductStore } from './ProductContext';
+import { ProductContext, ProductStore } from './product-context';
 
-export * from './ProductProvider';
+export * from './product-provider';
 export * from './utils';
 
 export function useProduct<T>(selector: (state: ProductStore) => T) {
