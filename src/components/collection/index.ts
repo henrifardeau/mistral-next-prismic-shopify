@@ -1,1 +1,1 @@
-export * from './sort-select';
+export * from './collection-sort-select';

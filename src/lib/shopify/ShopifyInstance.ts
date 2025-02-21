@@ -1,25 +1,37 @@
 import { DEFAULT_SORTING } from '@/constants/collection';
 
 import {
+  AddCartLinesMutation,
+  CreateCartMutation,
+  CreateCustomerAddressMutation,
+  CreateCustomerMutation,
+  CreateCustomerTokenMutation,
   CustomerAccessTokenCreateInput,
   CustomerCreateInput,
+  GetCartQuery,
+  GetCollectionByHandleQuery,
+  GetCustomerQuery,
+  GetProductByHandleQuery,
   MailingAddressInput,
+  RemoveCartLinesMutation,
+  UpdateCartBuyerIdentityMutation,
+  UpdateCartLinesMutation,
 } from './gql/graphql';
 import {
-  addCartLineMutation,
+  addCartLinesMutation,
   createCartMutation,
   createCustomerAddressMutation,
   createCustomerMutation,
   createCustomerTokenMutation,
-  removeCartLineMutation,
+  removeCartLinesMutation,
   updateCartBuyerIdentityMutation,
-  updateCartLineMutation,
+  updateCartLinesMutation,
 } from './mutations';
 import {
-  collectionByHandleQuery,
   getCartQuery,
+  getCollectionByHandleQuery,
   getCustomerQuery,
-  productByHandleQuery,
+  getProductByHandleQuery,
 } from './queries';
 import { Shopify } from './Shopify';
 import {
@@ -34,24 +46,28 @@ export class ShopifyInstance extends Shopify {
     customerAccessToken: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
-  ) {
+  ): Promise<GetCustomerQuery> {
     return this.client(next, cache).request(getCustomerQuery, {
       customerAccessToken,
     });
   }
 
-  public async createCustomer(input: CustomerCreateInput) {
+  public async createCustomer(
+    input: CustomerCreateInput,
+  ): Promise<CreateCustomerMutation> {
     return this.client().request(createCustomerMutation, { input });
   }
 
-  public async createCustomerToken(input: CustomerAccessTokenCreateInput) {
+  public async createCustomerToken(
+    input: CustomerAccessTokenCreateInput,
+  ): Promise<CreateCustomerTokenMutation> {
     return this.client().request(createCustomerTokenMutation, { input });
   }
 
   public async createCustomerAddress(
     customerAccessToken: string,
     address: MailingAddressInput,
-  ) {
+  ): Promise<CreateCustomerAddressMutation> {
     return this.client().request(createCustomerAddressMutation, {
       customerAccessToken,
       address,
@@ -62,7 +78,7 @@ export class ShopifyInstance extends Shopify {
     cartId: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
-  ) {
+  ): Promise<GetCartQuery> {
     const id = this.addPrefix('cart', cartId);
 
     return this.client(next, cache).request(getCartQuery, { id });
@@ -71,7 +87,7 @@ export class ShopifyInstance extends Shopify {
   public async createCart(
     cartLines: AddCartLine[],
     customerAccessToken?: string,
-  ) {
+  ): Promise<CreateCartMutation> {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       merchandiseId: this.addPrefix('variant', line.variantId),
@@ -87,35 +103,47 @@ export class ShopifyInstance extends Shopify {
     });
   }
 
-  public async addCartLines(cartId: string, cartLines: AddCartLine[]) {
+  public async addCartLines(
+    cartId: string,
+    cartLines: AddCartLine[],
+  ): Promise<AddCartLinesMutation> {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       merchandiseId: this.addPrefix('variant', line.variantId),
     }));
 
-    return this.client().request(addCartLineMutation, { cartId, lines });
+    return this.client().request(addCartLinesMutation, { cartId, lines });
   }
 
-  public async updateCartLines(cartId: string, cartLines: UpdateCartLine[]) {
+  public async updateCartLines(
+    cartId: string,
+    cartLines: UpdateCartLine[],
+  ): Promise<UpdateCartLinesMutation> {
     const lines = cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       id: this.addPrefix('line', line.lineId),
     }));
 
-    return this.client().request(updateCartLineMutation, { cartId, lines });
+    return this.client().request(updateCartLinesMutation, { cartId, lines });
   }
 
-  public async removeCartLines(cartId: string, cartLineIds: RemoveCartLine[]) {
+  public async removeCartLines(
+    cartId: string,
+    cartLineIds: RemoveCartLine[],
+  ): Promise<RemoveCartLinesMutation> {
     const lineIds = cartLineIds.reduce((acc, cur) => {
       const prefixedCur = this.addPrefix('line', cur.lineId);
 
       return acc.includes(prefixedCur) ? acc : [...acc, prefixedCur];
     }, [] as string[]);
 
-    return this.client().request(removeCartLineMutation, { cartId, lineIds });
+    return this.client().request(removeCartLinesMutation, { cartId, lineIds });
   }
 
-  public async updateCartCustomer(cartId: string, customerAccessToken: string) {
+  public async updateCartCustomer(
+    cartId: string,
+    customerAccessToken: string,
+  ): Promise<UpdateCartBuyerIdentityMutation> {
     return this.client().request(updateCartBuyerIdentityMutation, {
       cartId,
       buyerIdentity: {
@@ -132,8 +160,8 @@ export class ShopifyInstance extends Shopify {
     },
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
-  ) {
-    return this.client(next, cache).request(collectionByHandleQuery, {
+  ): Promise<GetCollectionByHandleQuery> {
+    return this.client(next, cache).request(getCollectionByHandleQuery, {
       handle,
       first: 20,
       sortKey: (sort?.key ?? DEFAULT_SORTING.sortKey) as CollectionSortKeys,
@@ -145,7 +173,9 @@ export class ShopifyInstance extends Shopify {
     handle: string,
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
-  ) {
-    return this.client(next, cache).request(productByHandleQuery, { handle });
+  ): Promise<GetProductByHandleQuery> {
+    return this.client(next, cache).request(getProductByHandleQuery, {
+      handle,
+    });
   }
 }

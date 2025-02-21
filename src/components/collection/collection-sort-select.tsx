@@ -12,7 +12,11 @@ import {
 } from '@/components/ui/select';
 import { SORTING } from '@/constants/collection';
 
-export function SortSelect({ sort }: { sort: { name: string; slug: string } }) {
+export function CollectionSortSelect({
+  sort,
+}: {
+  sort: { name: string; slug: string };
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

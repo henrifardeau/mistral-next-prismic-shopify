@@ -87,8 +87,8 @@ export const getCartQuery = graphql(`
   }
 `);
 
-export const collectionByHandleQuery = graphql(`
-  query CollectionByHandle(
+export const getCollectionByHandleQuery = graphql(`
+  query GetCollectionByHandle(
     $handle: String!
     $first: Int!
     $sortKey: ProductCollectionSortKeys!
@@ -145,8 +145,8 @@ export const collectionByHandleQuery = graphql(`
   }
 `);
 
-export const productByHandleQuery = graphql(`
-  query ProductByHandle($handle: String!) {
+export const getProductByHandleQuery = graphql(`
+  query GetProductByHandle($handle: String!) {
     product(handle: $handle) {
       id
       handle

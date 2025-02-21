@@ -1,9 +1,9 @@
 import {
-  CollectionByHandleQuery,
+  GetCollectionByHandleQuery,
   CreateCartMutation,
   GetCartQuery,
   GetCustomerQuery,
-  ProductByHandleQuery,
+  GetProductByHandleQuery,
   ProductCollectionSortKeys,
 } from './gql/graphql';
 
@@ -11,9 +11,9 @@ export type RawCustomer = GetCustomerQuery;
 
 export type RawCart = GetCartQuery | CreateCartMutation['cartCreate'];
 
-export type RawCollectionProducts = CollectionByHandleQuery;
+export type RawCollectionProducts = GetCollectionByHandleQuery;
 
-export type RawProduct = ProductByHandleQuery;
+export type RawProduct = GetProductByHandleQuery;
 
 export type CollectionSortKeys = ProductCollectionSortKeys;
 

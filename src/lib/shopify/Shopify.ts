@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { SessionOptions } from 'iron-session';
 
+import { PREFIXES } from '@/constants/gid';
 import { Cart } from '@/types/cart';
 import { Customer } from '@/types/customer';
 import { Connection } from '@/types/gql';
@@ -12,14 +13,6 @@ import {
   RawCustomer,
   RawProduct,
 } from './types';
-
-const PREFIXES = Object.freeze({
-  cart: 'gid://shopify/Cart/',
-  collection: 'gid://shopify/Collection/',
-  product: 'gid://shopify/Product/',
-  variant: 'gid://shopify/ProductVariant/',
-  line: 'gid://shopify/CartLine/',
-});
 
 export class Shopify {
   protected readonly storefrontURL: string;
@@ -38,7 +31,10 @@ export class Shopify {
       : 'https://' + this.domain + `/api/${this.apiVersion}/graphql`;
   }
 
-  protected client(next?: NextFetchRequestConfig, cache?: RequestCache) {
+  protected client(
+    next?: NextFetchRequestConfig,
+    cache?: RequestCache,
+  ): GraphQLClient {
     return new GraphQLClient(this.storefrontURL, {
       headers: {
         'x-shopify-storefront-access-token': this.token,
@@ -74,11 +70,11 @@ export class Shopify {
     };
   }
 
-  public addPrefix(prefix: keyof typeof PREFIXES, val: string) {
+  public addPrefix(prefix: keyof typeof PREFIXES, val: string): string {
     return val.startsWith(PREFIXES[prefix]) ? val : PREFIXES[prefix] + val;
   }
 
-  public removePrefix(prefix: keyof typeof PREFIXES, val: string) {
+  public removePrefix(prefix: keyof typeof PREFIXES, val: string): string {
     return val.startsWith(PREFIXES[prefix])
       ? val.slice(PREFIXES[prefix].length)
       : val;
@@ -92,44 +88,17 @@ export class Shopify {
     rawCustomer: RawCustomer,
     accessToken?: string,
   ): Customer {
-    const { customer } = rawCustomer;
-
-    if (!customer || !accessToken) {
+    if (!rawCustomer.customer || !accessToken) {
       return {
         authenticated: false,
       };
     }
 
-    const { defaultAddress, addresses } = customer;
-
     return {
       authenticated: true,
       accessToken,
-      ...customer,
-      defaultAddress: {
-        address1: defaultAddress?.address1 ?? '',
-        address2: defaultAddress?.address2 ?? '',
-        city: defaultAddress?.city ?? '',
-        company: defaultAddress?.company ?? '',
-        country: defaultAddress?.country ?? '',
-        firstName: defaultAddress?.firstName ?? '',
-        lastName: defaultAddress?.lastName ?? '',
-        phone: defaultAddress?.phone ?? '',
-        province: defaultAddress?.province ?? '',
-        zip: defaultAddress?.zip ?? '',
-      },
-      addresses: this.removeEdgesAndNodes(addresses).map((address) => ({
-        address1: address.address1 ?? '',
-        address2: address.address2 ?? '',
-        city: address.city ?? '',
-        company: address.company ?? '',
-        country: address.country ?? '',
-        firstName: address.firstName ?? '',
-        lastName: address.lastName ?? '',
-        phone: address.phone ?? '',
-        province: address.province ?? '',
-        zip: address.zip ?? '',
-      })),
+      ...rawCustomer.customer,
+      addresses: this.removeEdgesAndNodes(rawCustomer.customer.addresses),
     };
   }
 
@@ -138,13 +107,11 @@ export class Shopify {
       throw new Error('Reshap empty cart forbidden!');
     }
 
-    const { id, checkoutUrl, lines } = rawCart.cart;
-
     return {
-      id: id,
-      checkoutUrl: checkoutUrl,
+      id: rawCart.cart.id,
+      checkoutUrl: rawCart.cart.checkoutUrl,
       state: 'idle',
-      lines: this.removeEdgesAndNodes(lines).map((line) => ({
+      lines: this.removeEdgesAndNodes(rawCart.cart.lines).map((line) => ({
         id: line.id,
         quantity: line.quantity,
         availableForSale: line.merchandise.availableForSale,
@@ -173,10 +140,8 @@ export class Shopify {
       throw new Error('Reshap empty products forbidden!');
     }
 
-    const { products } = rawProducts.collection;
-
-    return this.removeEdgesAndNodes(products).map((product) =>
-      this.reshapeProduct({ product }),
+    return this.removeEdgesAndNodes(rawProducts.collection.products).map(
+      (product) => this.reshapeProduct({ product }),
     );
   }
 
@@ -185,20 +150,20 @@ export class Shopify {
       throw new Error('Reshap empty product forbidden!');
     }
 
-    const { id, handle, title, options, variants } = rawProduct.product;
-
     return {
-      id: id,
-      handle: handle,
-      title: title,
-      options: options,
-      variants: this.removeEdgesAndNodes(variants).map((variant) => ({
-        ...variant,
-        image: {
-          src: variant.image?.url,
-          alt: variant.image?.altText,
-        },
-      })),
+      id: rawProduct.product.id,
+      handle: rawProduct.product.handle,
+      title: rawProduct.product.title,
+      options: rawProduct.product.options,
+      variants: this.removeEdgesAndNodes(rawProduct.product.variants).map(
+        (variant) => ({
+          ...variant,
+          image: {
+            src: variant.image?.url,
+            alt: variant.image?.altText,
+          },
+        }),
+      ),
     };
   }
 }

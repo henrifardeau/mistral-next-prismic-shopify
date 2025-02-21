@@ -7,16 +7,16 @@ type GuestCustomer = {
 };
 
 export type CustomerAddress = {
-  address1: string;
-  address2: string;
-  city: string;
-  company: string;
-  country: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  province: string;
-  zip: string;
+  address1?: string | null;
+  address2?: string | null;
+  city?: string | null;
+  company?: string | null;
+  country?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  province?: string | null;
+  zip?: string | null;
 };
 
 type SignCustomer = {
@@ -31,7 +31,7 @@ type SignCustomer = {
   phone?: string | null;
   createdAt: string;
   updatedAt: string;
-  defaultAddress: CustomerAddress;
+  defaultAddress?: CustomerAddress | null;
   addresses: CustomerAddress[];
 };
 

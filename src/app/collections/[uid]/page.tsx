@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { SortSelect } from '@/components/collection';
+import { CollectionSortSelect } from '@/components/collection';
 import { DEFAULT_SORTING, SORTING } from '@/constants/collection';
 import { prismic } from '@/lib/prismic';
 import { components } from '@/slices';
@@ -68,7 +68,7 @@ export default async function Page({
     <>
       <div className="container py-4">
         <div className="flex items-center justify-end">
-          <SortSelect sort={sort} />
+          <CollectionSortSelect sort={sort} />
         </div>
       </div>
       <SliceZone

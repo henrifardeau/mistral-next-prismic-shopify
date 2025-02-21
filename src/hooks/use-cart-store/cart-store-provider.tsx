@@ -35,10 +35,7 @@ export function CartStoreProvider({
 
   const optimisticAddCartLine = useCallback(
     (payload: CartAddPayload) => {
-      updateOptimisticCart({
-        type: 'ADD',
-        payload,
-      });
+      updateOptimisticCart({ type: 'ADD', payload });
     },
     [updateOptimisticCart],
   );

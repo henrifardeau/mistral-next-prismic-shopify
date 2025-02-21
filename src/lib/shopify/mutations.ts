@@ -79,8 +79,8 @@ export const createCartMutation = graphql(`
   }
 `);
 
-export const addCartLineMutation = graphql(`
-  mutation AddCartLine($cartId: ID!, $lines: [CartLineInput!]!) {
+export const addCartLinesMutation = graphql(`
+  mutation AddCartLines($cartId: ID!, $lines: [CartLineInput!]!) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart {
         id
@@ -90,8 +90,8 @@ export const addCartLineMutation = graphql(`
   }
 `);
 
-export const updateCartLineMutation = graphql(`
-  mutation UpdateCartLine($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+export const updateCartLinesMutation = graphql(`
+  mutation UpdateCartLines($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) {
       cart {
         id
@@ -101,8 +101,8 @@ export const updateCartLineMutation = graphql(`
   }
 `);
 
-export const removeCartLineMutation = graphql(`
-  mutation RemoveCartLine($cartId: ID!, $lineIds: [ID!]!) {
+export const removeCartLinesMutation = graphql(`
+  mutation RemoveCartLines($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart {
         id
