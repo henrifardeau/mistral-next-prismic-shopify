@@ -84,6 +84,10 @@ export class Shopify {
       : val;
   }
 
+  public removeEdgesAndNodes<T>(array: Connection<T>): T[] {
+    return array.edges.map((edge) => edge?.node);
+  }
+
   public reshapeCustomer(
     rawCustomer: RawCustomer,
     accessToken?: string,
@@ -96,36 +100,36 @@ export class Shopify {
       };
     }
 
+    const { defaultAddress, addresses } = customer;
+
     return {
       authenticated: true,
       accessToken,
       ...customer,
       defaultAddress: {
-        address1: customer.defaultAddress?.address1 ?? '',
-        address2: customer.defaultAddress?.address2 ?? '',
-        city: customer.defaultAddress?.city ?? '',
-        company: customer.defaultAddress?.company ?? '',
-        country: customer.defaultAddress?.country ?? '',
-        firstName: customer.defaultAddress?.firstName ?? '',
-        lastName: customer.defaultAddress?.lastName ?? '',
-        phone: customer.defaultAddress?.phone ?? '',
-        province: customer.defaultAddress?.province ?? '',
-        zip: customer.defaultAddress?.zip ?? '',
+        address1: defaultAddress?.address1 ?? '',
+        address2: defaultAddress?.address2 ?? '',
+        city: defaultAddress?.city ?? '',
+        company: defaultAddress?.company ?? '',
+        country: defaultAddress?.country ?? '',
+        firstName: defaultAddress?.firstName ?? '',
+        lastName: defaultAddress?.lastName ?? '',
+        phone: defaultAddress?.phone ?? '',
+        province: defaultAddress?.province ?? '',
+        zip: defaultAddress?.zip ?? '',
       },
-      addresses: this.removeEdgesAndNodes(customer.addresses).map(
-        (address) => ({
-          address1: address.address1 ?? '',
-          address2: address.address2 ?? '',
-          city: address.city ?? '',
-          company: address.company ?? '',
-          country: address.country ?? '',
-          firstName: address.firstName ?? '',
-          lastName: address.lastName ?? '',
-          phone: address.phone ?? '',
-          province: address.province ?? '',
-          zip: address.zip ?? '',
-        }),
-      ),
+      addresses: this.removeEdgesAndNodes(addresses).map((address) => ({
+        address1: address.address1 ?? '',
+        address2: address.address2 ?? '',
+        city: address.city ?? '',
+        company: address.company ?? '',
+        country: address.country ?? '',
+        firstName: address.firstName ?? '',
+        lastName: address.lastName ?? '',
+        phone: address.phone ?? '',
+        province: address.province ?? '',
+        zip: address.zip ?? '',
+      })),
     };
   }
 
@@ -134,13 +138,13 @@ export class Shopify {
       throw new Error('Reshap empty cart forbidden!');
     }
 
-    const { cart } = rawCart;
+    const { id, checkoutUrl, lines } = rawCart.cart;
 
     return {
-      id: cart.id,
-      checkoutUrl: cart.checkoutUrl,
+      id: id,
+      checkoutUrl: checkoutUrl,
       state: 'idle',
-      lines: this.removeEdgesAndNodes(cart.lines).map((line) => ({
+      lines: this.removeEdgesAndNodes(lines).map((line) => ({
         id: line.id,
         quantity: line.quantity,
         availableForSale: line.merchandise.availableForSale,
@@ -181,14 +185,14 @@ export class Shopify {
       throw new Error('Reshap empty product forbidden!');
     }
 
-    const { product } = rawProduct;
+    const { id, handle, title, options, variants } = rawProduct.product;
 
     return {
-      id: product.id,
-      handle: product.handle,
-      title: product.title,
-      options: product.options,
-      variants: this.removeEdgesAndNodes(product.variants).map((variant) => ({
+      id: id,
+      handle: handle,
+      title: title,
+      options: options,
+      variants: this.removeEdgesAndNodes(variants).map((variant) => ({
         ...variant,
         image: {
           src: variant.image?.url,
@@ -196,9 +200,5 @@ export class Shopify {
         },
       })),
     };
-  }
-
-  public removeEdgesAndNodes<T>(array: Connection<T>): T[] {
-    return array.edges.map((edge) => edge?.node);
   }
 }

@@ -67,11 +67,13 @@ export async function createCart(lines?: AddCartLine[]) {
 }
 
 export async function addCartLines(lines: AddCartLine[]) {
-  const existingCart = (await getCart()) as { id: string };
+  const shopifyCart = await getCart();
 
-  let cartId: string = existingCart.id;
-  if (existingCart) {
-    await shopify.addCartLines(existingCart.id, lines);
+  let cartId: string = '';
+  if (shopifyCart?.id) {
+    await shopify.addCartLines(shopifyCart.id, lines);
+
+    cartId = shopifyCart.id;
   } else {
     const createdCart = await createCart(lines);
     if (!createdCart.id) {

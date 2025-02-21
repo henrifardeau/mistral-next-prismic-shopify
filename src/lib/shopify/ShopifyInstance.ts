@@ -1,4 +1,10 @@
 import { DEFAULT_SORTING } from '@/constants/collection';
+
+import {
+  CustomerAccessTokenCreateInput,
+  CustomerCreateInput,
+  MailingAddressInput,
+} from './gql/graphql';
 import {
   addCartLineMutation,
   createCartMutation,
@@ -22,8 +28,6 @@ import {
   RemoveCartLine,
   UpdateCartLine,
 } from './types';
-import { SignInPayload, SignUpPayload } from './schemas';
-import { MailingAddressInput } from './gql/graphql';
 
 export class ShopifyInstance extends Shopify {
   public async getCustomer(
@@ -36,11 +40,11 @@ export class ShopifyInstance extends Shopify {
     });
   }
 
-  public async createCustomer(input: SignUpPayload) {
+  public async createCustomer(input: CustomerCreateInput) {
     return this.client().request(createCustomerMutation, { input });
   }
 
-  public async createCustomerToken(input: SignInPayload) {
+  public async createCustomerToken(input: CustomerAccessTokenCreateInput) {
     return this.client().request(createCustomerTokenMutation, { input });
   }
 
