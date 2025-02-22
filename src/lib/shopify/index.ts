@@ -1,6 +1,6 @@
-import { ShopifyInstance } from './ShopifyInstance';
-
 import { env } from '@/env';
+
+import { Shopify } from './Shopify';
 
 // const globalForShopify = global as unknown as {
 //   shopify: ShopifyInstance;
@@ -16,7 +16,7 @@ import { env } from '@/env';
 
 // if (env.NODE_ENV !== 'production') globalForShopify.shopify = shopify;
 
-export const shopify = new ShopifyInstance(
+export const shopify = new Shopify(
   env.SHOPIFY_STOREFRONT_DOMAIN,
   env.SHOPIFY_STOREFRONT_API_VERSION,
   env.SHOPIFY_STOREFRONT_API_TOKEN,

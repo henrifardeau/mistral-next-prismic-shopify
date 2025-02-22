@@ -26,7 +26,7 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     return null;
   }
 
-  const shopifyCollection = await shopify.getCollectionByHandle(
+  const shopifyCollection = await shopify.collection.getByHandle(
     slice.primary.shopify_collection_handle,
     { key: context.sortKey, reverse: context.sortReverse },
   );
@@ -34,7 +34,7 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     return null;
   }
 
-  const products = shopify.reshapeCollectionProducts(shopifyCollection);
+  const products = shopify.helpers.reshapeCollectionProducts(shopifyCollection);
   const documents = await prismic.getAllByUIDs(
     'products',
     products.map((p) => p.handle),

@@ -51,14 +51,14 @@ export default async function Page({
 
   const [page, shopifyProduct] = await Promise.all([
     prismic.getByUID('products', handle),
-    shopify.getProductByHandle(handle),
+    shopify.product.getByHandle(handle),
   ]);
 
   if (!shopifyProduct.product) {
     return notFound();
   }
 
-  const product = shopify.reshapeProduct(shopifyProduct);
+  const product = shopify.helpers.reshapeProduct(shopifyProduct);
 
   const productOptions = getVerifiedOptions(product.options);
   const initialOptions = getInitialOptions(productOptions);

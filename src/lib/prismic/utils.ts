@@ -31,7 +31,7 @@ export function flatVariantsImages(
       }
 
       cur.shopify_variant_ids.split('_').forEach((id) => {
-        const variantId = shopify.addPrefix('variant', id);
+        const variantId = shopify.helpers.addPrefix('variant', id);
 
         if (isFilled.image(cur.thumbnail)) {
           (acc[variantId] ||= []).push(cur.thumbnail);

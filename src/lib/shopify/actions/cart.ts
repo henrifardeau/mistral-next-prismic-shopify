@@ -4,6 +4,7 @@ import { getIronSession, IronSession } from 'iron-session';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import invariant from 'tiny-invariant';
 
 import { shopify } from '@/lib/shopify';
 
@@ -19,16 +20,28 @@ function revalidateCart(cartId: string) {
   revalidateTag(cartId);
 }
 
-export async function getCart() {
-  const cartSession = await getIronSession<CartSession>(
+async function getCartSession() {
+  return await getIronSession<CartSession>(
     await cookies(),
-    shopify.cartSessionOptions,
+    shopify.cart.sessionOptions,
   );
+}
+
+async function ensureCartSession() {
+  const cartSession = await getCartSession();
+
+  invariant(cartSession.cartId, 'Cart id is undefined');
+
+  return cartSession;
+}
+
+export async function getCart() {
+  const cartSession = await getCartSession();
   if (!cartSession.cartId) {
     return undefined;
   }
 
-  const shopifyCart = await shopify.getCart(cartSession.cartId, {
+  const shopifyCart = await shopify.cart.get(cartSession.cartId, {
     tags: [cartSession.cartId],
   });
   // Old carts becomes `null` when you checkout.
@@ -36,7 +49,7 @@ export async function getCart() {
     return undefined;
   }
 
-  return shopify.reshapeCart(shopifyCart);
+  return shopify.helpers.reshapeCart(shopifyCart);
 }
 
 export async function createCart(lines?: AddCartLine[]) {
@@ -45,25 +58,23 @@ export async function createCart(lines?: AddCartLine[]) {
   const [customerSession, cartSession] = await Promise.all([
     getIronSession<CustomerSession>(
       cookieStore,
-      shopify.customerSessionOptions,
+      shopify.customer.sessionOptions,
     ),
-    getIronSession<CartSession>(cookieStore, shopify.cartSessionOptions),
+    getIronSession<CartSession>(cookieStore, shopify.cart.sessionOptions),
   ]);
 
-  const shopifyCart = await shopify.createCart(
+  const shopifyCart = await shopify.cart.create(
     lines || [],
     customerSession.accessToken,
   );
-  if (!shopifyCart.cartCreate?.cart) {
-    throw new Error('Fail to create cart');
-  }
+
+  invariant(shopifyCart.cartCreate?.cart, 'Fail to create cart');
 
   cartSession.cartId = shopifyCart.cartCreate.cart.id;
   cartSession.cartCheckoutUrl = shopifyCart.cartCreate.cart.checkoutUrl;
-
   await cartSession.save();
 
-  return shopify.reshapeCart(shopifyCart.cartCreate);
+  return shopify.helpers.reshapeCart(shopifyCart.cartCreate);
 }
 
 export async function addCartLines(lines: AddCartLine[]) {
@@ -71,14 +82,13 @@ export async function addCartLines(lines: AddCartLine[]) {
 
   let cartId: string = '';
   if (shopifyCart?.id) {
-    await shopify.addCartLines(shopifyCart.id, lines);
+    await shopify.cart.addLines(shopifyCart.id, lines);
 
     cartId = shopifyCart.id;
   } else {
     const createdCart = await createCart(lines);
-    if (!createdCart.id) {
-      throw new Error('Fail to create cart');
-    }
+
+    invariant(createdCart.id, 'Fail to create cart');
 
     cartId = createdCart.id;
   }
@@ -87,41 +97,25 @@ export async function addCartLines(lines: AddCartLine[]) {
 }
 
 export async function updateCartLines(lines: UpdateCartLine[]) {
-  const cartSession = await getIronSession<CartSession>(
-    await cookies(),
-    shopify.cartSessionOptions,
-  );
-  if (!cartSession.cartId) {
-    throw new Error('Cart not found');
-  }
+  const cartSession = await ensureCartSession();
 
-  await shopify.updateCartLines(cartSession.cartId, lines);
+  await shopify.cart.updateLines(cartSession.cartId, lines);
 
   revalidateCart(cartSession.cartId);
 }
 
 export async function removeCartLines(lines: RemoveCartLine[]) {
-  const cartSession = await getIronSession<CartSession>(
-    await cookies(),
-    shopify.cartSessionOptions,
-  );
-  if (!cartSession.cartId) {
-    throw new Error('Cart not found');
-  }
+  const cartSession = await ensureCartSession();
 
-  await shopify.removeCartLines(cartSession.cartId, lines);
+  await shopify.cart.removeLines(cartSession.cartId, lines);
 
   revalidateCart(cartSession.cartId);
 }
 
 export async function redirectToCheckout() {
-  const cartSession = await getIronSession<CartSession>(
-    await cookies(),
-    shopify.cartSessionOptions,
-  );
-  if (!cartSession.cartId) {
-    throw new Error('Cart not found');
-  }
+  const cartSession = await ensureCartSession();
+
+  invariant(cartSession.cartCheckoutUrl, 'Checkout URL is undefined');
 
   redirect(cartSession.cartCheckoutUrl);
 }
@@ -130,19 +124,16 @@ export async function updateCartCustomer(
   cartSession: IronSession<CartSession>,
   customerSession: IronSession<CustomerSession>,
 ) {
-  const shopifyCart = await shopify.updateCartCustomer(
+  const shopifyCart = await shopify.cart.updateCustomer(
     cartSession.cartId,
     customerSession.accessToken,
   );
 
-  if (!shopifyCart.cartBuyerIdentityUpdate?.cart) {
-    throw new Error('Fail to update cart');
-  }
+  invariant(shopifyCart.cartBuyerIdentityUpdate?.cart, 'Fail to update cart');
 
   cartSession.cartId = shopifyCart.cartBuyerIdentityUpdate.cart.id;
   cartSession.cartCheckoutUrl =
     shopifyCart.cartBuyerIdentityUpdate.cart.checkoutUrl;
-
   await cartSession.save();
 
   return shopifyCart;

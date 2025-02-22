@@ -4,6 +4,7 @@ import { getIronSession } from 'iron-session';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import invariant from 'tiny-invariant';
 
 import { shopify } from '@/lib/shopify';
 
@@ -15,40 +16,51 @@ function revalidateCustomer(customerAccessToken: string) {
   revalidateTag(customerAccessToken);
 }
 
-export async function getCustomer() {
-  const customerSession = await getIronSession<CustomerSession>(
+async function getCustomerSession() {
+  return await getIronSession<CustomerSession>(
     await cookies(),
-    shopify.customerSessionOptions,
+    shopify.customer.sessionOptions,
   );
+}
+
+async function ensureCustomerSession() {
+  const customerSession = await getCustomerSession();
+
+  invariant(customerSession.authenticated, 'Customer is not login');
+
+  return customerSession;
+}
+
+export async function getCustomer() {
+  const customerSession = await getCustomerSession();
   if (!customerSession.authenticated) {
-    return shopify.reshapeCustomer({});
+    return shopify.helpers.reshapeCustomer({});
   }
 
-  const shopifyCustomer = await shopify.getCustomer(
+  const shopifyCustomer = await shopify.customer.get(
     customerSession.accessToken,
     { tags: [customerSession.accessToken] },
   );
   if (!shopifyCustomer.customer) {
-    return shopify.reshapeCustomer({});
+    return shopify.helpers.reshapeCustomer({});
   }
 
-  return shopify.reshapeCustomer(shopifyCustomer, customerSession.accessToken);
-}
-
-export async function createCustomer(payload: SignUpPayload) {
-  await shopify.createCustomer(payload);
-  await getCustomerAccessToken(payload);
+  return shopify.helpers.reshapeCustomer(
+    shopifyCustomer,
+    customerSession.accessToken,
+  );
 }
 
 export async function getCustomerAccessToken(payload: SignInPayload) {
-  const { customerAccessTokenCreate } = await shopify.createCustomerToken({
+  const { customerAccessTokenCreate } = await shopify.customer.createToken({
     email: payload.email,
     password: payload.password,
   });
 
-  if (!customerAccessTokenCreate?.customerAccessToken?.accessToken) {
-    throw new Error('Fail to create access token');
-  }
+  invariant(
+    customerAccessTokenCreate?.customerAccessToken?.accessToken,
+    'Fail to create access token',
+  );
 
   const cookieStore = await cookies();
   const { accessToken } = customerAccessTokenCreate.customerAccessToken;
@@ -56,9 +68,9 @@ export async function getCustomerAccessToken(payload: SignInPayload) {
   const [customerSession, cartSession] = await Promise.all([
     getIronSession<CustomerSession>(
       cookieStore,
-      shopify.customerSessionOptions,
+      shopify.customer.sessionOptions,
     ),
-    getIronSession<CartSession>(cookieStore, shopify.cartSessionOptions),
+    getIronSession<CartSession>(cookieStore, shopify.cart.sessionOptions),
   ]);
 
   customerSession.authenticated = true;
@@ -70,14 +82,13 @@ export async function getCustomerAccessToken(payload: SignInPayload) {
   }
 }
 
+export async function createCustomer(payload: SignUpPayload) {
+  await shopify.customer.create(payload);
+  await getCustomerAccessToken(payload);
+}
+
 export async function destroyCustomer() {
-  const customerSession = await getIronSession<CustomerSession>(
-    await cookies(),
-    shopify.customerSessionOptions,
-  );
-  if (!customerSession.authenticated) {
-    throw new Error('Customer is not login');
-  }
+  const customerSession = await ensureCustomerSession();
 
   customerSession.destroy();
 
@@ -85,15 +96,9 @@ export async function destroyCustomer() {
 }
 
 export async function createCustomerAddress(payload: AddressPayload) {
-  const customerSession = await getIronSession<CustomerSession>(
-    await cookies(),
-    shopify.customerSessionOptions,
-  );
-  if (!customerSession.authenticated) {
-    throw new Error('Customer is not login');
-  }
+  const customerSession = await ensureCustomerSession();
 
-  await shopify.createCustomerAddress(customerSession.accessToken, payload);
+  await shopify.customer.createAddress(customerSession.accessToken, payload);
 
   revalidateCustomer(customerSession.accessToken);
 }
@@ -102,15 +107,9 @@ export async function updateCustomerAddress(
   addressId: string,
   payload: AddressPayload,
 ) {
-  const customerSession = await getIronSession<CustomerSession>(
-    await cookies(),
-    shopify.customerSessionOptions,
-  );
-  if (!customerSession.authenticated) {
-    throw new Error('Customer is not login');
-  }
+  const customerSession = await ensureCustomerSession();
 
-  await shopify.updateCustomerAddress(
+  await shopify.customer.updateAddress(
     customerSession.accessToken,
     addressId,
     payload,
@@ -120,15 +119,9 @@ export async function updateCustomerAddress(
 }
 
 export async function updateDefaultCustomerAddress(addressId: string) {
-  const customerSession = await getIronSession<CustomerSession>(
-    await cookies(),
-    shopify.customerSessionOptions,
-  );
-  if (!customerSession.authenticated) {
-    throw new Error('Customer is not login');
-  }
+  const customerSession = await ensureCustomerSession();
 
-  await shopify.updateDefaultCustomerAddress(
+  await shopify.customer.updateDefaultAddress(
     customerSession.accessToken,
     addressId,
   );
@@ -137,15 +130,9 @@ export async function updateDefaultCustomerAddress(addressId: string) {
 }
 
 export async function removeCustomerAddress(addressId: string) {
-  const customerSession = await getIronSession<CustomerSession>(
-    await cookies(),
-    shopify.customerSessionOptions,
-  );
-  if (!customerSession.authenticated) {
-    throw new Error('Customer is not login');
-  }
+  const customerSession = await ensureCustomerSession();
 
-  await shopify.removeCustomerAddress(customerSession.accessToken, addressId);
+  await shopify.customer.removeAddress(customerSession.accessToken, addressId);
 
   revalidateCustomer(customerSession.accessToken);
 }
