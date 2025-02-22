@@ -98,7 +98,12 @@ export class Shopify {
       authenticated: true,
       accessToken,
       ...rawCustomer.customer,
-      addresses: this.removeEdgesAndNodes(rawCustomer.customer.addresses),
+      addresses: this.removeEdgesAndNodes(rawCustomer.customer.addresses).map(
+        (address) => ({
+          ...address,
+          default: rawCustomer.customer?.defaultAddress?.id === address.id,
+        }),
+      ),
     };
   }
 

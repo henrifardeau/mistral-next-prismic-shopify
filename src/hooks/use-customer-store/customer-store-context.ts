@@ -3,16 +3,34 @@
 import { createContext } from 'react';
 
 import { AddressPayload } from '@/lib/shopify/schemas';
-import { Customer } from '@/types/customer';
+import {
+  AddressIdPayload,
+  AddressUpdatePayload,
+  Customer,
+} from '@/types/customer';
 
 type CustomerStoreContextProps = {
   optimisticCustomer: Customer;
   optimisticCreateCustomerAddress: (payload: AddressPayload) => void;
+  optimisticUpdateCustomerAddress: (payload: AddressUpdatePayload) => void;
+  optimisticRemoveCustomerAddress: (payload: AddressIdPayload) => void;
+  optimisticUpdateDefaultCustomerAddress: (payload: AddressIdPayload) => void;
 };
 
 export const CustomerStoreContext = createContext<CustomerStoreContextProps>({
   optimisticCustomer: {
     authenticated: false,
   },
-  optimisticCreateCustomerAddress: () => {},
+  optimisticCreateCustomerAddress: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticUpdateCustomerAddress: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticRemoveCustomerAddress: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticUpdateDefaultCustomerAddress: () => {
+    console.warn('Function not initialized');
+  },
 });

@@ -7,6 +7,8 @@ type GuestCustomer = {
 };
 
 export type CustomerAddress = {
+  id: string;
+  default: boolean;
   address1?: string | null;
   address2?: string | null;
   city?: string | null;
@@ -31,11 +33,32 @@ type SignCustomer = {
   phone?: string | null;
   createdAt: string;
   updatedAt: string;
-  defaultAddress?: CustomerAddress | null;
+  defaultAddress?: { id: string } | null;
   addresses: CustomerAddress[];
 };
 
-export type CustomerAction = {
-  type: 'CREATE_ADDRESS';
-  payload: AddressPayload;
+export type CustomerAction =
+  | {
+      type: 'CREATE_ADDRESS';
+      payload: AddressPayload;
+    }
+  | {
+      type: 'UPDATE_ADDRESS';
+      payload: AddressUpdatePayload;
+    }
+  | {
+      type: 'REMOVE_ADDRESS';
+      payload: AddressIdPayload;
+    }
+  | {
+      type: 'UPDATE_DEFAULT_ADDRESS';
+      payload: AddressIdPayload;
+    };
+
+export type AddressIdPayload = {
+  id: string;
 };
+
+export interface AddressUpdatePayload extends AddressIdPayload {
+  address: AddressPayload;
+}

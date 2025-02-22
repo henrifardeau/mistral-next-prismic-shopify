@@ -30,6 +30,5 @@ export const addressSchema = z.object({
   country: z.string().optional(),
   phone: z.string().optional(),
   company: z.string().optional(),
-  markAsDefault: z.boolean().default(false),
 });
 export type AddressPayload = z.infer<typeof addressSchema>;

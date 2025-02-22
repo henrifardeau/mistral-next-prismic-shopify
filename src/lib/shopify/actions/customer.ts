@@ -1,6 +1,7 @@
 'use server';
 
 import { getIronSession } from 'iron-session';
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -9,7 +10,6 @@ import { shopify } from '@/lib/shopify';
 import { AddressPayload, SignInPayload, SignUpPayload } from '../schemas';
 import { CartSession, CustomerSession } from '../types';
 import { updateCartCustomer } from './cart';
-import { revalidateTag } from 'next/cache';
 
 function revalidateCustomer(customerAccessToken: string) {
   revalidateTag(customerAccessToken);
@@ -71,12 +71,13 @@ export async function getCustomerAccessToken(payload: SignInPayload) {
 }
 
 export async function destroyCustomer() {
-  const cookieStore = await cookies();
-
   const customerSession = await getIronSession<CustomerSession>(
-    cookieStore,
+    await cookies(),
     shopify.customerSessionOptions,
   );
+  if (!customerSession.authenticated) {
+    throw new Error('Customer is not login');
+  }
 
   customerSession.destroy();
 
@@ -88,14 +89,63 @@ export async function createCustomerAddress(payload: AddressPayload) {
     await cookies(),
     shopify.customerSessionOptions,
   );
-
-  const { markAsDefault, ...address } = payload;
-
-  await shopify.createCustomerAddress(customerSession.accessToken, address);
-
-  if (markAsDefault) {
-    console.log('SHOULD UPDATE DEFAULT ADDRESS');
+  if (!customerSession.authenticated) {
+    throw new Error('Customer is not login');
   }
+
+  await shopify.createCustomerAddress(customerSession.accessToken, payload);
+
+  revalidateCustomer(customerSession.accessToken);
+}
+
+export async function updateCustomerAddress(
+  addressId: string,
+  payload: AddressPayload,
+) {
+  const customerSession = await getIronSession<CustomerSession>(
+    await cookies(),
+    shopify.customerSessionOptions,
+  );
+  if (!customerSession.authenticated) {
+    throw new Error('Customer is not login');
+  }
+
+  await shopify.updateCustomerAddress(
+    customerSession.accessToken,
+    addressId,
+    payload,
+  );
+
+  revalidateCustomer(customerSession.accessToken);
+}
+
+export async function updateDefaultCustomerAddress(addressId: string) {
+  const customerSession = await getIronSession<CustomerSession>(
+    await cookies(),
+    shopify.customerSessionOptions,
+  );
+  if (!customerSession.authenticated) {
+    throw new Error('Customer is not login');
+  }
+
+  await shopify.updateDefaultCustomerAddress(
+    customerSession.accessToken,
+    addressId,
+  );
+
+  revalidateCustomer(customerSession.accessToken);
+}
+
+export async function removeCustomerAddress(addressId: string) {
+  const customerSession = await getIronSession<CustomerSession>(
+    await cookies(),
+    shopify.customerSessionOptions,
+  );
+  if (!customerSession.authenticated) {
+    throw new Error('Customer is not login');
+  }
+
+  await shopify.removeCustomerAddress(customerSession.accessToken, addressId);
 
   revalidateCustomer(customerSession.accessToken);
 }

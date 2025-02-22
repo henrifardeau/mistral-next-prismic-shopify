@@ -2,6 +2,7 @@ import { graphql } from './gql';
 
 export const MailingAddress = graphql(`
   fragment MailingAddress on MailingAddress {
+    id
     address1
     address2
     city

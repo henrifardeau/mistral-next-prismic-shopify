@@ -14,8 +14,11 @@ import {
   GetProductByHandleQuery,
   MailingAddressInput,
   RemoveCartLinesMutation,
+  RemoveCustomerAddressMutation,
   UpdateCartBuyerIdentityMutation,
   UpdateCartLinesMutation,
+  UpdateCustomerAddressMutation,
+  UpdateDefaultCustomerAddressMutation,
 } from './gql/graphql';
 import {
   addCartLinesMutation,
@@ -24,8 +27,11 @@ import {
   createCustomerMutation,
   createCustomerTokenMutation,
   removeCartLinesMutation,
+  removeCustomerAddressMutation,
   updateCartBuyerIdentityMutation,
   updateCartLinesMutation,
+  updateCustomerAddressMutation,
+  updateDefaultCustomerAddressMutation,
 } from './mutations';
 import {
   getCartQuery,
@@ -71,6 +77,38 @@ export class ShopifyInstance extends Shopify {
     return this.client().request(createCustomerAddressMutation, {
       customerAccessToken,
       address,
+    });
+  }
+
+  public async updateCustomerAddress(
+    customerAccessToken: string,
+    addressId: string,
+    address: MailingAddressInput,
+  ): Promise<UpdateCustomerAddressMutation> {
+    return this.client().request(updateCustomerAddressMutation, {
+      customerAccessToken,
+      addressId,
+      address,
+    });
+  }
+
+  public async updateDefaultCustomerAddress(
+    customerAccessToken: string,
+    addressId: string,
+  ): Promise<UpdateDefaultCustomerAddressMutation> {
+    return this.client().request(updateDefaultCustomerAddressMutation, {
+      customerAccessToken,
+      addressId,
+    });
+  }
+
+  public async removeCustomerAddress(
+    customerAccessToken: string,
+    addressId: string,
+  ): Promise<RemoveCustomerAddressMutation> {
+    return this.client().request(removeCustomerAddressMutation, {
+      customerAccessToken,
+      addressId,
     });
   }
 

@@ -37,6 +37,54 @@ export const createCustomerAddressMutation = graphql(`
   }
 `);
 
+export const updateCustomerAddressMutation = graphql(`
+  mutation UpdateCustomerAddress(
+    $customerAccessToken: String!
+    $addressId: ID!
+    $address: MailingAddressInput!
+  ) {
+    customerAddressUpdate(
+      customerAccessToken: $customerAccessToken
+      id: $addressId
+      address: $address
+    ) {
+      customerAddress {
+        id
+      }
+    }
+  }
+`);
+
+export const updateDefaultCustomerAddressMutation = graphql(`
+  mutation UpdateDefaultCustomerAddress(
+    $customerAccessToken: String!
+    $addressId: ID!
+  ) {
+    customerDefaultAddressUpdate(
+      customerAccessToken: $customerAccessToken
+      addressId: $addressId
+    ) {
+      customer {
+        id
+      }
+    }
+  }
+`);
+
+export const removeCustomerAddressMutation = graphql(`
+  mutation RemoveCustomerAddress(
+    $customerAccessToken: String!
+    $addressId: ID!
+  ) {
+    customerAddressDelete(
+      customerAccessToken: $customerAccessToken
+      id: $addressId
+    ) {
+      deletedCustomerAddressId
+    }
+  }
+`);
+
 export const createCartMutation = graphql(`
   mutation CreateCart($input: CartInput) {
     cartCreate(input: $input) {
