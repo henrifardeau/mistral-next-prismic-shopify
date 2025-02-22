@@ -14,7 +14,6 @@ import {
   Cart,
   CartAction,
   CartAddPayload,
-  CartLine,
   CartLinePayload,
   CartUpdatePayload,
 } from '@/types/cart';
@@ -33,81 +32,80 @@ export function CartStoreProvider({
     cartReducer,
   );
 
-  const optimisticAddCartLine = useCallback(
-    (payload: CartAddPayload) => {
-      updateOptimisticCart({ type: 'ADD', payload });
+  const updateCartOptimistically = useCallback(
+    (action: CartAction) => {
+      updateOptimisticCart(action);
     },
     [updateOptimisticCart],
   );
 
-  const optimisticIncrementCartLine = useCallback(
-    (payload: CartLinePayload) => {
-      updateOptimisticCart({ type: 'INCREMENT', payload });
-    },
-    [updateOptimisticCart],
-  );
+  const optimisticAddCartLine = (payload: CartAddPayload) => {
+    updateCartOptimistically({
+      type: 'ADD',
+      payload,
+    });
+  };
 
-  const optimisticDecrementCartLine = useCallback(
-    (payload: CartLinePayload) => {
-      updateOptimisticCart({ type: 'DECREMENT', payload });
-    },
-    [updateOptimisticCart],
-  );
+  const optimisticIncrementCartLine = (payload: CartLinePayload) => {
+    updateCartOptimistically({
+      type: 'INCREMENT',
+      payload,
+    });
+  };
 
-  const optimisticUpdateCartLine = useCallback(
-    (payload: CartUpdatePayload) => {
-      updateOptimisticCart({ type: 'UPDATE', payload });
-    },
-    [updateOptimisticCart],
-  );
+  const optimisticDecrementCartLine = (payload: CartLinePayload) => {
+    updateCartOptimistically({
+      type: 'DECREMENT',
+      payload,
+    });
+  };
 
-  const optimisticRemoveCartLine = useCallback(
-    (payload: CartLinePayload) => {
-      updateOptimisticCart({ type: 'REMOVE', payload });
-    },
-    [updateOptimisticCart],
-  );
+  const optimisticUpdateCartLine = (payload: CartUpdatePayload) => {
+    updateCartOptimistically({
+      type: 'UPDATE',
+      payload,
+    });
+  };
 
-  const value = useMemo(() => {
-    const cartCurrencyCode = () => {
-      return optimisticCart?.lines.length
-        ? optimisticCart.lines[0].variant.price.currencyCode
-        : 'EUR';
-    };
+  const optimisticRemoveCartLine = (payload: CartLinePayload) => {
+    updateCartOptimistically({
+      type: 'REMOVE',
+      payload,
+    });
+  };
 
-    const cartLength = (optimisticCart?.lines || []).reduce(
+  const cartLength = useMemo(() => {
+    return (optimisticCart?.lines || []).reduce(
       (acc, cur) => acc + cur.quantity,
       0,
     );
+  }, [optimisticCart]);
 
-    const cartSubTotal = formatPrice(
+  const cartSubTotal = useMemo(() => {
+    const currencyCode =
+      optimisticCart?.lines[0]?.variant.price.currencyCode || 'EUR';
+
+    return formatPrice(
       (optimisticCart?.lines || []).reduce((acc, cur) => {
         return acc + toNumber(cur.variant.price.amount) * cur.quantity;
       }, 0),
-      cartCurrencyCode(),
+      currencyCode,
     );
-
-    return {
-      optimisticCart,
-      cartSubTotal,
-      cartLength,
-      optimisticAddCartLine,
-      optimisticIncrementCartLine,
-      optimisticDecrementCartLine,
-      optimisticUpdateCartLine,
-      optimisticRemoveCartLine,
-    };
-  }, [
-    optimisticCart,
-    optimisticAddCartLine,
-    optimisticIncrementCartLine,
-    optimisticDecrementCartLine,
-    optimisticUpdateCartLine,
-    optimisticRemoveCartLine,
-  ]);
+  }, [optimisticCart]);
 
   return (
-    <CartStoreContext.Provider value={value}>
+    <CartStoreContext.Provider
+      value={{
+        optimisticCart,
+        cartSubTotal,
+        cartLength,
+        optimisticAddCartLine,
+        optimisticIncrementCartLine,
+        optimisticDecrementCartLine,
+        optimisticUpdateCartLine,
+        optimisticRemoveCartLine,
+      }}
+    >
       {children}
     </CartStoreContext.Provider>
   );
@@ -121,103 +119,98 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
     lines: [],
   };
 
-  const updateLine = (
-    lines: CartLine[],
-    lineId: string,
-    updateFn: (line: CartLine) => CartLine | null,
-  ) => {
-    return lines
-      .map((line) => (line.id === lineId ? updateFn(line) : line))
-      .filter(Boolean) as Cart['lines'];
-  };
-
   switch (action.type) {
     case 'ADD': {
-      const { quantity = 1, product, variant } = action.payload;
-
-      const existingLine = currentState.lines.find(
-        (line) => line.variant.id === variant.id,
+      const index = currentState.lines.findIndex(
+        (line) => line.variant.id === action.payload.variant.id,
       );
-
-      if (existingLine) {
+      if (index === -1) {
         return {
           ...currentState,
           state: 'loading',
-          lines: currentState.lines.map((line) =>
-            line.variant.id === variant.id
-              ? {
-                  ...line,
-                  quantity: line.quantity + quantity,
-                }
-              : line,
-          ),
+          lines: [
+            {
+              id: String(Math.random()),
+              availableForSale: true,
+              quantity: action.payload.quantity || 1,
+              product: action.payload.product,
+              variant: action.payload.variant,
+            },
+            ...currentState.lines,
+          ],
         };
       }
+
+      const updatedLines = [...currentState.lines];
+      updatedLines[index] = {
+        ...updatedLines[index],
+        quantity: updatedLines[index].quantity + (action.payload.quantity || 1),
+      };
 
       return {
         ...currentState,
         state: 'loading',
-        lines: [
-          {
-            id: String(Math.random()),
-            availableForSale: true,
-            quantity: quantity,
-            product: {
-              handle: product.handle,
-              title: product.title,
-            },
-            variant: {
-              id: variant.id,
-              title: variant.title,
-              compareAtPrice: variant.compareAtPrice,
-              price: variant.price,
-              image: variant.image,
-            },
-          },
-          ...currentState.lines,
-        ],
+        lines: updatedLines,
       };
     }
     case 'INCREMENT': {
+      const index = currentState.lines.findIndex(
+        (line) => line.id === action.payload.lineId,
+      );
+      if (index === -1) {
+        return currentState;
+      }
+
+      const updatedLines = [...currentState.lines];
+      updatedLines[index] = {
+        ...updatedLines[index],
+        quantity: updatedLines[index].quantity + 1,
+      };
+
       return {
         ...currentState,
         state: 'loading',
-        lines: updateLine(
-          currentState.lines,
-          action.payload.lineId,
-          (line) => ({
-            ...line,
-            quantity: line.quantity + 1,
-          }),
-        ),
+        lines: updatedLines,
       };
     }
     case 'DECREMENT': {
+      const index = currentState.lines.findIndex(
+        (line) => line.id === action.payload.lineId,
+      );
+      if (index === -1) {
+        return currentState;
+      }
+
+      const updatedLines = [...currentState.lines];
+      updatedLines[index] = {
+        ...updatedLines[index],
+        quantity: updatedLines[index].quantity - 1,
+      };
+
       return {
         ...currentState,
         state: 'loading',
-        lines: updateLine(
-          currentState.lines,
-          action.payload.lineId,
-          (line) => ({
-            ...line,
-            quantity: line.quantity - 1,
-          }),
-        ).filter((line) => line.quantity > 0),
+        lines: updatedLines.filter((line) => line.quantity > 0),
       };
     }
     case 'UPDATE': {
+      const index = currentState.lines.findIndex(
+        (line) => line.id === action.payload.lineId,
+      );
+      if (index === -1) {
+        return currentState;
+      }
+
+      const updatedLines = [...currentState.lines];
+      updatedLines[index] = {
+        ...updatedLines[index],
+        quantity: action.payload.quantity,
+      };
+
       return {
         ...currentState,
         state: 'loading',
-        lines: updateLine(
-          currentState.lines,
-          action.payload.lineId,
-          (line) => ({
-            ...line,
-            quantity: action.payload.quantity,
-          }),
-        ),
+        lines: updatedLines,
       };
     }
     case 'REMOVE': {

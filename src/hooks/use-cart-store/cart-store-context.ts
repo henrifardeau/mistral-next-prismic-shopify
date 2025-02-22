@@ -20,6 +20,23 @@ type CartStoreContextProps = {
   optimisticRemoveCartLine: (payload: CartLinePayload) => void;
 };
 
-export const CartStoreContext = createContext<
-  CartStoreContextProps | undefined
->(undefined);
+export const CartStoreContext = createContext<CartStoreContextProps>({
+  optimisticCart: undefined,
+  cartSubTotal: '0',
+  cartLength: 0,
+  optimisticAddCartLine: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticIncrementCartLine: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticDecrementCartLine: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticUpdateCartLine: () => {
+    console.warn('Function not initialized');
+  },
+  optimisticRemoveCartLine: () => {
+    console.warn('Function not initialized');
+  },
+});
