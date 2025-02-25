@@ -4,7 +4,7 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion, Variants } from 'motion/react';
 import { useCallback, useMemo, useState } from 'react';
 
-import { useMenuDrawer } from '@/hooks/use-menu-drawer';
+import { useDrawer } from '@/hooks/use-drawer';
 import { PrimaryLinks, SecondaryLinks } from '@/types/menu';
 import { PrismicNextImage, PrismicNextLink } from '@prismicio/next';
 
@@ -40,15 +40,15 @@ export function MenuDrawer({
   primaryLinks: PrimaryLinks;
   secondaryLinks: SecondaryLinks;
 }) {
-  const menuOpen = useMenuDrawer((state) => state.menuOpen);
-  const setMenuOpen = useMenuDrawer((state) => state.setMenuOpen);
+  const menuOpen = useDrawer((state) => state.menu);
+  const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
 
   const [activeMenu, setActiveMenu] = useState('root');
 
   const beforeClose = useCallback(() => {
-    setMenuOpen(false);
+    setDrawerOpen('menu')(false);
     setActiveMenu('root');
-  }, [setMenuOpen, setActiveMenu]);
+  }, [setDrawerOpen, setActiveMenu]);
 
   return (
     <Drawer open={menuOpen} onOpenChange={beforeClose}>

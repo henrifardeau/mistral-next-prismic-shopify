@@ -22,7 +22,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAccountDrawer } from '@/hooks/use-account-drawer';
 import { createCustomer, getCustomerAccessToken } from '@/lib/shopify/actions';
 import {
   RecoverPayload,
@@ -33,17 +32,18 @@ import {
   signUpSchema,
 } from '@/lib/shopify/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDrawer } from '@/hooks/use-drawer';
 
 export function AccountDrawer() {
-  const cartOpen = useAccountDrawer((state) => state.accountOpen);
-  const setAccountOpen = useAccountDrawer((state) => state.setAccountOpen);
+  const cartOpen = useDrawer((state) => state.account);
+  const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
 
   const [flow, setFlow] = useState<'signIn' | 'signUp' | 'recover'>('signIn');
 
   const beforeClose = useCallback(() => {
-    setAccountOpen(false);
+    setDrawerOpen('account')(false);
     setFlow('signIn');
-  }, [setAccountOpen, setFlow]);
+  }, [setDrawerOpen, setFlow]);
 
   return (
     <Drawer open={cartOpen} onOpenChange={beforeClose}>

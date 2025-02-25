@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 
-import { useAccountDrawer } from '@/hooks/use-account-drawer';
 import { useCustomerStore } from '@/hooks/use-customer-store';
+import { useDrawer } from '@/hooks/use-drawer';
 
 export function AccountButton() {
-  const openAccount = useAccountDrawer((state) => state.openAccount);
+  const openDrawer = useDrawer((state) => state.openDrawer);
 
   const { optimisticCustomer } = useCustomerStore();
 
@@ -26,7 +26,7 @@ export function AccountButton() {
 
   return (
     <button
-      onClick={openAccount}
+      onClick={openDrawer('account')}
       className="flex h-10 w-10 items-center justify-center text-black"
     >
       <svg viewBox="0 0 20 20" className="h-5 w-5 fill-current">

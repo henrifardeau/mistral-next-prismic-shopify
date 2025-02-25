@@ -11,7 +11,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { useCartDrawer } from '@/hooks/use-cart-drawer';
 import { useCartStore } from '@/hooks/use-cart-store';
 import {
   redirectToCheckout,
@@ -29,11 +28,12 @@ import {
   CartSummary,
 } from './cart';
 import { CartItem } from './cart-item';
+import { useDrawer } from '@/hooks/use-drawer';
 
 export function CartDrawer() {
-  const cartOpen = useCartDrawer((state) => state.cartOpen);
-  const setCartOpen = useCartDrawer((state) => state.setCartOpen);
-  const closeCart = useCartDrawer((state) => state.closeCart);
+  const cartOpen = useDrawer((state) => state.cart);
+  const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
+  const closeDrawer = useDrawer((state) => state.closeDrawer);
 
   const {
     optimisticCart,
@@ -48,7 +48,7 @@ export function CartDrawer() {
   }, [optimisticCart?.lines.length, optimisticCart?.state]);
 
   return (
-    <Drawer open={cartOpen} onOpenChange={setCartOpen}>
+    <Drawer open={cartOpen} onOpenChange={setDrawerOpen('cart')}>
       <DrawerContent className="w-full max-w-[478px]">
         <DrawerHeader>
           <CartHeader>
@@ -56,7 +56,7 @@ export function CartDrawer() {
             <DrawerDescription>
               <CartLength>{cartLength} items</CartLength>
             </DrawerDescription>
-            <CartClose onClick={closeCart} />
+            <CartClose onClick={closeDrawer('cart')} />
           </CartHeader>
         </DrawerHeader>
 
@@ -76,7 +76,7 @@ export function CartDrawer() {
                       optimisticRemoveCartLine({ lineId: line.id });
                       await removeCartLines([{ lineId: line.id }]);
                     }}
-                    closeCart={closeCart}
+                    closeCart={closeDrawer('cart')}
                   />
                 ))}
               </CartList>
