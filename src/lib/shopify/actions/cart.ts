@@ -49,7 +49,7 @@ export async function getCart() {
     return undefined;
   }
 
-  return shopify.helpers.reshapeCart(shopifyCart);
+  return shopify.cart.reshape(shopifyCart);
 }
 
 export async function createCart(lines?: AddCartLine[]) {
@@ -74,7 +74,7 @@ export async function createCart(lines?: AddCartLine[]) {
   cartSession.cartCheckoutUrl = shopifyCart.cartCreate.cart.checkoutUrl;
   await cartSession.save();
 
-  return shopify.helpers.reshapeCart(shopifyCart.cartCreate);
+  return shopify.cart.reshape(shopifyCart.cartCreate);
 }
 
 export async function addCartLines(lines: AddCartLine[]) {

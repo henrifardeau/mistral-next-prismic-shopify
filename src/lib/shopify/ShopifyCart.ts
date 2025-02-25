@@ -18,7 +18,8 @@ import {
 } from './mutations';
 import { getCartQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
-import { AddCartLine, RemoveCartLine, UpdateCartLine } from './types';
+import { AddCartLine, RawCart, RemoveCartLine, UpdateCartLine } from './types';
+import { Cart } from '@/types/cart';
 
 export class ShopifyCart {
   constructor(
@@ -118,6 +119,39 @@ export class ShopifyCart {
         customerAccessToken,
       },
     });
+  }
+
+  public reshape(rawCart: RawCart): Cart {
+    if (!rawCart?.cart) {
+      throw new Error('Reshap empty cart forbidden!');
+    }
+
+    return {
+      id: rawCart.cart.id,
+      checkoutUrl: rawCart.cart.checkoutUrl,
+      state: 'idle',
+      lines: this.helpers
+        .removeEdgesAndNodes(rawCart.cart.lines)
+        .map((line) => ({
+          id: line.id,
+          quantity: line.quantity,
+          availableForSale: line.merchandise.availableForSale,
+          product: {
+            handle: line.merchandise.product.handle,
+            title: line.merchandise.product.title,
+          },
+          variant: {
+            id: line.merchandise.id,
+            title: line.merchandise.title,
+            compareAtPrice: line.merchandise.compareAtPrice,
+            price: line.merchandise.price,
+            image: {
+              src: line.merchandise.image?.url,
+              alt: line.merchandise.image?.altText,
+            },
+          },
+        })),
+    };
   }
 
   private customClient(

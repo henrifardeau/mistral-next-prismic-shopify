@@ -58,7 +58,7 @@ export default async function Page({
     return notFound();
   }
 
-  const product = shopify.helpers.reshapeProduct(shopifyProduct);
+  const product = shopify.product.reshape(shopifyProduct);
 
   const productOptions = getVerifiedOptions(product.options);
   const initialOptions = getInitialOptions(productOptions);

@@ -48,14 +48,18 @@ export class Shopify {
       this.storefrontURL,
       storefrontToken,
       customerCookiePassword,
-    );
-    this.shopifyCollection = new ShopifyCollection(
-      this.storefrontURL,
-      storefrontToken,
+      this.shopifyHelpers,
     );
     this.shopifyProduct = new ShopifyProduct(
       this.storefrontURL,
       storefrontToken,
+      this.shopifyHelpers,
+    );
+    this.shopifyCollection = new ShopifyCollection(
+      this.storefrontURL,
+      storefrontToken,
+      this.shopifyProduct,
+      this.shopifyHelpers,
     );
   }
 

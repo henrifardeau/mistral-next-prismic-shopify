@@ -34,7 +34,7 @@ async function ensureCustomerSession() {
 export async function getCustomer() {
   const customerSession = await getCustomerSession();
   if (!customerSession.authenticated) {
-    return shopify.helpers.reshapeCustomer({});
+    return shopify.customer.reshape({});
   }
 
   const shopifyCustomer = await shopify.customer.get(
@@ -42,13 +42,10 @@ export async function getCustomer() {
     { tags: [customerSession.accessToken] },
   );
   if (!shopifyCustomer.customer) {
-    return shopify.helpers.reshapeCustomer({});
+    return shopify.customer.reshape({});
   }
 
-  return shopify.helpers.reshapeCustomer(
-    shopifyCustomer,
-    customerSession.accessToken,
-  );
+  return shopify.customer.reshape(shopifyCustomer, customerSession.accessToken);
 }
 
 export async function getCustomerAccessToken(payload: SignInPayload) {

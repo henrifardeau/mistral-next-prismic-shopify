@@ -1,6 +1,8 @@
 import { GraphQLClient } from 'graphql-request';
 import { SessionOptions } from 'iron-session';
 
+import { Customer } from '@/types/customer';
+
 import {
   CreateCustomerAddressMutation,
   CreateCustomerMutation,
@@ -22,6 +24,8 @@ import {
   updateDefaultCustomerAddressMutation,
 } from './mutations';
 import { getCustomerQuery } from './queries';
+import { ShopifyHelpers } from './ShopifyHelpers';
+import { RawCustomer } from './types';
 
 export class ShopifyCustomer {
   constructor(
@@ -29,6 +33,7 @@ export class ShopifyCustomer {
     private readonly storefrontURL: string,
     private readonly storefrontToken: string,
     private readonly cookiePassword: string,
+    private readonly helpers: ShopifyHelpers,
   ) {}
 
   public get sessionOptions(): SessionOptions {
@@ -106,6 +111,26 @@ export class ShopifyCustomer {
       customerAccessToken,
       addressId,
     });
+  }
+
+  public reshape(rawCustomer: RawCustomer, accessToken?: string): Customer {
+    if (!rawCustomer.customer || !accessToken) {
+      return {
+        authenticated: false,
+      };
+    }
+
+    return {
+      authenticated: true,
+      accessToken,
+      ...rawCustomer.customer,
+      addresses: this.helpers
+        .removeEdgesAndNodes(rawCustomer.customer.addresses)
+        .map((address) => ({
+          ...address,
+          default: rawCustomer.customer?.defaultAddress?.id === address.id,
+        })),
+    };
   }
 
   private customClient(
