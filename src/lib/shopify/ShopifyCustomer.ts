@@ -130,6 +130,9 @@ export class ShopifyCustomer {
           ...address,
           default: rawCustomer.customer?.defaultAddress?.id === address.id,
         })),
+      orders: this.helpers
+        .removeEdgesAndNodes(rawCustomer.customer.orders)
+        .map((order) => ({ ...order })),
     };
   }
 

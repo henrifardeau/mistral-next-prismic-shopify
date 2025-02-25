@@ -38,6 +38,18 @@ export const getCustomerQuery = graphql(`
           }
         }
       }
+      orders(first: 20) {
+        edges {
+          node {
+            id
+            name
+            orderNumber
+            financialStatus
+            fulfillmentStatus
+            processedAt
+          }
+        }
+      }
     }
   }
 `);

@@ -1,9 +1,30 @@
+import {
+  OrderFinancialStatus,
+  OrderFulfillmentStatus,
+} from '@/lib/shopify/gql/graphql';
 import { AddressPayload } from '@/lib/shopify/schemas';
 
 export type Customer = GuestCustomer | SignCustomer;
 
 type GuestCustomer = {
   authenticated: false;
+};
+
+type SignCustomer = {
+  authenticated: true;
+  accessToken: string;
+  id: string;
+  acceptsMarketing: boolean;
+  firstName?: string | null;
+  lastName?: string | null;
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  defaultAddress?: { id: string } | null;
+  addresses: CustomerAddress[];
+  orders: CustomerOrder[];
 };
 
 export type CustomerAddress = {
@@ -21,20 +42,13 @@ export type CustomerAddress = {
   zip?: string | null;
 };
 
-type SignCustomer = {
-  authenticated: true;
-  accessToken: string;
+export type CustomerOrder = {
   id: string;
-  acceptsMarketing: boolean;
-  firstName?: string | null;
-  lastName?: string | null;
-  displayName: string;
-  email?: string | null;
-  phone?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  defaultAddress?: { id: string } | null;
-  addresses: CustomerAddress[];
+  name: string;
+  orderNumber: number;
+  financialStatus?: OrderFinancialStatus | null;
+  fulfillmentStatus: OrderFulfillmentStatus;
+  processedAt: string;
 };
 
 export type CustomerAction =
