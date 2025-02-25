@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { CollectionSortSelect } from '@/components/collection';
 import { DEFAULT_SORTING, SORTING } from '@/constants/collection';
 import { prismic } from '@/lib/prismic';
 import { components } from '@/slices';
@@ -25,12 +24,12 @@ async function parseSearch(searchParams: SearchParams) {
 export async function generateMetadata({
   params,
 }: {
-  params: Params<{ uid: string }>;
+  params: Params<{ handle: string }>;
 }): Promise<Metadata> {
-  const { uid } = await params;
+  const { handle } = await params;
 
   const page = await prismic
-    .getByUID('collections', uid)
+    .getByUID('collections', handle)
     .catch(() => notFound());
 
   return {
@@ -54,28 +53,21 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: Params<{ uid: string }>;
+  params: Params<{ handle: string }>;
   searchParams: SearchParams;
 }) {
-  const { uid } = await params;
+  const { handle } = await params;
   const { sort } = await parseSearch(searchParams);
 
   const page = await prismic
-    .getByUID('collections', uid)
+    .getByUID('collections', handle)
     .catch(() => notFound());
 
   return (
-    <>
-      <div className="container py-4">
-        <div className="flex items-center justify-end">
-          <CollectionSortSelect sort={sort} />
-        </div>
-      </div>
-      <SliceZone
-        slices={page.data.slices}
-        components={components}
-        context={{ sortKey: sort.sortKey, sortReverse: sort.sortReverse }}
-      />
-    </>
+    <SliceZone
+      slices={page.data.slices}
+      components={components}
+      context={{ sort }}
+    />
   );
 }

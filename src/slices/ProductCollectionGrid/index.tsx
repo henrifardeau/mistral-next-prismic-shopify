@@ -1,18 +1,31 @@
 import { FC } from 'react';
 
+import {
+  CollectionFilterButton,
+  CollectionFilterDrawer,
+  CollectionSortSelect,
+} from '@/components/collection';
+import { DEFAULT_SORTING } from '@/constants/collection';
 import { prismic } from '@/lib/prismic';
+import { shopify } from '@/lib/shopify';
 import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 
 import { ProductItem, SwitchGridItem } from './components';
-import { shopify } from '@/lib/shopify';
 
 /**
  * Props for `ProductCollectionGrid`.
  */
 export type ProductCollectionGridProps = SliceComponentProps<
   Content.ProductCollectionGridSlice,
-  { sortKey?: string; sortReverse?: boolean }
+  {
+    sort?: {
+      name: string;
+      slug: string;
+      sortKey: string;
+      sortReverse: boolean;
+    };
+  }
 >;
 
 /**
@@ -22,22 +35,26 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
   slice,
   context,
 }) => {
+  const { sort } = context;
   if (!slice.primary.shopify_collection_handle) {
     return null;
   }
 
   const shopifyCollection = await shopify.collection.getByHandle(
     slice.primary.shopify_collection_handle,
-    { key: context.sortKey, reverse: context.sortReverse },
+    {
+      key: sort?.sortKey || DEFAULT_SORTING.sortKey,
+      reverse: sort?.sortReverse || DEFAULT_SORTING.sortReverse,
+    },
   );
   if (!shopifyCollection.collection?.products) {
     return null;
   }
 
-  const products = shopify.collection.reshape(shopifyCollection);
+  const collection = shopify.collection.reshape(shopifyCollection);
   const documents = await prismic.getAllByUIDs(
     'products',
-    products.map((p) => p.handle),
+    collection.products.map((p) => p.handle),
   );
 
   return (
@@ -46,9 +63,20 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
       data-slice-variation={slice.variation}
       className="container pb-16"
     >
+      <div className="py-4">
+        <div className="flex items-center justify-between">
+          <CollectionFilterButton />
+          <CollectionSortSelect
+            sort={{
+              name: sort?.name || DEFAULT_SORTING.name,
+              slug: sort?.slug || DEFAULT_SORTING.slug,
+            }}
+          />
+        </div>
+      </div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-4 xl:grid-cols-[repeat(auto-fit,minmax(23rem,1fr))]">
         <SwitchGridItem
-          products={products}
+          products={collection.products}
           documents={documents}
           components={{
             products: ({ document, product }) => (
@@ -57,6 +85,7 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
           }}
         />
       </div>
+      <CollectionFilterDrawer />
     </section>
   );
 };

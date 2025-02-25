@@ -1,13 +1,13 @@
 import { GraphQLClient } from 'graphql-request';
 
 import { DEFAULT_SORTING } from '@/constants/collection';
+import { Collection } from '@/types/collection';
 
 import { GetCollectionByHandleQuery } from './gql/graphql';
 import { getCollectionByHandleQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
-import { CollectionSortKeys, RawCollectionProducts } from './types';
-import { Product } from '@/types/product';
 import { ShopifyProduct } from './ShopifyProduct';
+import { CollectionSortKeys, RawCollectionProducts } from './types';
 
 export class ShopifyCollection {
   constructor(
@@ -34,14 +34,16 @@ export class ShopifyCollection {
     });
   }
 
-  public reshape(rawProducts: RawCollectionProducts): Product[] {
+  public reshape(rawProducts: RawCollectionProducts): Collection {
     if (!rawProducts.collection?.products) {
       throw new Error('Reshap empty products forbidden!');
     }
 
-    return this.helpers
-      .removeEdgesAndNodes(rawProducts.collection.products)
-      .map((product) => this.product.reshape({ product }));
+    return {
+      products: this.helpers
+        .removeEdgesAndNodes(rawProducts.collection.products)
+        .map((product) => this.product.reshape({ product })),
+    };
   }
 
   private customClient(
