@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { AddressPayload, addressSchema } from '@/lib/shopify/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-export function AddressDialog({
+export function CustomerAddressDialog({
   open,
   defaultValues,
   onOpenChange,

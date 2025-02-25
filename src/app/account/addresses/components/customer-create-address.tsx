@@ -6,7 +6,7 @@ import { useCustomerStore } from '@/hooks/use-customer-store';
 import { createCustomerAddress } from '@/lib/shopify/actions';
 import { AddressPayload } from '@/lib/shopify/schemas';
 
-import { AddressDialog } from './customer-address-dialog';
+import { CustomerAddressDialog } from './customer-address-dialog';
 
 export function CustomerCreateAddress() {
   const { optimisticCreateCustomerAddress } = useCustomerStore();
@@ -21,7 +21,7 @@ export function CustomerCreateAddress() {
       >
         Add new address
       </button>
-      <AddressDialog
+      <CustomerAddressDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         submitAction={async (data: AddressPayload) => {

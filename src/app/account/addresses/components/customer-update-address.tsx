@@ -5,7 +5,7 @@ import { updateCustomerAddress } from '@/lib/shopify/actions';
 import { AddressPayload } from '@/lib/shopify/schemas';
 import { CustomerAddress } from '@/types/customer';
 
-import { AddressDialog } from './customer-address-dialog';
+import { CustomerAddressDialog } from './customer-address-dialog';
 
 export function CustomerUpdateAddress({
   address,
@@ -24,7 +24,7 @@ export function CustomerUpdateAddress({
       >
         Edit
       </button>
-      <AddressDialog
+      <CustomerAddressDialog
         open={dialogOpen}
         defaultValues={{
           address1: address?.address1 ?? '',
