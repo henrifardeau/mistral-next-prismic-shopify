@@ -46,7 +46,7 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
       data-slice-variation={slice.variation}
       className="container pb-16"
     >
-      <div className="mx-auto grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-4 xl:grid-cols-[repeat(auto-fit,minmax(23rem,1fr))]">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-4 xl:grid-cols-[repeat(auto-fit,minmax(23rem,1fr))]">
         <SwitchGridItem
           products={products}
           documents={documents}
