@@ -1,16 +1,18 @@
+import Image from 'next/image';
+
 import {
   RadioGroup,
   RadioGroupItem,
-  RadioGroupItemButtonColor,
+  RadioGroupItemButton,
 } from '@/components/ui/radio-group';
-import { ProductColorOption } from '@/types/product';
+import { ProductImageOption } from '@/types/product';
 
-export function ProductColorSwatchPicker({
+export function ImagePicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductColorOption;
+  option: ProductImageOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {
@@ -18,12 +20,17 @@ export function ProductColorSwatchPicker({
     <RadioGroup value={value} onValueChange={onValueChange}>
       {option.optionValues.map((optionValue) => (
         <RadioGroupItem key={optionValue.name} value={optionValue.name}>
-          <RadioGroupItemButtonColor
+          <RadioGroupItemButton
             value={optionValue.name}
-            color={optionValue.swatch.color}
+            className="min-h-auto min-w-auto"
           >
-            {optionValue.name}
-          </RadioGroupItemButtonColor>
+            <Image
+              src={optionValue.image.src}
+              alt={optionValue.image.alt || ''}
+              width={28}
+              height={36}
+            />
+          </RadioGroupItemButton>
         </RadioGroupItem>
       ))}
     </RadioGroup>

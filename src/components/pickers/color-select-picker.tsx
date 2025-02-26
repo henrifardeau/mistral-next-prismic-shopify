@@ -6,14 +6,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ProductSelectOption } from '@/types/product';
+import { ProductColorOption } from '@/types/product';
 
-export function ProductSelectPicker({
+export function ColorSelectPicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductSelectOption;
+  option: ProductColorOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {
@@ -26,7 +26,13 @@ export function ProductSelectPicker({
         <SelectGroup>
           {option.optionValues.map((optionValue) => (
             <SelectItem key={optionValue.name} value={optionValue.name}>
-              {optionValue.name}
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-4 w-4 rounded-full"
+                  style={{ backgroundColor: optionValue.swatch.color }}
+                />
+                <span>{optionValue.name}</span>
+              </div>
             </SelectItem>
           ))}
         </SelectGroup>

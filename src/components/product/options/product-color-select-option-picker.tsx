@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductColorSelectPicker } from '@/components/product';
+import { ColorSelectPicker } from '@/components/pickers';
 import { useProduct } from '@/hooks/use-product';
 
 export function ProductColorSelectOptionPicker() {
@@ -14,7 +14,7 @@ export function ProductColorSelectOptionPicker() {
   }
 
   return (
-    <ProductColorSelectPicker
+    <ColorSelectPicker
       option={option}
       value={currentOptions[option.name]}
       onValueChange={(v) => updateOption(option.name, v)}

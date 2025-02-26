@@ -12,7 +12,7 @@ interface ComponentProps<T> {
   onValueChange: (value: string) => void;
 }
 
-export interface ProductSwitchOptionPickerProps {
+export interface SwitchPickersProps {
   options: ProductVerifiedOption[];
   currentOptions: Record<string, string>;
   onValueChange: (name: string, value: string) => void;
@@ -24,12 +24,12 @@ export interface ProductSwitchOptionPickerProps {
   };
 }
 
-export function ProductSwitchOptionPicker({
+export function SwitchPickers({
   options,
   currentOptions,
   onValueChange,
   components,
-}: ProductSwitchOptionPickerProps) {
+}: SwitchPickersProps) {
   return options.map((option, index) => {
     switch (option.type) {
       case 'color': {

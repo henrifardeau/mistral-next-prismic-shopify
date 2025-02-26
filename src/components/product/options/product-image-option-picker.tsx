@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductImagePicker } from '@/components/product';
+import { ImagePicker } from '@/components/pickers';
 import { useProduct } from '@/hooks/use-product';
 
 export function ProductImageOptionPicker() {
@@ -14,7 +14,7 @@ export function ProductImageOptionPicker() {
   }
 
   return (
-    <ProductImagePicker
+    <ImagePicker
       option={option}
       value={currentOptions[option.name]}
       onValueChange={(v) => updateOption(option.name, v)}

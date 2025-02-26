@@ -3,16 +3,16 @@
 import { useMemo } from 'react';
 
 import {
-  ProductColorSwatchPicker,
-  ProductImagePicker,
-  ProductSelectPicker,
-  ProductSizePicker,
-  ProductSwitchOptionPicker,
-  ProductSwitchOptionPickerProps,
-} from '@/components/product';
+  ColorSwatchPicker,
+  ImagePicker,
+  SelectPicker,
+  SizePicker,
+  SwitchPickers,
+  SwitchPickersProps,
+} from '@/components/pickers';
 import { useProduct } from '@/hooks/use-product';
 
-type SwitchComponents = ProductSwitchOptionPickerProps['components'];
+type SwitchComponents = SwitchPickersProps['components'];
 
 export function ProductOptionsPickers() {
   const options = useProduct((state) => state.options);
@@ -27,7 +27,7 @@ export function ProductOptionsPickers() {
             <span>{option.name} :</span>
             <span>{value}</span>
           </div>
-          <ProductColorSwatchPicker
+          <ColorSwatchPicker
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -40,7 +40,7 @@ export function ProductOptionsPickers() {
             <span>{option.name} :</span>
             <span>{value}</span>
           </div>
-          <ProductImagePicker
+          <ImagePicker
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -52,7 +52,7 @@ export function ProductOptionsPickers() {
           <div className="flex text-sm">
             <span>{option.name} :</span>
           </div>
-          <ProductSizePicker
+          <SizePicker
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -64,7 +64,7 @@ export function ProductOptionsPickers() {
           <div className="flex text-sm">
             <span>{option.name} :</span>
           </div>
-          <ProductSelectPicker
+          <SelectPicker
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -82,7 +82,7 @@ export function ProductOptionsPickers() {
   }
 
   return (
-    <ProductSwitchOptionPicker
+    <SwitchPickers
       options={options}
       currentOptions={currentOptions}
       onValueChange={updateOption}

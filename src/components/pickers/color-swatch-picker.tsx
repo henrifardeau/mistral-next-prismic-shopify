@@ -1,16 +1,16 @@
 import {
   RadioGroup,
   RadioGroupItem,
-  RadioGroupItemButton,
+  RadioGroupItemButtonColor,
 } from '@/components/ui/radio-group';
-import { ProductSizeOption } from '@/types/product';
+import { ProductColorOption } from '@/types/product';
 
-export function ProductSizePicker({
+export function ColorSwatchPicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductSizeOption;
+  option: ProductColorOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {
@@ -18,9 +18,12 @@ export function ProductSizePicker({
     <RadioGroup value={value} onValueChange={onValueChange}>
       {option.optionValues.map((optionValue) => (
         <RadioGroupItem key={optionValue.name} value={optionValue.name}>
-          <RadioGroupItemButton value={optionValue.name}>
+          <RadioGroupItemButtonColor
+            value={optionValue.name}
+            color={optionValue.swatch.color}
+          >
             {optionValue.name}
-          </RadioGroupItemButton>
+          </RadioGroupItemButtonColor>
         </RadioGroupItem>
       ))}
     </RadioGroup>

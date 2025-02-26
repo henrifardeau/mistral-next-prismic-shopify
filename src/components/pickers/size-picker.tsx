@@ -1,18 +1,16 @@
-import Image from 'next/image';
-
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemButton,
 } from '@/components/ui/radio-group';
-import { ProductImageOption } from '@/types/product';
+import { ProductSizeOption } from '@/types/product';
 
-export function ProductImagePicker({
+export function SizePicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductImageOption;
+  option: ProductSizeOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {
@@ -20,16 +18,8 @@ export function ProductImagePicker({
     <RadioGroup value={value} onValueChange={onValueChange}>
       {option.optionValues.map((optionValue) => (
         <RadioGroupItem key={optionValue.name} value={optionValue.name}>
-          <RadioGroupItemButton
-            value={optionValue.name}
-            className="min-h-auto min-w-auto"
-          >
-            <Image
-              src={optionValue.image.src}
-              alt={optionValue.image.alt || ''}
-              width={28}
-              height={36}
-            />
+          <RadioGroupItemButton value={optionValue.name}>
+            {optionValue.name}
           </RadioGroupItemButton>
         </RadioGroupItem>
       ))}

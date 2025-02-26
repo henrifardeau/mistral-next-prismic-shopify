@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductSizePicker } from '@/components/product';
+import { SizePicker } from '@/components/pickers';
 import { useProduct } from '@/hooks/use-product';
 
 export function ProductSizeOptionPicker() {
@@ -14,7 +14,7 @@ export function ProductSizeOptionPicker() {
   }
 
   return (
-    <ProductSizePicker
+    <SizePicker
       option={option}
       value={currentOptions[option.name]}
       onValueChange={(v) => updateOption(option.name, v)}
