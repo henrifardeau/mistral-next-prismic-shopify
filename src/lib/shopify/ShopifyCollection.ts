@@ -34,14 +34,15 @@ export class ShopifyCollection {
     });
   }
 
-  public reshape(rawProducts: RawCollectionProducts): Collection {
-    if (!rawProducts.collection?.products) {
+  public reshape(rawCollection: RawCollectionProducts): Collection {
+    if (!rawCollection.collection?.products) {
       throw new Error('Reshap empty products forbidden!');
     }
 
     return {
+      filters: rawCollection.collection.products.filters,
       products: this.helpers
-        .removeEdgesAndNodes(rawProducts.collection.products)
+        .removeEdgesAndNodes(rawCollection.collection.products)
         .map((product) => this.product.reshape({ product })),
     };
   }

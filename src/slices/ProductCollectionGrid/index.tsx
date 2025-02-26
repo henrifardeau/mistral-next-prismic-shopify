@@ -1,17 +1,19 @@
 import { FC } from 'react';
 
-import {
-  CollectionFilterButton,
-  CollectionFilterDrawer,
-  CollectionSortSelect,
-} from '@/components/collection';
 import { DEFAULT_SORTING } from '@/constants/collection';
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 
-import { ProductItem, SwitchGridItem } from './components';
+import {
+  CollectionFilterButton,
+  CollectionFilterDrawer,
+  CollectionSortSelect,
+  ProductItem,
+  SwitchGridItem,
+} from './components';
+import { getVerifiedOptions } from './utils';
 
 /**
  * Props for `ProductCollectionGrid`.
@@ -57,6 +59,10 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     collection.products.map((p) => p.handle),
   );
 
+  const filters = getVerifiedOptions(collection.filters);
+
+  console.log(filters);
+
   return (
     <section
       data-slice-type={slice.slice_type}
@@ -85,7 +91,7 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
           }}
         />
       </div>
-      <CollectionFilterDrawer />
+      <CollectionFilterDrawer filters={filters} />
     </section>
   );
 };

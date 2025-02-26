@@ -110,6 +110,17 @@ export const getCollectionByHandleQuery = graphql(`
     collection(handle: $handle) {
       id
       products(first: $first, sortKey: $sortKey, reverse: $sortReverse) {
+        filters {
+          id
+          label
+          values {
+            input
+            label
+            swatch {
+              color
+            }
+          }
+        }
         edges {
           node {
             id
