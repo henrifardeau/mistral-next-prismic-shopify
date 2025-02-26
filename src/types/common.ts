@@ -19,6 +19,7 @@ export type VerifiedOption =
 
 export type SelectOption = {
   type: 'select';
+  mode: 'single';
   name: string;
   optionValues: {
     name: string;
@@ -28,6 +29,7 @@ export type SelectOption = {
 
 export type ListOption = {
   type: 'list';
+  mode: 'multiple' | 'single';
   name: string;
   optionValues: {
     name: string;
@@ -37,6 +39,7 @@ export type ListOption = {
 
 export type ImageOption = {
   type: 'image';
+  mode: 'multiple' | 'single';
   name: string;
   optionValues: {
     name: string;
@@ -50,6 +53,7 @@ export type ImageOption = {
 
 export type ColorOption = {
   type: 'color';
+  mode: 'multiple' | 'single';
   name: string;
   optionValues: {
     name: string;

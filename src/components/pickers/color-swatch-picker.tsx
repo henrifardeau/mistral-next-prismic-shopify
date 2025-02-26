@@ -1,31 +1,71 @@
-import {
-  RadioGroup,
-  RadioGroupItem,
-  RadioGroupItemButtonColor,
-} from '@/components/ui/radio-group';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ColorOption } from '@/types/common';
 
-export function ColorSwatchPicker({
-  option,
-  value,
-  onValueChange,
-}: {
+type SingleProps = {
+  mode: 'single';
   option: ColorOption;
   value: string;
   onValueChange: (value: string) => void;
-}) {
-  return (
-    <RadioGroup value={value} onValueChange={onValueChange}>
-      {option.optionValues.map((optionValue) => (
-        <RadioGroupItem key={optionValue.name} value={optionValue.name}>
-          <RadioGroupItemButtonColor
-            value={optionValue.name}
-            color={optionValue.swatch.color}
+};
+
+type MultipleProps = {
+  mode: 'multiple';
+  option: ColorOption;
+  value: string[];
+  onValueChange: (value: string[]) => void;
+};
+
+export function ColorSwatchPicker({
+  mode,
+  option,
+  value,
+  onValueChange,
+}: SingleProps | MultipleProps) {
+  if (mode === 'multiple') {
+    return (
+      <ToggleGroup type="multiple" value={value} onValueChange={onValueChange}>
+        {option.optionValues.map((optionValue) => (
+          <ToggleGroupItem
+            key={optionValue.name}
+            value={optionValue.value}
+            variant="outline"
+            size="icon"
+            className="rounded-full p-1"
           >
-            {optionValue.name}
-          </RadioGroupItemButtonColor>
-        </RadioGroupItem>
+            <span
+              className="h-full w-full rounded-full text-transparent"
+              style={{
+                backgroundColor: optionValue.swatch.color,
+              }}
+            >
+              <span className="sr-only">{value}</span>
+            </span>
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    );
+  }
+
+  return (
+    <ToggleGroup type="single" value={value} onValueChange={onValueChange}>
+      {option.optionValues.map((optionValue) => (
+        <ToggleGroupItem
+          key={optionValue.name}
+          value={optionValue.value}
+          variant="outline"
+          size="icon"
+          className="rounded-full p-1"
+        >
+          <span
+            className="h-full w-full rounded-full text-transparent"
+            style={{
+              backgroundColor: optionValue.swatch.color,
+            }}
+          >
+            <span className="sr-only">{value}</span>
+          </span>
+        </ToggleGroupItem>
       ))}
-    </RadioGroup>
+    </ToggleGroup>
   );
 }

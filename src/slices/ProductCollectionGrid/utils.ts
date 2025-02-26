@@ -35,15 +35,16 @@ export function getVerifiedOptions(
     ) {
       return {
         type: 'color',
+        mode: 'multiple',
         name: option.label,
         optionValues: option.values.map((value) => ({
           name: value.label,
           value: value.input,
           swatch: {
-            color: value.swatch!.color,
+            color: value.swatch!.color || '',
           },
         })),
-      } as ColorOption;
+      } satisfies ColorOption;
     }
 
     if (
@@ -52,6 +53,7 @@ export function getVerifiedOptions(
     ) {
       return {
         type: 'image',
+        mode: 'multiple',
         name: option.label,
         optionValues: option.values.map((value) => ({
           name: value.label,
@@ -61,16 +63,17 @@ export function getVerifiedOptions(
             alt: IMAGES_OPTIONS[value.label].alt,
           },
         })),
-      } as ImageOption;
+      } satisfies ImageOption;
     }
 
     return {
       type: 'list',
+      mode: 'multiple',
       name: option.label,
       optionValues: option.values.map((value) => ({
         name: value.label,
         value: value.input,
       })),
-    } as ListOption;
+    } satisfies ListOption;
   });
 }

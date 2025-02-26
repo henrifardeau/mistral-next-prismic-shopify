@@ -1,28 +1,37 @@
 import Image from 'next/image';
 
-import {
-  RadioGroup,
-  RadioGroupItem,
-  RadioGroupItemButton,
-} from '@/components/ui/radio-group';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ImageOption } from '@/types/common';
 
-export function ImagePicker({
-  option,
-  value,
-  onValueChange,
-}: {
+type SingleProps = {
+  mode: 'single';
   option: ImageOption;
   value: string;
   onValueChange: (value: string) => void;
-}) {
-  return (
-    <RadioGroup value={value} onValueChange={onValueChange}>
-      {option.optionValues.map((optionValue) => (
-        <RadioGroupItem key={optionValue.name} value={optionValue.value}>
-          <RadioGroupItemButton
+};
+
+type MultipleProps = {
+  mode: 'multiple';
+  option: ImageOption;
+  value: string[];
+  onValueChange: (value: string[]) => void;
+};
+
+export function ImagePicker({
+  mode,
+  option,
+  value,
+  onValueChange,
+}: SingleProps | MultipleProps) {
+  if (mode === 'multiple') {
+    return (
+      <ToggleGroup type="multiple" value={value} onValueChange={onValueChange}>
+        {option.optionValues.map((optionValue) => (
+          <ToggleGroupItem
+            key={optionValue.name}
             value={optionValue.value}
-            className="min-h-auto min-w-auto"
+            variant="outline"
+            className="min-h-auto min-w-auto p-1"
           >
             <Image
               src={optionValue.image.src}
@@ -30,9 +39,29 @@ export function ImagePicker({
               width={28}
               height={36}
             />
-          </RadioGroupItemButton>
-        </RadioGroupItem>
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    );
+  }
+
+  return (
+    <ToggleGroup type="single" value={value} onValueChange={onValueChange}>
+      {option.optionValues.map((optionValue) => (
+        <ToggleGroupItem
+          key={optionValue.name}
+          value={optionValue.value}
+          variant="outline"
+          className="min-h-auto min-w-auto p-1"
+        >
+          <Image
+            src={optionValue.image.src}
+            alt={optionValue.image.alt || ''}
+            width={28}
+            height={36}
+          />
+        </ToggleGroupItem>
       ))}
-    </RadioGroup>
+    </ToggleGroup>
   );
 }

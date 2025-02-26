@@ -35,13 +35,16 @@ export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
     ) {
       return {
         type: 'color',
+        mode: 'single',
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
           value: value.name,
-          swatch: { color: value.swatch!.color },
+          swatch: {
+            color: value.swatch!.color || '',
+          },
         })),
-      } as ColorOption;
+      } satisfies ColorOption;
     }
 
     if (
@@ -50,6 +53,7 @@ export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
     ) {
       return {
         type: 'image',
+        mode: 'single',
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
@@ -59,28 +63,30 @@ export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
             alt: IMAGES_OPTIONS[value.name].alt,
           },
         })),
-      } as ImageOption;
+      } satisfies ImageOption;
     }
 
     if (PRODUCT_LIST_TYPE.includes(option.name.toLowerCase())) {
       return {
         type: 'list',
+        mode: 'single',
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
           value: value.name,
         })),
-      } as ListOption;
+      } satisfies ListOption;
     }
 
     return {
       type: 'select',
+      mode: 'single',
       name: option.name,
       optionValues: option.optionValues.map((value) => ({
         name: value.name,
         value: value.name,
       })),
-    } as SelectOption;
+    } satisfies SelectOption;
   });
 }
 

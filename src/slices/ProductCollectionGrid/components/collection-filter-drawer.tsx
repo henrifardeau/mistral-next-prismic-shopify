@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   ColorSwatchPicker,
   ImagePicker,
   ListPicker,
   SwitchPickers,
-  SwitchPickersProps,
+  SwitchPickersMultipleProps,
 } from '@/components/pickers';
 import {
   Accordion,
@@ -25,7 +25,8 @@ import {
 import { useDrawer } from '@/hooks/use-drawer';
 import { VerifiedOption } from '@/types/common';
 
-type SwitchComponents = SwitchPickersProps['components'];
+type Filters = Record<string, string[]>;
+type SwitchComponents = SwitchPickersMultipleProps['components'];
 
 export function CollectionFilterDrawer({
   filters,
@@ -35,13 +36,21 @@ export function CollectionFilterDrawer({
   const filterOpen = useDrawer((state) => state.filter);
   const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
 
+  const [currentFilters, setCurrentFilters] = useState<Filters>({});
+
+  const handleOptionChange = (name: string, value: string[]) => {
+    console.log('New option selected', name, value);
+    setCurrentFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
   const switchComponents: SwitchComponents = useMemo(() => {
     return {
-      color: ({ option, value, onValueChange }) => (
+      color: ({ mode, option, value, onValueChange }) => (
         <AccordionItem value={option.name}>
           <AccordionTrigger>{option.name}</AccordionTrigger>
           <AccordionContent>
             <ColorSwatchPicker
+              mode={mode}
               option={option}
               value={value}
               onValueChange={onValueChange}
@@ -49,11 +58,12 @@ export function CollectionFilterDrawer({
           </AccordionContent>
         </AccordionItem>
       ),
-      image: ({ option, value, onValueChange }) => (
+      image: ({ mode, option, value, onValueChange }) => (
         <AccordionItem value={option.name}>
           <AccordionTrigger>{option.name}</AccordionTrigger>
           <AccordionContent>
             <ImagePicker
+              mode={mode}
               option={option}
               value={value}
               onValueChange={onValueChange}
@@ -61,11 +71,12 @@ export function CollectionFilterDrawer({
           </AccordionContent>
         </AccordionItem>
       ),
-      list: ({ option, value, onValueChange }) => (
+      list: ({ mode, option, value, onValueChange }) => (
         <AccordionItem value={option.name}>
           <AccordionTrigger>{option.name}</AccordionTrigger>
           <AccordionContent>
             <ListPicker
+              mode={mode}
               option={option}
               value={value}
               onValueChange={onValueChange}
@@ -73,7 +84,6 @@ export function CollectionFilterDrawer({
           </AccordionContent>
         </AccordionItem>
       ),
-      select: () => null,
     };
   }, []);
 
@@ -86,11 +96,10 @@ export function CollectionFilterDrawer({
         <DrawerBody>
           <Accordion type="multiple" className="w-full">
             <SwitchPickers
+              mode="multiple"
               options={filters}
-              currentOptions={{}}
-              onValueChange={(name: string, value: string) => {
-                console.log({ name, value });
-              }}
+              currentOptions={currentFilters}
+              onValueChange={handleOptionChange}
               components={switchComponents}
             />
           </Accordion>

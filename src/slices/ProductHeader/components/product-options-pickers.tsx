@@ -8,11 +8,11 @@ import {
   SelectPicker,
   ListPicker,
   SwitchPickers,
-  SwitchPickersProps,
+  SwitchPickersSingleProps,
 } from '@/components/pickers';
 import { useProduct } from '@/hooks/use-product';
 
-type SwitchComponents = SwitchPickersProps['components'];
+type SwitchComponents = SwitchPickersSingleProps['components'];
 
 export function ProductOptionsPickers() {
   const options = useProduct((state) => state.options);
@@ -28,6 +28,7 @@ export function ProductOptionsPickers() {
             <span>{value}</span>
           </div>
           <ColorSwatchPicker
+            mode="single"
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -41,6 +42,7 @@ export function ProductOptionsPickers() {
             <span>{value}</span>
           </div>
           <ImagePicker
+            mode="single"
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -53,6 +55,7 @@ export function ProductOptionsPickers() {
             <span>{option.name} :</span>
           </div>
           <ListPicker
+            mode="single"
             option={option}
             value={value}
             onValueChange={onValueChange}
@@ -83,6 +86,7 @@ export function ProductOptionsPickers() {
 
   return (
     <SwitchPickers
+      mode="single"
       options={options}
       currentOptions={currentOptions}
       onValueChange={updateOption}

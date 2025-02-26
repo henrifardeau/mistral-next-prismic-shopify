@@ -61,8 +61,6 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
 
   const filters = getVerifiedOptions(collection.filters);
 
-  console.log(filters);
-
   return (
     <section
       data-slice-type={slice.slice_type}
