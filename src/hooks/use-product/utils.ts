@@ -5,14 +5,13 @@ import {
   PRODUCT_LIST_TYPE,
 } from '@/constants/option-types';
 import {
-  ProductColorOption,
-  ProductImageOption,
-  ProductOption,
-  ProductSelectOption,
-  ProductListOption,
-  ProductVariant,
-  ProductVerifiedOption,
-} from '@/types/product';
+  ColorOption,
+  ImageOption,
+  ListOption,
+  SelectOption,
+  VerifiedOption,
+} from '@/types/common';
+import { ProductOption, ProductVariant } from '@/types/product';
 
 function hasSwatchForEveryOption(option: ProductOption) {
   return option.optionValues.every(
@@ -28,7 +27,7 @@ function hasImageForEveryOption(option: ProductOption) {
   );
 }
 
-export function getVerifiedOptions(options: ProductOption[]) {
+export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
   return options.map((option) => {
     if (
       PRODUCT_COLOR_TYPE.includes(option.name.toLowerCase()) &&
@@ -39,9 +38,10 @@ export function getVerifiedOptions(options: ProductOption[]) {
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
+          value: value.name,
           swatch: { color: value.swatch!.color },
         })),
-      } as ProductColorOption;
+      } as ColorOption;
     }
 
     if (
@@ -53,12 +53,13 @@ export function getVerifiedOptions(options: ProductOption[]) {
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
+          value: value.name,
           image: {
             src: IMAGES_OPTIONS[value.name].src,
             alt: IMAGES_OPTIONS[value.name].alt,
           },
         })),
-      } as ProductImageOption;
+      } as ImageOption;
     }
 
     if (PRODUCT_LIST_TYPE.includes(option.name.toLowerCase())) {
@@ -67,19 +68,23 @@ export function getVerifiedOptions(options: ProductOption[]) {
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
+          value: value.name,
         })),
-      } as ProductListOption;
+      } as ListOption;
     }
 
     return {
       type: 'select',
       name: option.name,
-      optionValues: option.optionValues.map((value) => ({ name: value.name })),
-    } as ProductSelectOption;
+      optionValues: option.optionValues.map((value) => ({
+        name: value.name,
+        value: value.name,
+      })),
+    } as SelectOption;
   });
 }
 
-export function getInitialOptions(options: ProductVerifiedOption[]) {
+export function getInitialOptions(options: VerifiedOption[]) {
   return options.reduce(
     (acc, cur) => {
       return {

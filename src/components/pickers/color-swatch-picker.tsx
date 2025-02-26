@@ -3,14 +3,14 @@ import {
   RadioGroupItem,
   RadioGroupItemButtonColor,
 } from '@/components/ui/radio-group';
-import { ProductColorOption } from '@/types/product';
+import { ColorOption } from '@/types/common';
 
 export function ColorSwatchPicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductColorOption;
+  option: ColorOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {

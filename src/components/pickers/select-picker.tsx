@@ -6,14 +6,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ProductSelectOption } from '@/types/product';
+import { SelectOption } from '@/types/common';
 
 export function SelectPicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductSelectOption;
+  option: SelectOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {
@@ -25,7 +25,7 @@ export function SelectPicker({
       <SelectContent>
         <SelectGroup>
           {option.optionValues.map((optionValue) => (
-            <SelectItem key={optionValue.name} value={optionValue.name}>
+            <SelectItem key={optionValue.name} value={optionValue.value}>
               {optionValue.name}
             </SelectItem>
           ))}

@@ -18,51 +18,6 @@ export type ProductOption = {
   }[];
 };
 
-export type ProductVerifiedOption =
-  | ProductSelectOption
-  | ProductListOption
-  | ProductImageOption
-  | ProductColorOption;
-
-export type ProductSelectOption = {
-  type: 'select';
-  name: string;
-  optionValues: {
-    name: string;
-  }[];
-};
-
-export type ProductListOption = {
-  type: 'list';
-  name: string;
-  optionValues: {
-    name: string;
-  }[];
-};
-
-export type ProductImageOption = {
-  type: 'image';
-  name: string;
-  optionValues: {
-    name: string;
-    image: {
-      src: string;
-      alt?: string;
-    };
-  }[];
-};
-
-export type ProductColorOption = {
-  type: 'color';
-  name: string;
-  optionValues: {
-    name: string;
-    swatch: {
-      color: string;
-    };
-  }[];
-};
-
 export type ProductVariant = {
   id: string;
   title: string;

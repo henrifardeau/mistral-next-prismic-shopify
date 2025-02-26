@@ -5,23 +5,23 @@ import {
   RadioGroupItem,
   RadioGroupItemButton,
 } from '@/components/ui/radio-group';
-import { ProductImageOption } from '@/types/product';
+import { ImageOption } from '@/types/common';
 
 export function ImagePicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductImageOption;
+  option: ImageOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {
   return (
     <RadioGroup value={value} onValueChange={onValueChange}>
       {option.optionValues.map((optionValue) => (
-        <RadioGroupItem key={optionValue.name} value={optionValue.name}>
+        <RadioGroupItem key={optionValue.name} value={optionValue.value}>
           <RadioGroupItemButton
-            value={optionValue.name}
+            value={optionValue.value}
             className="min-h-auto min-w-auto"
           >
             <Image

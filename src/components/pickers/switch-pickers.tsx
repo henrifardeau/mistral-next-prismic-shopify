@@ -1,10 +1,10 @@
 import {
-  ProductColorOption,
-  ProductImageOption,
-  ProductSelectOption,
-  ProductListOption,
-  ProductVerifiedOption,
-} from '@/types/product';
+  ColorOption,
+  ImageOption,
+  ListOption,
+  SelectOption,
+  VerifiedOption,
+} from '@/types/common';
 
 interface ComponentProps<T> {
   option: T;
@@ -13,14 +13,14 @@ interface ComponentProps<T> {
 }
 
 export interface SwitchPickersProps {
-  options: ProductVerifiedOption[];
+  options: VerifiedOption[];
   currentOptions: Record<string, string>;
   onValueChange: (name: string, value: string) => void;
   components: {
-    color: React.FC<ComponentProps<ProductColorOption>>;
-    image: React.FC<ComponentProps<ProductImageOption>>;
-    list: React.FC<ComponentProps<ProductListOption>>;
-    select: React.FC<ComponentProps<ProductSelectOption>>;
+    color: React.FC<ComponentProps<ColorOption>>;
+    image: React.FC<ComponentProps<ImageOption>>;
+    list: React.FC<ComponentProps<ListOption>>;
+    select: React.FC<ComponentProps<SelectOption>>;
   };
 }
 
