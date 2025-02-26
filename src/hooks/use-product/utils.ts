@@ -1,11 +1,15 @@
 import { IMAGES_OPTIONS } from '@/constants/option-images';
-import { COLOR_TYPE, IMAGE_TYPE, SIZE_TYPE } from '@/constants/option-types';
+import {
+  PRODUCT_COLOR_TYPE,
+  PRODUCT_IMAGE_TYPE,
+  PRODUCT_LIST_TYPE,
+} from '@/constants/option-types';
 import {
   ProductColorOption,
   ProductImageOption,
   ProductOption,
   ProductSelectOption,
-  ProductSizeOption,
+  ProductListOption,
   ProductVariant,
   ProductVerifiedOption,
 } from '@/types/product';
@@ -27,7 +31,7 @@ function hasImageForEveryOption(option: ProductOption) {
 export function getVerifiedOptions(options: ProductOption[]) {
   return options.map((option) => {
     if (
-      COLOR_TYPE.includes(option.name.toLowerCase()) &&
+      PRODUCT_COLOR_TYPE.includes(option.name.toLowerCase()) &&
       hasSwatchForEveryOption(option)
     ) {
       return {
@@ -41,7 +45,7 @@ export function getVerifiedOptions(options: ProductOption[]) {
     }
 
     if (
-      IMAGE_TYPE.includes(option.name.toLowerCase()) &&
+      PRODUCT_IMAGE_TYPE.includes(option.name.toLowerCase()) &&
       hasImageForEveryOption(option)
     ) {
       return {
@@ -57,14 +61,14 @@ export function getVerifiedOptions(options: ProductOption[]) {
       } as ProductImageOption;
     }
 
-    if (SIZE_TYPE.includes(option.name.toLowerCase())) {
+    if (PRODUCT_LIST_TYPE.includes(option.name.toLowerCase())) {
       return {
-        type: 'size',
+        type: 'list',
         name: option.name,
         optionValues: option.optionValues.map((value) => ({
           name: value.name,
         })),
-      } as ProductSizeOption;
+      } as ProductListOption;
     }
 
     return {

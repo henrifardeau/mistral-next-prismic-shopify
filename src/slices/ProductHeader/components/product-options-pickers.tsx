@@ -6,7 +6,7 @@ import {
   ColorSwatchPicker,
   ImagePicker,
   SelectPicker,
-  SizePicker,
+  ListPicker,
   SwitchPickers,
   SwitchPickersProps,
 } from '@/components/pickers';
@@ -52,7 +52,7 @@ export function ProductOptionsPickers() {
           <div className="flex text-sm">
             <span>{option.name} :</span>
           </div>
-          <SizePicker
+          <ListPicker
             option={option}
             value={value}
             onValueChange={onValueChange}

@@ -3,14 +3,14 @@ import {
   RadioGroupItem,
   RadioGroupItemButton,
 } from '@/components/ui/radio-group';
-import { ProductSizeOption } from '@/types/product';
+import { ProductListOption } from '@/types/product';
 
-export function SizePicker({
+export function ListPicker({
   option,
   value,
   onValueChange,
 }: {
-  option: ProductSizeOption;
+  option: ProductListOption;
   value: string;
   onValueChange: (value: string) => void;
 }) {

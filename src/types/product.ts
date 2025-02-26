@@ -20,7 +20,7 @@ export type ProductOption = {
 
 export type ProductVerifiedOption =
   | ProductSelectOption
-  | ProductSizeOption
+  | ProductListOption
   | ProductImageOption
   | ProductColorOption;
 
@@ -32,8 +32,8 @@ export type ProductSelectOption = {
   }[];
 };
 
-export type ProductSizeOption = {
-  type: 'size';
+export type ProductListOption = {
+  type: 'list';
   name: string;
   optionValues: {
     name: string;
