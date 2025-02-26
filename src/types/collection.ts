@@ -8,11 +8,7 @@ export type Collection = {
 export type CollectionProductFilter = {
   id: string;
   label: string;
-  type: string;
-  presentation?: string | null;
   values: {
-    id: string;
-    count: number;
     input: string;
     label: string;
     swatch?: {
