@@ -2,7 +2,7 @@ import {
   ProductColorOption,
   ProductImageOption,
   ProductSelectOption,
-  ProductSizeOption,
+  ProductListOption,
   ProductVerifiedOption,
 } from '@/types/product';
 
@@ -19,7 +19,7 @@ export interface SwitchPickersProps {
   components: {
     color: React.FC<ComponentProps<ProductColorOption>>;
     image: React.FC<ComponentProps<ProductImageOption>>;
-    size: React.FC<ComponentProps<ProductSizeOption>>;
+    list: React.FC<ComponentProps<ProductListOption>>;
     select: React.FC<ComponentProps<ProductSelectOption>>;
   };
 }
@@ -52,9 +52,9 @@ export function SwitchPickers({
           />
         );
       }
-      case 'size': {
+      case 'list': {
         return (
-          <components.size
+          <components.list
             key={index}
             option={option}
             value={currentOptions[option.name]}

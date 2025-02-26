@@ -47,7 +47,7 @@ export function ProductOptionsPickers() {
           />
         </div>
       ),
-      size: ({ option, value, onValueChange }) => (
+      list: ({ option, value, onValueChange }) => (
         <div className="space-y-2">
           <div className="flex text-sm">
             <span>{option.name} :</span>
