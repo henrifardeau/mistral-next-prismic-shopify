@@ -15,13 +15,15 @@ import {
 /**
  * Props for `ProductHeader`.
  */
-export type ProductHeaderProps =
-  SliceComponentProps<Content.ProductHeaderSlice>;
+export type ProductHeaderProps = SliceComponentProps<
+  Content.ProductHeaderSlice,
+  { simulator?: boolean }
+>;
 
 /**
  * Component for "ProductHeader" Slices.
  */
-const ProductHeader: FC<ProductHeaderProps> = ({ slice }) => {
+const ProductHeader: FC<ProductHeaderProps> = ({ slice, context }) => {
   const { thumbnails, variant_thumbnails } = slice.primary;
 
   const productImages = flatProductImages(thumbnails);
@@ -37,7 +39,10 @@ const ProductHeader: FC<ProductHeaderProps> = ({ slice }) => {
         id="header"
         className="flex items-start justify-between gap-6 pb-16"
       >
-        <div className="sticky top-6 grid grid-cols-2 gap-6">
+        <div
+          className="sticky top-6 grid min-h-[calc(100vh-48px)] grid-cols-2 gap-6"
+          style={{ minHeight: context.simulator ? '100%' : 'none' }}
+        >
           <div className="h-full w-full overflow-hidden rounded-xl">
             <PrismicCarousel images={productImages} />
           </div>

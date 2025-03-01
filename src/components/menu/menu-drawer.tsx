@@ -4,17 +4,16 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion, Variants } from 'motion/react';
 import { useCallback, useMemo, useState } from 'react';
 
-import { useDrawer } from '@/hooks/use-drawer';
-import { PrimaryLinks, SecondaryLinks } from '@/types/menu';
-import { PrismicNextImage, PrismicNextLink } from '@prismicio/next';
-
 import {
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-} from './ui/drawer';
+} from '@/components/ui/drawer';
+import { useDrawer } from '@/hooks/use-drawer';
+import { PrimaryLinks, SecondaryLinks } from '@/types/menu';
+import { PrismicNextImage, PrismicNextLink } from '@prismicio/next';
 
 const drawerAnimations: Variants = {
   active: {

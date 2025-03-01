@@ -1,27 +1,16 @@
-import { loadEnvConfig } from '@next/env';
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-loadEnvConfig(process.cwd());
-
-const URL = () => {
-  const domain = process.env.SHOPIFY_STOREFRONT_DOMAIN!;
-  const apiVersion = process.env.SHOPIFY_STOREFRONT_API_VERSION!;
-
-  return domain.startsWith('https://')
-    ? domain + `/api/${apiVersion}/graphql`
-    : 'https://' + domain + `/api/${apiVersion}/graphql`;
-};
-
-const TOKEN = () => process.env.SHOPIFY_STOREFRONT_API_TOKEN!;
+import valveConfig from './src/valve.config';
 
 const config: CodegenConfig = {
   overwrite: true,
   ignoreNoDocuments: true,
   schema: [
     {
-      [URL()]: {
+      [valveConfig.shopify.endpoint]: {
         headers: {
-          'x-shopify-storefront-access-token': TOKEN(),
+          'x-shopify-storefront-access-token':
+            valveConfig.shopify.storefrontToken,
         },
       },
     },

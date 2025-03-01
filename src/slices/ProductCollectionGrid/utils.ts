@@ -1,8 +1,3 @@
-import { IMAGES_OPTIONS } from '@/constants/option-images';
-import {
-  COLLECTION_PRODUCT_COLOR_TYPE,
-  COLLECTION_PRODUCT_IMAGE_TYPE,
-} from '@/constants/option-types';
 import { CollectionProductFilter } from '@/types/collection';
 import {
   ColorOption,
@@ -11,26 +6,64 @@ import {
   VerifiedOption,
 } from '@/types/common';
 
+type Images = Record<
+  string,
+  {
+    src: string;
+    alt?: string;
+  }
+>;
+
 function hasSwatchForEveryOption(option: CollectionProductFilter) {
-  return option.values.every(
-    (value) => value.swatch && typeof value.swatch.color === 'string',
-  );
+  return option.values.every((value) => {
+    const has = value.swatch && typeof value.swatch.color === 'string';
+    if (!has) {
+      console.error(option.label, value.label, 'missing swatch.');
+    }
+
+    return has;
+  });
 }
 
-function hasImageForEveryOption(option: CollectionProductFilter) {
-  const imageNames = Object.keys(IMAGES_OPTIONS);
+function hasImageForEveryOption(
+  option: CollectionProductFilter,
+  images: Images,
+) {
+  const imageNames = Object.keys(images);
 
-  return option.values.every((optionValue) =>
-    imageNames.includes(optionValue.label),
-  );
+  return option.values.every((optionValue) => {
+    const included = imageNames.includes(optionValue.label);
+    if (!included) {
+      console.error(
+        option.label,
+        optionValue.label,
+        'missing image. Availables:',
+        imageNames.join(', '),
+      );
+    }
+
+    return included;
+  });
 }
 
 export function getVerifiedFilters(
   options: CollectionProductFilter[],
+  optionTypes?: {
+    color?: {
+      ids: string[];
+    };
+    image?: {
+      ids: string[];
+      images: Images;
+    };
+    range?: {
+      ids: string[];
+    };
+  },
 ): VerifiedOption[] {
   return options.map((option) => {
     if (
-      COLLECTION_PRODUCT_COLOR_TYPE.includes(option.id.toLowerCase()) &&
+      optionTypes?.color?.ids.includes(option.id.toLowerCase()) &&
       hasSwatchForEveryOption(option)
     ) {
       return {
@@ -48,8 +81,8 @@ export function getVerifiedFilters(
     }
 
     if (
-      COLLECTION_PRODUCT_IMAGE_TYPE.includes(option.id.toLowerCase()) &&
-      hasImageForEveryOption(option)
+      optionTypes?.image?.ids.includes(option.id.toLowerCase()) &&
+      hasImageForEveryOption(option, optionTypes?.image?.images)
     ) {
       return {
         type: 'image',
@@ -59,8 +92,8 @@ export function getVerifiedFilters(
           name: value.label,
           value: value.input,
           image: {
-            src: IMAGES_OPTIONS[value.label].src,
-            alt: IMAGES_OPTIONS[value.label].alt,
+            src: optionTypes?.image?.images[value.label].src || '',
+            alt: optionTypes?.image?.images[value.label].alt || '',
           },
         })),
       } satisfies ImageOption;
@@ -79,10 +112,10 @@ export function getVerifiedFilters(
 }
 
 export function getInitialFilters(
-  filters: VerifiedOption[],
+  options: VerifiedOption[],
   initialFilters: Record<string, string[]> = {},
 ) {
-  return filters.reduce(
+  return options.reduce(
     (acc, cur) => {
       acc[cur.name] = initialFilters[cur.name] ?? [];
       return acc;

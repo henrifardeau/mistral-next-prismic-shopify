@@ -60,7 +60,10 @@ export default async function Page({
 
   const product = shopify.product.reshape(shopifyProduct);
 
-  const productOptions = getVerifiedOptions(product.options);
+  const productOptions = getVerifiedOptions(
+    product.options,
+    shopify.product.optionTypes,
+  );
   const initialOptions = getInitialOptions(productOptions);
   const initialVariant = getInitialVariant(product.variants, initialOptions);
 

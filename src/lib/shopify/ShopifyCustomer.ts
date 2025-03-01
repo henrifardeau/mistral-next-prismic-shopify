@@ -26,22 +26,21 @@ import {
 import { getCustomerQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
 import { RawCustomer } from './types';
+import { ValveConfig } from '@/valve.config';
 
 export class ShopifyCustomer {
   constructor(
+    private readonly config: ValveConfig,
     private readonly client: GraphQLClient,
-    private readonly storefrontURL: string,
-    private readonly storefrontToken: string,
-    private readonly cookiePassword: string,
     private readonly helpers: ShopifyHelpers,
   ) {}
 
   public get sessionOptions(): SessionOptions {
     return {
-      password: this.cookiePassword,
-      cookieName: '_psp_customer',
+      password: this.config.customer.session.password,
+      cookieName: this.config.customer.session.key,
       cookieOptions: {
-        maxAge: 7 * 24 * 60 * 60, // 7 days,
+        maxAge: this.config.customer.session.duration || 7 * 24 * 60 * 60, // 7 days,
         httpOnly: true,
         secure: true,
         sameSite: 'strict' as const,
@@ -140,9 +139,10 @@ export class ShopifyCustomer {
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ): GraphQLClient {
-    return new GraphQLClient(this.storefrontURL, {
+    return new GraphQLClient(this.config.shopify.endpoint, {
       headers: {
-        'x-shopify-storefront-access-token': this.storefrontToken,
+        'x-shopify-storefront-access-token':
+          this.config.shopify.storefrontToken,
       },
       cache,
       next,

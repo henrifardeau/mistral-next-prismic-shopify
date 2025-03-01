@@ -31,7 +31,10 @@ export default async function SliceSimulatorPage({
 
     const product = shopify.product.reshape(shopifyProduct);
 
-    const productOptions = getVerifiedOptions(product.options);
+    const productOptions = getVerifiedOptions(
+      product.options,
+      shopify.product.optionTypes,
+    );
     const initialOptions = getInitialOptions(productOptions);
     const initialVariant = getInitialVariant(product.variants, initialOptions);
 
@@ -44,7 +47,11 @@ export default async function SliceSimulatorPage({
           initialOptions={initialOptions}
           initialVariant={initialVariant}
         >
-          <SliceZone slices={slices} components={components} />
+          <SliceZone
+            slices={slices}
+            components={components}
+            context={{ simulator: true }}
+          />
         </ProductProvider>
       </SliceSimulator>
     );

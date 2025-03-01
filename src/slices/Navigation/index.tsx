@@ -3,7 +3,7 @@ import { FC } from 'react';
 
 import { CartButton } from '@/components/cart';
 import { AccountButton } from '@/components/customer';
-import { MenuButton } from '@/components/menu-button';
+import { MenuButton } from '@/components/menu';
 import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 

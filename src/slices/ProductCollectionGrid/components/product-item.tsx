@@ -14,6 +14,7 @@ import {
 import { flatProductImages, flatVariantsImages } from '@/lib/prismic';
 import { Product } from '@/types/product';
 import { Content } from '@prismicio/client';
+import { shopify } from '@/lib/shopify';
 
 function getProductSlice(product: Content.ProductsDocument) {
   return product.data.slices.find((s) => s.slice_type === 'product_header');
@@ -37,7 +38,10 @@ export function ProductItem({
   const productImages = flatProductImages(thumbnails);
   const variantsImages = flatVariantsImages(variant_thumbnails);
 
-  const productOptions = getVerifiedOptions(product.options);
+  const productOptions = getVerifiedOptions(
+    product.options,
+    shopify.product.optionTypes,
+  );
   const initialOptions = getInitialOptions(productOptions);
   const initialVariant = getInitialVariant(product.variants, initialOptions);
 

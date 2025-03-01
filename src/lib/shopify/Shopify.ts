@@ -1,4 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
+
+import { ValveConfig } from '@/valve.config';
+
 import { ShopifyCart } from './ShopifyCart';
 import { ShopifyCollection } from './ShopifyCollection';
 import { ShopifyCustomer } from './ShopifyCustomer';
@@ -6,80 +9,63 @@ import { ShopifyHelpers } from './ShopifyHelpers';
 import { ShopifyProduct } from './ShopifyProduct';
 
 export class Shopify {
-  protected readonly storefrontURL: string;
-
-  private readonly shopifyCart: ShopifyCart;
-  private readonly shopifyCustomer: ShopifyCustomer;
-  private readonly shopifyCollection: ShopifyCollection;
-  private readonly shopifyProduct: ShopifyProduct;
-  private readonly shopifyHelpers: ShopifyHelpers;
+  private readonly shopifyCartInstance: ShopifyCart;
+  private readonly shopifyCustomerInstance: ShopifyCustomer;
+  private readonly shopifyCollectionInstance: ShopifyCollection;
+  private readonly shopifyProductInstance: ShopifyProduct;
+  private readonly shopifyHelpersInstance: ShopifyHelpers;
 
   protected formatterCache = new Map<string, Intl.NumberFormat>();
 
-  constructor(
-    domain: string,
-    apiVersion: string,
-    storefrontToken: string,
-    customerCookiePassword: string,
-    cartCookiePassword: string,
-  ) {
-    this.shopifyHelpers = new ShopifyHelpers();
+  constructor(config: ValveConfig) {
+    this.shopifyHelpersInstance = new ShopifyHelpers(config);
 
-    this.storefrontURL = this.shopifyHelpers.createStorefrontUrl(
-      domain,
-      apiVersion,
-    );
-
-    const client = new GraphQLClient(this.storefrontURL, {
+    const client = new GraphQLClient(config.shopify.endpoint, {
       headers: {
-        'x-shopify-storefront-access-token': storefrontToken,
+        'x-shopify-storefront-access-token': config.shopify.storefrontToken,
       },
     });
 
-    this.shopifyCart = new ShopifyCart(
+    this.shopifyCartInstance = new ShopifyCart(
+      config,
       client,
-      this.storefrontURL,
-      storefrontToken,
-      cartCookiePassword,
-      this.shopifyHelpers,
+      this.shopifyHelpersInstance,
     );
-    this.shopifyCustomer = new ShopifyCustomer(
+    this.shopifyCustomerInstance = new ShopifyCustomer(
+      config,
       client,
-      this.storefrontURL,
-      storefrontToken,
-      customerCookiePassword,
-      this.shopifyHelpers,
+      this.shopifyHelpersInstance,
     );
-    this.shopifyProduct = new ShopifyProduct(
-      this.storefrontURL,
-      storefrontToken,
-      this.shopifyHelpers,
+    this.shopifyProductInstance = new ShopifyProduct(
+      config,
+      client,
+      this.shopifyHelpersInstance,
     );
-    this.shopifyCollection = new ShopifyCollection(
-      this.storefrontURL,
-      storefrontToken,
-      this.shopifyProduct,
-      this.shopifyHelpers,
+    this.shopifyCollectionInstance = new ShopifyCollection(
+      config,
+      client,
+      this.shopifyHelpersInstance,
+      this.shopifyProductInstance,
     );
   }
 
   public get helpers(): ShopifyHelpers {
-    return this.shopifyHelpers;
+    return this.shopifyHelpersInstance;
   }
 
   public get cart(): ShopifyCart {
-    return this.shopifyCart;
+    return this.shopifyCartInstance;
   }
 
   public get customer(): ShopifyCustomer {
-    return this.shopifyCustomer;
+    return this.shopifyCustomerInstance;
   }
 
   public get collection(): ShopifyCollection {
-    return this.shopifyCollection;
+    return this.shopifyCollectionInstance;
   }
 
   public get product(): ShopifyProduct {
-    return this.shopifyProduct;
+    return this.shopifyProductInstance;
   }
 }

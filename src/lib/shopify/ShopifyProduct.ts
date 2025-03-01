@@ -1,24 +1,26 @@
 import { GraphQLClient } from 'graphql-request';
 
+import { Product } from '@/types/product';
+import { ValveConfig } from '@/valve.config';
+
 import { GetProductByHandleQuery } from './gql/graphql';
 import { getProductByHandleQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
 import { RawProduct } from './types';
-import { Product } from '@/types/product';
 
 export class ShopifyProduct {
   constructor(
-    private readonly storefrontURL: string,
-    private readonly storefrontToken: string,
+    private readonly config: ValveConfig,
+    private readonly client: GraphQLClient,
     private readonly helpers: ShopifyHelpers,
   ) {}
 
-  public async getByHandle(
-    handle: string,
-    next?: NextFetchRequestConfig,
-    cache?: RequestCache,
-  ): Promise<GetProductByHandleQuery> {
-    return this.customClient(next, cache).request(getProductByHandleQuery, {
+  public get optionTypes() {
+    return { ...this.config.product?.options };
+  }
+
+  public async getByHandle(handle: string): Promise<GetProductByHandleQuery> {
+    return this.client.request(getProductByHandleQuery, {
       handle,
     });
   }
@@ -49,9 +51,10 @@ export class ShopifyProduct {
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ): GraphQLClient {
-    return new GraphQLClient(this.storefrontURL, {
+    return new GraphQLClient(this.config.shopify.endpoint, {
       headers: {
-        'x-shopify-storefront-access-token': this.storefrontToken,
+        'x-shopify-storefront-access-token':
+          this.config.shopify.storefrontToken,
       },
       cache,
       next,

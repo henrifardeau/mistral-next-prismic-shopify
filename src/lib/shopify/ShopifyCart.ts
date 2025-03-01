@@ -1,6 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
 import { SessionOptions } from 'iron-session';
 
+import { Cart } from '@/types/cart';
+import { ValveConfig } from '@/valve.config';
+
 import {
   AddCartLinesMutation,
   CreateCartMutation,
@@ -19,23 +22,20 @@ import {
 import { getCartQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
 import { AddCartLine, RawCart, RemoveCartLine, UpdateCartLine } from './types';
-import { Cart } from '@/types/cart';
 
 export class ShopifyCart {
   constructor(
+    private readonly config: ValveConfig,
     private readonly client: GraphQLClient,
-    private readonly storefrontURL: string,
-    private readonly storefrontToken: string,
-    private readonly cookiePassword: string,
     private readonly helpers: ShopifyHelpers,
   ) {}
 
   public get sessionOptions(): SessionOptions {
     return {
-      password: this.cookiePassword,
-      cookieName: '_psp_cart',
+      password: this.config.cart.session.password,
+      cookieName: this.config.cart.session.key,
       cookieOptions: {
-        maxAge: 7 * 24 * 60 * 60, // 7 days,
+        maxAge: this.config.cart.session.duration || 7 * 24 * 60 * 60, // 7 days,
         httpOnly: true,
         secure: true,
         sameSite: 'strict' as const,
@@ -158,9 +158,10 @@ export class ShopifyCart {
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ): GraphQLClient {
-    return new GraphQLClient(this.storefrontURL, {
+    return new GraphQLClient(this.config.shopify.endpoint, {
       headers: {
-        'x-shopify-storefront-access-token': this.storefrontToken,
+        'x-shopify-storefront-access-token':
+          this.config.shopify.storefrontToken,
       },
       cache,
       next,

@@ -15,6 +15,7 @@ export function ProductColorSwatchOptionPicker() {
 
   return (
     <ColorSwatchPicker
+      mode="single"
       option={option}
       value={currentOptions[option.name]}
       onValueChange={(v) => updateOption(option.name, v)}

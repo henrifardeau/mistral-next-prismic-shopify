@@ -1,9 +1,3 @@
-import { CartButton } from '@/components/cart';
-
-export default function Page() {
-  return (
-    <div>
-      <CartButton />
-    </div>
-  );
+export default async function Page() {
+  return <h1>Home page</h1>;
 }

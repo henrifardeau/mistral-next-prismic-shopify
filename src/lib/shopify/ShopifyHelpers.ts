@@ -1,20 +1,19 @@
-import { PREFIXES } from '@/constants/gid';
 import { Connection } from '@/types/gql';
+import { ValveConfig } from '@/valve.config';
 
+export type ShopifyGID = 'cart' | 'collection' | 'product' | 'variant' | 'line';
 export class ShopifyHelpers {
-  public createStorefrontUrl(domain: string, apiVersion: string) {
-    return domain.startsWith('https://')
-      ? domain + `/api/${apiVersion}/graphql`
-      : 'https://' + domain + `/api/${apiVersion}/graphql`;
+  constructor(private readonly config: ValveConfig) {}
+
+  public addPrefix(prefix: ShopifyGID, val: string): string {
+    return val.startsWith(this.config.shopify.gid[prefix])
+      ? val
+      : this.config.shopify.gid[prefix] + val;
   }
 
-  public addPrefix(prefix: keyof typeof PREFIXES, val: string): string {
-    return val.startsWith(PREFIXES[prefix]) ? val : PREFIXES[prefix] + val;
-  }
-
-  public removePrefix(prefix: keyof typeof PREFIXES, val: string): string {
-    return val.startsWith(PREFIXES[prefix])
-      ? val.slice(PREFIXES[prefix].length)
+  public removePrefix(prefix: ShopifyGID, val: string): string {
+    return val.startsWith(this.config.shopify.gid[prefix])
+      ? val.slice(this.config.shopify.gid[prefix].length)
       : val;
   }
 

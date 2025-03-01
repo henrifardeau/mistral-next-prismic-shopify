@@ -2,6 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 
 import { DEFAULT_SORTING } from '@/constants/collection';
 import { Collection } from '@/types/collection';
+import { ValveConfig } from '@/valve.config';
 
 import { GetCollectionByHandleQuery, ProductFilter } from './gql/graphql';
 import { getCollectionByHandleQuery } from './queries';
@@ -11,11 +12,15 @@ import { CollectionSortKeys, RawCollectionProducts } from './types';
 
 export class ShopifyCollection {
   constructor(
-    private readonly storefrontURL: string,
-    private readonly storefrontToken: string,
-    private readonly product: ShopifyProduct,
+    private readonly config: ValveConfig,
+    private readonly client: GraphQLClient,
     private readonly helpers: ShopifyHelpers,
+    private readonly product: ShopifyProduct,
   ) {}
+
+  public get filterTypes() {
+    return { ...this.config.collection?.filters };
+  }
 
   public async getByHandle(
     handle: string,
@@ -24,10 +29,8 @@ export class ShopifyCollection {
       reverse?: boolean;
     },
     filters?: string[],
-    next?: NextFetchRequestConfig,
-    cache?: RequestCache,
   ): Promise<GetCollectionByHandleQuery> {
-    return this.customClient(next, cache).request(getCollectionByHandleQuery, {
+    return this.client.request(getCollectionByHandleQuery, {
       handle,
       first: 20,
       sortKey: (sort?.key ?? DEFAULT_SORTING.sortKey) as CollectionSortKeys,
@@ -53,9 +56,10 @@ export class ShopifyCollection {
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ): GraphQLClient {
-    return new GraphQLClient(this.storefrontURL, {
+    return new GraphQLClient(this.config.shopify.endpoint, {
       headers: {
-        'x-shopify-storefront-access-token': this.storefrontToken,
+        'x-shopify-storefront-access-token':
+          this.config.shopify.storefrontToken,
       },
       cache,
       next,

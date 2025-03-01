@@ -64,7 +64,10 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     collection.products.map((p) => p.handle),
   );
 
-  const collectionFilters = getVerifiedFilters(collection.filters);
+  const collectionFilters = getVerifiedFilters(
+    collection.filters,
+    shopify.collection.filterTypes,
+  );
   const initialFilters = getInitialFilters(collectionFilters, filters);
 
   return (

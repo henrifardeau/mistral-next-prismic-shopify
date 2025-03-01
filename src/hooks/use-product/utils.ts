@@ -1,9 +1,3 @@
-import { IMAGES_OPTIONS } from '@/constants/option-images';
-import {
-  PRODUCT_COLOR_TYPE,
-  PRODUCT_IMAGE_TYPE,
-  PRODUCT_LIST_TYPE,
-} from '@/constants/option-types';
 import {
   ColorOption,
   ImageOption,
@@ -13,24 +7,61 @@ import {
 } from '@/types/common';
 import { ProductOption, ProductVariant } from '@/types/product';
 
+type Images = Record<
+  string,
+  {
+    src: string;
+    alt?: string;
+  }
+>;
+
 function hasSwatchForEveryOption(option: ProductOption) {
-  return option.optionValues.every(
-    (value) => value.swatch && typeof value.swatch.color === 'string',
-  );
+  return option.optionValues.every((value) => {
+    const has = value.swatch && typeof value.swatch.color === 'string';
+    if (!has) {
+      console.error(option.name, value.name, 'missing swatch.');
+    }
+
+    return has;
+  });
 }
 
-function hasImageForEveryOption(option: ProductOption) {
-  const imageNames = Object.keys(IMAGES_OPTIONS);
+function hasImageForEveryOption(option: ProductOption, images: Images) {
+  const imageNames = Object.keys(images);
 
-  return option.optionValues.every((optionValue) =>
-    imageNames.includes(optionValue.name),
-  );
+  return option.optionValues.every((optionValue) => {
+    const included = imageNames.includes(optionValue.name);
+    if (!included) {
+      console.error(
+        option.name,
+        optionValue.name,
+        'missing image. Availables:',
+        imageNames.join(', '),
+      );
+    }
+
+    return included;
+  });
 }
 
-export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
+export function getVerifiedOptions(
+  options: ProductOption[],
+  optionTypes?: {
+    color?: {
+      names: string[];
+    };
+    image?: {
+      names: string[];
+      images: Images;
+    };
+    list?: {
+      names: string[];
+    };
+  },
+): VerifiedOption[] {
   return options.map((option) => {
     if (
-      PRODUCT_COLOR_TYPE.includes(option.name.toLowerCase()) &&
+      optionTypes?.color?.names.includes(option.name.toLowerCase()) &&
       hasSwatchForEveryOption(option)
     ) {
       return {
@@ -48,8 +79,8 @@ export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
     }
 
     if (
-      PRODUCT_IMAGE_TYPE.includes(option.name.toLowerCase()) &&
-      hasImageForEveryOption(option)
+      optionTypes?.image?.names.includes(option.name.toLowerCase()) &&
+      hasImageForEveryOption(option, optionTypes?.image?.images)
     ) {
       return {
         type: 'image',
@@ -59,14 +90,14 @@ export function getVerifiedOptions(options: ProductOption[]): VerifiedOption[] {
           name: value.name,
           value: value.name,
           image: {
-            src: IMAGES_OPTIONS[value.name].src,
-            alt: IMAGES_OPTIONS[value.name].alt,
+            src: optionTypes?.image?.images[value.name].src || '',
+            alt: optionTypes?.image?.images[value.name].alt || '',
           },
         })),
       } satisfies ImageOption;
     }
 
-    if (PRODUCT_LIST_TYPE.includes(option.name.toLowerCase())) {
+    if (optionTypes?.list?.names.includes(option.name.toLowerCase())) {
       return {
         type: 'list',
         mode: 'single',

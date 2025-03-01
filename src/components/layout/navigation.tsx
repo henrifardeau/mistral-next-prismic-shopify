@@ -1,4 +1,4 @@
-import { MenuDrawer } from '@/components/menu-drawer';
+import { MenuDrawer } from '@/components/menu';
 import { prismic } from '@/lib/prismic';
 import { components } from '@/slices';
 import { SecondaryLinks } from '@/types/menu';

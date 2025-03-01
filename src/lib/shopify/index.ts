@@ -1,4 +1,4 @@
-import { env } from '@/env';
+import valveConfig from '@/valve.config';
 
 import { Shopify } from './Shopify';
 
@@ -16,10 +16,4 @@ import { Shopify } from './Shopify';
 
 // if (env.NODE_ENV !== 'production') globalForShopify.shopify = shopify;
 
-export const shopify = new Shopify(
-  env.SHOPIFY_STOREFRONT_DOMAIN,
-  env.SHOPIFY_STOREFRONT_API_VERSION,
-  env.SHOPIFY_STOREFRONT_API_TOKEN,
-  env.SHOPIFY_CUSTOMER_COOKIE_PASSWORD,
-  env.SHOPIFY_CART_COOKIE_PASSWORD,
-);
+export const shopify = new Shopify(valveConfig);
