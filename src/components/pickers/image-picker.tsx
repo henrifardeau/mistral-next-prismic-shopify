@@ -46,7 +46,15 @@ export function ImagePicker({
   }
 
   return (
-    <ToggleGroup type="single" value={value} onValueChange={onValueChange}>
+    <ToggleGroup
+      type="single"
+      value={value}
+      onValueChange={(v) => {
+        if (v) {
+          onValueChange(v);
+        }
+      }}
+    >
       {option.optionValues.map((optionValue) => (
         <ToggleGroupItem
           key={optionValue.name}

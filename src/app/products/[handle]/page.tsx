@@ -10,9 +10,19 @@ import {
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { components } from '@/slices';
-import { Params } from '@/types/common';
+import { Params, SearchParams } from '@/types/common';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
+
+async function parseSearch(searchParams: SearchParams) {
+  const params = await searchParams;
+
+  const parsedParams = Object.entries(params).filter(
+    (entry): entry is [string, string] => typeof entry[1] === 'string',
+  );
+
+  return Object.fromEntries(parsedParams);
+}
 
 export async function generateMetadata({
   params,
@@ -44,10 +54,13 @@ export async function generateMetadata({
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Params<{ handle: string }>;
+  searchParams: SearchParams;
 }) {
   const { handle } = await params;
+  const options = await parseSearch(searchParams);
 
   const [page, shopifyProduct] = await Promise.all([
     prismic.getByUID('products', handle),
@@ -64,7 +77,7 @@ export default async function Page({
     product.options,
     shopify.product.optionTypes,
   );
-  const initialOptions = getInitialOptions(productOptions);
+  const initialOptions = getInitialOptions(productOptions, options);
   const initialVariant = getInitialVariant(product.variants, initialOptions);
 
   return (

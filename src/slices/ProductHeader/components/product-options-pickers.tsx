@@ -1,12 +1,13 @@
 'use client';
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
 import {
   ColorSwatchPicker,
   ImagePicker,
-  SelectPicker,
   ListPicker,
+  SelectPicker,
   SwitchPickers,
   SwitchPickersSingleProps,
 } from '@/components/pickers';
@@ -15,9 +16,25 @@ import { useProduct } from '@/hooks/use-product';
 type SwitchComponents = SwitchPickersSingleProps['components'];
 
 export function ProductOptionsPickers() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const options = useProduct((state) => state.options);
   const currentOptions = useProduct((state) => state.currentOptions);
   const updateOption = useProduct((state) => state.updateOption);
+
+  const updateOptionInterceptor = (name: string, value: string) => {
+    if (!value) {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(name, value);
+    router.replace(`${pathname}?${params.toString()}`);
+
+    updateOption(name, value);
+  };
 
   const switchComponents: SwitchComponents = useMemo(() => {
     return {
@@ -51,8 +68,9 @@ export function ProductOptionsPickers() {
       ),
       list: ({ option, value, onValueChange }) => (
         <div className="space-y-2">
-          <div className="flex text-sm">
+          <div className="flex space-x-2 text-sm">
             <span>{option.name} :</span>
+            <span>{value}</span>
           </div>
           <ListPicker
             mode="single"
@@ -89,7 +107,7 @@ export function ProductOptionsPickers() {
       mode="single"
       options={options}
       currentOptions={currentOptions}
-      onValueChange={updateOption}
+      onValueChange={updateOptionInterceptor}
       components={switchComponents}
     />
   );

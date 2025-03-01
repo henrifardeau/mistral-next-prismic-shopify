@@ -18,7 +18,7 @@ async function parseSearch(searchParams: SearchParams) {
 
   const filters =
     typeof params.filters === 'string'
-      ? JSON.parse(atob(params.filters))
+      ? (JSON.parse(atob(params.filters)) as Record<string, string[]>)
       : undefined;
 
   return {

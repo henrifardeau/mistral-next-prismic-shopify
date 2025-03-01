@@ -121,15 +121,16 @@ export function getVerifiedOptions(
   });
 }
 
-export function getInitialOptions(options: VerifiedOption[]) {
-  return options.reduce(
-    (acc, cur) => {
-      return {
-        ...acc,
-        [cur.name]: cur.optionValues[0].name,
-      };
-    },
-    {} as Record<string, string>,
+export function getInitialOptions(
+  options: VerifiedOption[],
+  initialFilters: Record<string, string> = {},
+) {
+  return Object.fromEntries(
+    options.map((option) => [
+      option.name,
+      option.optionValues.find((v) => v.name === initialFilters[option.name])
+        ?.name ?? option.optionValues[0].name,
+    ]),
   );
 }
 

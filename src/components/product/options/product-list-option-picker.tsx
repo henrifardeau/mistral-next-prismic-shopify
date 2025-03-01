@@ -3,7 +3,7 @@
 import { ListPicker } from '@/components/pickers';
 import { useProduct } from '@/hooks/use-product';
 
-export function ProductSizeOptionPicker() {
+export function ProductListOptionPicker() {
   const options = useProduct((state) => state.options);
   const currentOptions = useProduct((state) => state.currentOptions);
   const updateOption = useProduct((state) => state.updateOption);
