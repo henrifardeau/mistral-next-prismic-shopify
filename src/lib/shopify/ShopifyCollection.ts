@@ -3,7 +3,7 @@ import { GraphQLClient } from 'graphql-request';
 import { DEFAULT_SORTING } from '@/constants/collection';
 import { Collection } from '@/types/collection';
 
-import { GetCollectionByHandleQuery } from './gql/graphql';
+import { GetCollectionByHandleQuery, ProductFilter } from './gql/graphql';
 import { getCollectionByHandleQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
 import { ShopifyProduct } from './ShopifyProduct';
@@ -23,6 +23,7 @@ export class ShopifyCollection {
       key?: string;
       reverse?: boolean;
     },
+    filters?: string[],
     next?: NextFetchRequestConfig,
     cache?: RequestCache,
   ): Promise<GetCollectionByHandleQuery> {
@@ -31,6 +32,7 @@ export class ShopifyCollection {
       first: 20,
       sortKey: (sort?.key ?? DEFAULT_SORTING.sortKey) as CollectionSortKeys,
       sortReverse: sort?.reverse ?? DEFAULT_SORTING.sortReverse,
+      filters: filters as ProductFilter[],
     });
   }
 

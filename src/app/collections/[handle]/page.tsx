@@ -16,8 +16,14 @@ async function parseSearch(searchParams: SearchParams) {
       ? SORTING.find((s) => s.slug === params.sort)
       : undefined;
 
+  const filters =
+    typeof params.filters === 'string'
+      ? JSON.parse(atob(params.filters))
+      : undefined;
+
   return {
     sort: sort ?? DEFAULT_SORTING,
+    filters,
   };
 }
 
@@ -57,7 +63,7 @@ export default async function Page({
   searchParams: SearchParams;
 }) {
   const { handle } = await params;
-  const { sort } = await parseSearch(searchParams);
+  const { sort, filters } = await parseSearch(searchParams);
 
   const page = await prismic
     .getByUID('collections', handle)
@@ -67,7 +73,7 @@ export default async function Page({
     <SliceZone
       slices={page.data.slices}
       components={components}
-      context={{ sort }}
+      context={{ sort, filters }}
     />
   );
 }

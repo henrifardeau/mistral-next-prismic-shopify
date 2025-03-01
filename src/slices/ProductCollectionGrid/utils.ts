@@ -25,7 +25,7 @@ function hasImageForEveryOption(option: CollectionProductFilter) {
   );
 }
 
-export function getVerifiedOptions(
+export function getVerifiedFilters(
   options: CollectionProductFilter[],
 ): VerifiedOption[] {
   return options.map((option) => {
@@ -76,4 +76,17 @@ export function getVerifiedOptions(
       })),
     } satisfies ListOption;
   });
+}
+
+export function getInitialFilters(
+  filters: VerifiedOption[],
+  initialFilters: Record<string, string[]> = {},
+) {
+  return filters.reduce(
+    (acc, cur) => {
+      acc[cur.name] = initialFilters[cur.name] ?? [];
+      return acc;
+    },
+    {} as Record<string, string[]>,
+  );
 }

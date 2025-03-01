@@ -106,10 +106,16 @@ export const getCollectionByHandleQuery = graphql(`
     $first: Int!
     $sortKey: ProductCollectionSortKeys!
     $sortReverse: Boolean!
+    $filters: [ProductFilter!]
   ) {
     collection(handle: $handle) {
       id
-      products(first: $first, sortKey: $sortKey, reverse: $sortReverse) {
+      products(
+        first: $first
+        sortKey: $sortKey
+        reverse: $sortReverse
+        filters: $filters
+      ) {
         filters {
           id
           label

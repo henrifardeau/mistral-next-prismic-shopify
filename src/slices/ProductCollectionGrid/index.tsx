@@ -13,7 +13,7 @@ import {
   ProductItem,
   SwitchGridItem,
 } from './components';
-import { getVerifiedOptions } from './utils';
+import { getInitialFilters, getVerifiedFilters } from './utils';
 
 /**
  * Props for `ProductCollectionGrid`.
@@ -27,6 +27,7 @@ export type ProductCollectionGridProps = SliceComponentProps<
       sortKey: string;
       sortReverse: boolean;
     };
+    filters?: Record<string, string[]>;
   }
 >;
 
@@ -37,7 +38,8 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
   slice,
   context,
 }) => {
-  const { sort } = context;
+  const { sort = DEFAULT_SORTING, filters = {} } = context;
+
   if (!slice.primary.shopify_collection_handle) {
     return null;
   }
@@ -48,6 +50,9 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
       key: sort?.sortKey || DEFAULT_SORTING.sortKey,
       reverse: sort?.sortReverse || DEFAULT_SORTING.sortReverse,
     },
+    Object.values(filters)
+      .flat()
+      .map((e) => JSON.parse(e)),
   );
   if (!shopifyCollection.collection?.products) {
     return null;
@@ -59,7 +64,8 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     collection.products.map((p) => p.handle),
   );
 
-  const filters = getVerifiedOptions(collection.filters);
+  const collectionFilters = getVerifiedFilters(collection.filters);
+  const initialFilters = getInitialFilters(collectionFilters, filters);
 
   return (
     <section
@@ -89,7 +95,10 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
           }}
         />
       </div>
-      <CollectionFilterDrawer filters={filters} />
+      <CollectionFilterDrawer
+        filters={collectionFilters}
+        initialFilters={initialFilters}
+      />
     </section>
   );
 };
