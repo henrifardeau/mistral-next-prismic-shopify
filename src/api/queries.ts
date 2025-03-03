@@ -37,7 +37,6 @@ export const cartQuery = graphql(`
   query Cart($cartId: ID!) {
     cart(id: $cartId) {
       id
-      checkoutUrl
       lines(first: 100) {
         edges {
           node {
@@ -55,6 +54,14 @@ export const cartQuery = graphql(`
           }
         }
       }
+    }
+  }
+`);
+
+export const cartCheckoutURLQuery = graphql(`
+  query CartCheckoutURL($cartId: ID!) {
+    cart(id: $cartId) {
+      checkoutUrl
     }
   }
 `);

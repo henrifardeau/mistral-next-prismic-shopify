@@ -12,6 +12,7 @@ import { CustomerSession } from '@/types/customer';
 
 import {
   AddCartLinesMutation,
+  CartCheckoutUrlQuery,
   CartQuery,
   CreateCartMutation,
   RemoveCartLinesMutation,
@@ -25,7 +26,7 @@ import {
   updateCartBuyerIdentityMutation,
   updateCartLinesMutation,
 } from '../mutations';
-import { cartQuery } from '../queries';
+import { cartCheckoutURLQuery, cartQuery } from '../queries';
 import { reshapeCart } from '../utils';
 
 function revalidateCart(cartId: string) {
@@ -97,7 +98,6 @@ export async function createCart(
   invariant(shopifyCart.cartCreate?.cart, 'Fail to create cart');
 
   cartSession.cartId = shopifyCart.cartCreate.cart.id;
-  cartSession.cartCheckoutUrl = shopifyCart.cartCreate.cart.checkoutUrl;
   await cartSession.save();
 
   return reshapeCart(shopifyCart.cartCreate);
@@ -173,9 +173,16 @@ export async function removeCartLines(
 export async function redirectToCheckout() {
   const cartSession = await ensureCartSession();
 
-  invariant(cartSession.cartCheckoutUrl, 'Checkout URL is undefined');
+  const shopifyCart = await shopify.cart.getCheckoutURL<CartCheckoutUrlQuery>({
+    query: cartCheckoutURLQuery,
+    variables: {
+      cartId: cartSession.cartId,
+    },
+  });
 
-  redirect(cartSession.cartCheckoutUrl);
+  invariant(shopifyCart.cart?.checkoutUrl, 'Checkout URL is undefined');
+
+  redirect(shopifyCart.cart.checkoutUrl);
 }
 
 export async function updateCartCustomer(
@@ -193,10 +200,21 @@ export async function updateCartCustomer(
 
   invariant(shopifyCart.cartBuyerIdentityUpdate?.cart, 'Fail to update cart');
 
-  cartSession.cartId = shopifyCart.cartBuyerIdentityUpdate.cart.id;
-  cartSession.cartCheckoutUrl =
-    shopifyCart.cartBuyerIdentityUpdate.cart.checkoutUrl;
-  await cartSession.save();
+  return shopifyCart;
+}
+
+export async function removeCartCustomer(
+  cartSession: IronSession<CartSession>,
+) {
+  const shopifyCart =
+    await shopify.cart.removeCustomer<UpdateCartBuyerIdentityMutation>({
+      query: updateCartBuyerIdentityMutation,
+      variables: {
+        cartId: cartSession.cartId,
+      },
+    });
+
+  invariant(shopifyCart.cartBuyerIdentityUpdate?.cart, 'Fail to update cart');
 
   return shopifyCart;
 }

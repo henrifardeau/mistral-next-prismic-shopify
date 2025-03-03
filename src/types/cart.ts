@@ -2,12 +2,10 @@ import { CompareAtPrice, Price } from './common';
 
 export type CartSession = {
   cartId: string;
-  cartCheckoutUrl: string;
 };
 
 export type Cart = {
   id?: string;
-  checkoutUrl: string;
   state: 'idle' | 'loading';
   lines: CartLine[];
 };

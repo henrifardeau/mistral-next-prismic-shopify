@@ -16,6 +16,7 @@ import {
   CreateCustomerTokenMutation,
   CustomerQuery,
   RemoveCustomerAddressMutation,
+  RemoveCustomerTokenMutation,
   UpdateCustomerAddressMutation,
   UpdateDefaultCustomerAddressMutation,
 } from '../gql/graphql';
@@ -24,13 +25,14 @@ import {
   createCustomerMutation,
   createCustomerTokenMutation,
   removeCustomerAddressMutation,
+  removeCustomerTokenMutation,
   updateCustomerAddressMutation,
   updateDefaultCustomerAddressMutation,
 } from '../mutations';
 import { customerQuery } from '../queries';
 import { AddressPayload, SignInPayload, SignUpPayload } from '../schemas';
-import { updateCartCustomer } from './cart';
 import { reshapeCustomer } from '../utils';
+import { removeCartCustomer, updateCartCustomer } from './cart';
 
 function revalidateCustomer(customerAccessToken: string) {
   revalidateTag(customerAccessToken);
@@ -115,7 +117,25 @@ export async function createCustomer(payload: SignUpPayload) {
 }
 
 export async function destroyCustomer() {
-  const customerSession = await ensureCustomerSession();
+  const cookieStore = await cookies();
+  const [customerSession, cartSession] = await Promise.all([
+    getIronSession<CustomerSession>(
+      cookieStore,
+      shopify.customer.sessionOptions,
+    ),
+    getIronSession<CartSession>(cookieStore, shopify.cart.sessionOptions),
+  ]);
+
+  await shopify.customer.removeToken<RemoveCustomerTokenMutation>({
+    query: removeCustomerTokenMutation,
+    variables: {
+      customerAccessToken: customerSession.accessToken,
+    },
+  });
+
+  if (cartSession.cartId) {
+    await removeCartCustomer(cartSession);
+  }
 
   customerSession.destroy();
 

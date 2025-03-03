@@ -44,7 +44,6 @@ export function reshapeCart(rawCart: RawCart): Cart {
 
   return {
     id: rawCart.cart.id,
-    checkoutUrl: rawCart.cart.checkoutUrl,
     state: 'idle',
     lines: shopify.helpers
       .removeEdgesAndNodes(rawCart.cart.lines)

@@ -113,7 +113,6 @@ export function CartStoreProvider({
 function cartReducer(state: Cart | undefined, action: CartAction): Cart {
   const currentState = state || {
     id: undefined,
-    checkoutUrl: '',
     state: 'idle',
     lines: [],
   };

@@ -73,6 +73,17 @@ export class ShopifyCustomer {
     });
   }
 
+  public async removeToken<T>(input: {
+    query: DocumentNode;
+    variables: {
+      customerAccessToken: string;
+    };
+  }): Promise<T> {
+    return this.client.request(input.query, {
+      customerAccessToken: input.variables.customerAccessToken,
+    });
+  }
+
   public async createAddress<T>(input: {
     query: DocumentNode;
     variables: {

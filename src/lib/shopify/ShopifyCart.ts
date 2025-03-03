@@ -40,6 +40,21 @@ export class ShopifyCart {
     });
   }
 
+  public async getCheckoutURL<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+    };
+    next?: NextFetchRequestConfig;
+    cache?: RequestCache;
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
+
+    return this.customClient(input.next, input.cache).request(input.query, {
+      cartId: id,
+    });
+  }
+
   public async create<T>(input: {
     query: DocumentNode;
     variables: {
@@ -144,6 +159,22 @@ export class ShopifyCart {
       cartId: id,
       buyerIdentity: {
         customerAccessToken: input.variables.customerAccessToken,
+      },
+    });
+  }
+
+  public async removeCustomer<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+    };
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
+
+    return this.client.request(input.query, {
+      cartId: id,
+      buyerIdentity: {
+        customerAccessToken: null,
       },
     });
   }

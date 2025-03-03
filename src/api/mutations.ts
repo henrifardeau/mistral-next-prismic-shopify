@@ -21,6 +21,14 @@ export const createCustomerTokenMutation = graphql(`
   }
 `);
 
+export const removeCustomerTokenMutation = graphql(`
+  mutation RemoveCustomerToken($customerAccessToken: String!) {
+    customerAccessTokenDelete(customerAccessToken: $customerAccessToken) {
+      deletedAccessToken
+    }
+  }
+`);
+
 export const createCustomerAddressMutation = graphql(`
   mutation CreateCustomerAddress(
     $customerAccessToken: String!
@@ -90,7 +98,6 @@ export const createCartMutation = graphql(`
     cartCreate(input: $input) {
       cart {
         id
-        checkoutUrl
         lines(first: 100) {
           edges {
             node {
@@ -118,7 +125,6 @@ export const addCartLinesMutation = graphql(`
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart {
         id
-        checkoutUrl
       }
     }
   }
@@ -129,7 +135,6 @@ export const updateCartLinesMutation = graphql(`
     cartLinesUpdate(cartId: $cartId, lines: $lines) {
       cart {
         id
-        checkoutUrl
       }
     }
   }
@@ -140,7 +145,6 @@ export const removeCartLinesMutation = graphql(`
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart {
         id
-        checkoutUrl
       }
     }
   }
@@ -154,7 +158,6 @@ export const updateCartBuyerIdentityMutation = graphql(`
     cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
       cart {
         id
-        checkoutUrl
       }
     }
   }
