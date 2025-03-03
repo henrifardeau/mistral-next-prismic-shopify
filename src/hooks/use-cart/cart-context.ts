@@ -9,7 +9,7 @@ import {
   CartUpdatePayload,
 } from '@/types/cart';
 
-type CartStoreContextProps = {
+type CartContextProps = {
   optimisticCart: Cart | undefined;
   cartLength: number;
   cartSubTotal: string;
@@ -20,7 +20,7 @@ type CartStoreContextProps = {
   optimisticRemoveCartLine: (payload: CartLinePayload) => void;
 };
 
-export const CartStoreContext = createContext<CartStoreContextProps>({
+export const CartContext = createContext<CartContextProps>({
   optimisticCart: undefined,
   cartSubTotal: '0',
   cartLength: 0,

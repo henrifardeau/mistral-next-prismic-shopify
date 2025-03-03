@@ -3,6 +3,11 @@
 import { useCallback } from 'react';
 
 import {
+  redirectToCheckout,
+  removeCartLines,
+  updateCartLines,
+} from '@/api/actions';
+import {
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -11,12 +16,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { useCartStore } from '@/hooks/use-cart-store';
-import {
-  redirectToCheckout,
-  removeCartLines,
-  updateCartLines,
-} from '@/api/actions';
+import { useCart } from '@/hooks/use-cart';
+import { useDrawer } from '@/hooks/use-drawer';
 
 import {
   CartCheckout,
@@ -28,7 +29,6 @@ import {
   CartSummary,
 } from './cart';
 import { CartItem } from './cart-item';
-import { useDrawer } from '@/hooks/use-drawer';
 
 export function CartDrawer() {
   const cartOpen = useDrawer((state) => state.cart);
@@ -41,7 +41,7 @@ export function CartDrawer() {
     cartSubTotal,
     optimisticUpdateCartLine,
     optimisticRemoveCartLine,
-  } = useCartStore();
+  } = useCart();
 
   const disableCheckout = useCallback(() => {
     return !optimisticCart?.lines.length || optimisticCart.state !== 'idle';

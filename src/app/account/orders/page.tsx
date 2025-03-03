@@ -1,6 +1,6 @@
 'use client';
 
-import { useCustomerStore } from '@/hooks/use-customer-store';
+import { useCustomerStore } from '@/hooks/use-customer';
 
 import { CustomerOrderItem } from './components';
 

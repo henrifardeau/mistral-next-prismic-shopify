@@ -10,9 +10,9 @@ import {
   CustomerAction,
 } from '@/types/customer';
 
-import { CustomerStoreContext } from './customer-store-context';
+import { CustomerContext } from './customer-context';
 
-export function CustomerStoreProvider({
+export function CustomerProvider({
   children,
   customerPromise,
 }: PropsWithChildren<{
@@ -62,7 +62,7 @@ export function CustomerStoreProvider({
   };
 
   return (
-    <CustomerStoreContext.Provider
+    <CustomerContext.Provider
       value={{
         optimisticCustomer,
         optimisticCreateCustomerAddress,
@@ -72,7 +72,7 @@ export function CustomerStoreProvider({
       }}
     >
       {children}
-    </CustomerStoreContext.Provider>
+    </CustomerContext.Provider>
   );
 }
 

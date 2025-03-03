@@ -1,12 +1,12 @@
 'use client';
 
-import { useCartStore } from '@/hooks/use-cart-store';
+import { useCart } from '@/hooks/use-cart';
 import { useDrawer } from '@/hooks/use-drawer';
 
 export function CartButton() {
   const openDrawer = useDrawer((state) => state.openDrawer);
 
-  const { cartLength } = useCartStore();
+  const { cartLength } = useCart();
 
   return (
     <button

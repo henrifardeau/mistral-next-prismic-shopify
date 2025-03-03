@@ -4,14 +4,14 @@ import '@/styles/globals.css';
 
 import { PropsWithChildren } from 'react';
 
-import { AccountDrawer } from '@/components/customer';
+import { getCart, getCustomer } from '@/api/actions';
 import { CartDrawer } from '@/components/cart';
+import { AccountDrawer } from '@/components/customer';
 import { Footer, Main, Navigation } from '@/components/layout';
 import { Toaster } from '@/components/ui/toaster';
-import { CartStoreProvider } from '@/hooks/use-cart-store';
-import { CustomerStoreProvider } from '@/hooks/use-customer-store';
+import { CartProvider } from '@/hooks/use-cart';
+import { CustomerProvider } from '@/hooks/use-customer';
 import { prismic, repositoryName } from '@/lib/prismic';
-import { getCart, getCustomer } from '@/api/actions';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
 
@@ -46,16 +46,16 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="fr">
       <body>
-        <CustomerStoreProvider customerPromise={customerPromise}>
-          <CartStoreProvider cartPromise={cartPromise}>
+        <CustomerProvider customerPromise={customerPromise}>
+          <CartProvider cartPromise={cartPromise}>
             <Navigation />
             <Main>{children}</Main>
             <Footer />
             <Toaster />
             <CartDrawer />
             <AccountDrawer />
-          </CartStoreProvider>
-        </CustomerStoreProvider>
+          </CartProvider>
+        </CustomerProvider>
 
         <PrismicPreview repositoryName={repositoryName} />
       </body>

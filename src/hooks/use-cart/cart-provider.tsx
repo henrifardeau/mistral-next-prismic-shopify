@@ -17,9 +17,9 @@ import {
   CartUpdatePayload,
 } from '@/types/cart';
 
-import { CartStoreContext } from './cart-store-context';
+import { CartContext } from './cart-context';
 
-export function CartStoreProvider({
+export function CartProvider({
   children,
   cartPromise,
 }: PropsWithChildren<{
@@ -93,7 +93,7 @@ export function CartStoreProvider({
   }, [optimisticCart]);
 
   return (
-    <CartStoreContext.Provider
+    <CartContext.Provider
       value={{
         optimisticCart,
         cartSubTotal,
@@ -106,7 +106,7 @@ export function CartStoreProvider({
       }}
     >
       {children}
-    </CartStoreContext.Provider>
+    </CartContext.Provider>
   );
 }
 

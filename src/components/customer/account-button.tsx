@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { useCustomerStore } from '@/hooks/use-customer-store';
+import { useCustomerStore } from '@/hooks/use-customer';
 import { useDrawer } from '@/hooks/use-drawer';
 
 export function AccountButton() {

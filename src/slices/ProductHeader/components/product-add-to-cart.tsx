@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 
+import { addCartLines } from '@/api/actions';
 import { Price } from '@/components/price';
 import { QuantityInput } from '@/components/quantity-input';
-import { useCartStore } from '@/hooks/use-cart-store';
+import { useCart } from '@/hooks/use-cart';
 import { useProduct } from '@/hooks/use-product';
-import { addCartLines } from '@/api/actions';
 
 export function ProductAddToCart() {
-  const { optimisticAddCartLine } = useCartStore();
+  const { optimisticAddCartLine } = useCart();
 
   const product = useProduct((state) => state.product);
   const variant = useProduct((state) => state.currentVariant);

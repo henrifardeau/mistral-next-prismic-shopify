@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { useCustomerStore } from '@/hooks/use-customer-store';
 import { updateCustomerAddress } from '@/api/actions';
 import { AddressPayload } from '@/api/schemas';
+import { useCustomerStore } from '@/hooks/use-customer';
 import { CustomerAddress } from '@/types/customer';
 
 import { CustomerAddressDialog } from './customer-address-dialog';

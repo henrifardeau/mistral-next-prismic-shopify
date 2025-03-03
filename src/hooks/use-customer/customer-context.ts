@@ -9,7 +9,7 @@ import {
   Customer,
 } from '@/types/customer';
 
-type CustomerStoreContextProps = {
+type CustomerContextProps = {
   optimisticCustomer: Customer;
   optimisticCreateCustomerAddress: (payload: AddressPayload) => void;
   optimisticUpdateCustomerAddress: (payload: AddressUpdatePayload) => void;
@@ -17,7 +17,7 @@ type CustomerStoreContextProps = {
   optimisticUpdateDefaultCustomerAddress: (payload: AddressIdPayload) => void;
 };
 
-export const CustomerStoreContext = createContext<CustomerStoreContextProps>({
+export const CustomerContext = createContext<CustomerContextProps>({
   optimisticCustomer: {
     authenticated: false,
   },
