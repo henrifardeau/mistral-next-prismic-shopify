@@ -1,6 +1,8 @@
 import valveConfig from '@/valve.config';
 
-import { Shopify } from './Shopify';
+// import { Shopify } from './Shopify';
+
+import { Shopify } from '@valve-storefront/shopify';
 
 // const globalForShopify = global as unknown as {
 //   shopify: ShopifyInstance;
