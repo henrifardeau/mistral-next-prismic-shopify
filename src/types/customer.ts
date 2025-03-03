@@ -1,8 +1,13 @@
 import {
   OrderFinancialStatus,
   OrderFulfillmentStatus,
-} from '@/lib/shopify/gql/graphql';
-import { AddressPayload } from '@/lib/shopify/schemas';
+} from '@/api/gql/graphql';
+import { AddressPayload } from '@/api/schemas';
+
+export type CustomerSession = {
+  authenticated: boolean;
+  accessToken: string;
+};
 
 export type Customer = GuestCustomer | SignCustomer;
 

@@ -2,7 +2,7 @@
 
 import { PropsWithChildren, use, useCallback, useOptimistic } from 'react';
 
-import { AddressPayload } from '@/lib/shopify/schemas';
+import { AddressPayload } from '@/api/schemas';
 import {
   AddressIdPayload,
   AddressUpdatePayload,

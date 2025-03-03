@@ -1,7 +1,4 @@
-import { RawProduct } from '@/lib/shopify/types';
-import { CurrencyCode } from '@/lib/shopify/gql/graphql';
-
-export const SIMULATOR_PRODUCT: RawProduct = {
+export const SIMULATOR_PRODUCT = {
   product: {
     id: 'gid://shopify/Product/10006428221770',
     handle: 'undated-planner',
@@ -48,7 +45,7 @@ export const SIMULATOR_PRODUCT: RawProduct = {
             title: 'Time-block / Ember',
             availableForSale: true,
             compareAtPrice: null,
-            price: { amount: '24.0', currencyCode: CurrencyCode.Eur },
+            price: { amount: '24.0', currencyCode: 'EUR' },
             selectedOptions: [
               { name: 'Layout', value: 'Time-block' },
               { name: 'Color', value: 'Ember' },
@@ -61,7 +58,7 @@ export const SIMULATOR_PRODUCT: RawProduct = {
             title: 'Time-block / Electric blue',
             availableForSale: true,
             compareAtPrice: null,
-            price: { amount: '24.0', currencyCode: CurrencyCode.Eur },
+            price: { amount: '24.0', currencyCode: 'EUR' },
             selectedOptions: [
               { name: 'Layout', value: 'Time-block' },
               { name: 'Color', value: 'Electric blue' },
@@ -74,7 +71,7 @@ export const SIMULATOR_PRODUCT: RawProduct = {
             title: 'Frames / Ember',
             availableForSale: true,
             compareAtPrice: null,
-            price: { amount: '24.0', currencyCode: CurrencyCode.Eur },
+            price: { amount: '24.0', currencyCode: 'EUR' },
             selectedOptions: [
               { name: 'Layout', value: 'Frames' },
               { name: 'Color', value: 'Ember' },
@@ -87,7 +84,7 @@ export const SIMULATOR_PRODUCT: RawProduct = {
             title: 'Frames / Electric blue',
             availableForSale: true,
             compareAtPrice: null,
-            price: { amount: '24.0', currencyCode: CurrencyCode.Eur },
+            price: { amount: '24.0', currencyCode: 'EUR' },
             selectedOptions: [
               { name: 'Layout', value: 'Frames' },
               { name: 'Color', value: 'Electric blue' },

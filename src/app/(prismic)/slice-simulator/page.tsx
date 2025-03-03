@@ -1,8 +1,11 @@
+import { ProductQuery } from '@/api/gql/graphql';
+import { productByHandleQuery } from '@/api/queries';
+import { reshapeProduct } from '@/api/utils';
 import { SIMULATOR_PRODUCT } from '@/constants/slice-simulator-product';
 import {
-  getVerifiedOptions,
   getInitialOptions,
   getInitialVariant,
+  getVerifiedOptions,
   ProductProvider,
 } from '@/hooks/use-product';
 import { shopify } from '@/lib/shopify';
@@ -26,10 +29,15 @@ export default async function SliceSimulatorPage({
 
   if (wrapWithProduct(slices)) {
     const shopifyProduct = process.env.PRISMIC_MOCK_PRODUCT
-      ? await shopify.product.getByHandle(process.env.PRISMIC_MOCK_PRODUCT)
-      : SIMULATOR_PRODUCT;
+      ? await shopify.product.getByHandle<ProductQuery>({
+          query: productByHandleQuery,
+          variables: {
+            handle: process.env.PRISMIC_MOCK_PRODUCT,
+          },
+        })
+      : (SIMULATOR_PRODUCT as ProductQuery);
 
-    const product = shopify.product.reshape(shopifyProduct);
+    const product = reshapeProduct(shopifyProduct);
 
     const productOptions = getVerifiedOptions(
       product.options,

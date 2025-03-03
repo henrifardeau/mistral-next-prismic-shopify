@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { ProductQuery } from '@/api/gql/graphql';
+import { productByHandleQuery } from '@/api/queries';
+import { reshapeProduct } from '@/api/utils';
 import {
   getInitialOptions,
   getInitialVariant,
@@ -64,14 +67,19 @@ export default async function Page({
 
   const [page, shopifyProduct] = await Promise.all([
     prismic.getByUID('products', handle),
-    shopify.product.getByHandle(handle),
+    shopify.product.getByHandle<ProductQuery>({
+      query: productByHandleQuery,
+      variables: {
+        handle,
+      },
+    }),
   ]);
 
   if (!shopifyProduct.product) {
     return notFound();
   }
 
-  const product = shopify.product.reshape(shopifyProduct);
+  const product = reshapeProduct(shopifyProduct);
 
   const productOptions = getVerifiedOptions(
     product.options,

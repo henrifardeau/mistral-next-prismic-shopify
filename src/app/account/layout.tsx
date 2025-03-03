@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
 import { NavLink } from '@/components/nav-link';
-import { destroyCustomer, getCustomer } from '@/lib/shopify/actions';
+import { destroyCustomer, getCustomer } from '@/api/actions';
 
 export function generateMetadata(): Metadata {
   return {

@@ -8,8 +8,7 @@ import {
   useOptimistic,
 } from 'react';
 
-import { formatPrice } from '@/lib/shopify/utils';
-import { toNumber } from '@/lib/utils';
+import { formatPrice, toNumber } from '@/lib/utils';
 import {
   Cart,
   CartAction,

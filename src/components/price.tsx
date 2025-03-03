@@ -1,4 +1,4 @@
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 
 interface PriceProps extends React.HTMLAttributes<HTMLSpanElement> {
   amount: string | number;

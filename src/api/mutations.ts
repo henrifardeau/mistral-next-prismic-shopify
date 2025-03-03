@@ -98,21 +98,7 @@ export const createCartMutation = graphql(`
               quantity
               merchandise {
                 ... on ProductVariant {
-                  id
-                  title
-                  availableForSale
-                  compareAtPrice {
-                    amount
-                    currencyCode
-                  }
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  image {
-                    url
-                    altText
-                  }
+                  ...ProductVariant
                   product {
                     title
                     handle
