@@ -18,35 +18,22 @@ export class Shopify {
   protected formatterCache = new Map<string, Intl.NumberFormat>();
 
   constructor(config: ValveConfig) {
-    this.shopifyHelpersInstance = new ShopifyHelpers(config);
-
     const client = new GraphQLClient(config.shopify.endpoint, {
       headers: {
         'x-shopify-storefront-access-token': config.shopify.storefrontToken,
       },
     });
 
+    this.shopifyHelpersInstance = new ShopifyHelpers(config);
+
     this.shopifyCartInstance = new ShopifyCart(
       config,
       client,
       this.shopifyHelpersInstance,
     );
-    this.shopifyCustomerInstance = new ShopifyCustomer(
-      config,
-      client,
-      this.shopifyHelpersInstance,
-    );
-    this.shopifyProductInstance = new ShopifyProduct(
-      config,
-      client,
-      this.shopifyHelpersInstance,
-    );
-    this.shopifyCollectionInstance = new ShopifyCollection(
-      config,
-      client,
-      this.shopifyHelpersInstance,
-      this.shopifyProductInstance,
-    );
+    this.shopifyCustomerInstance = new ShopifyCustomer(config, client);
+    this.shopifyCollectionInstance = new ShopifyCollection(config, client);
+    this.shopifyProductInstance = new ShopifyProduct(config, client);
   }
 
   public get helpers(): ShopifyHelpers {

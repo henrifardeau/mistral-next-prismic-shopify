@@ -19,8 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/cn';
-import { formatPrice } from '@/lib/shopify/utils';
-import { toNumber } from '@/lib/utils';
+import { formatPrice, toNumber } from '@/lib/utils';
 import { CartLine } from '@/types/cart';
 
 import { QuantityInput } from '../quantity-input';

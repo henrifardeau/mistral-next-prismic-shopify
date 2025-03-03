@@ -22,7 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { createCustomer, getCustomerAccessToken } from '@/lib/shopify/actions';
+import { createCustomer, getCustomerAccessToken } from '@/api/actions';
 import {
   RecoverPayload,
   recoverSchema,
@@ -30,7 +30,7 @@ import {
   signInSchema,
   SignUpPayload,
   signUpSchema,
-} from '@/lib/shopify/schemas';
+} from '@/api/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDrawer } from '@/hooks/use-drawer';
 

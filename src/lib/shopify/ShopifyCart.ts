@@ -1,27 +1,9 @@
+import { DocumentNode } from 'graphql';
 import { GraphQLClient } from 'graphql-request';
-import { SessionOptions } from 'iron-session';
 
-import { Cart } from '@/types/cart';
 import { ValveConfig } from '@/valve.config';
 
-import {
-  AddCartLinesMutation,
-  CreateCartMutation,
-  GetCartQuery,
-  RemoveCartLinesMutation,
-  UpdateCartBuyerIdentityMutation,
-  UpdateCartLinesMutation,
-} from './gql/graphql';
-import {
-  addCartLinesMutation,
-  createCartMutation,
-  removeCartLinesMutation,
-  updateCartBuyerIdentityMutation,
-  updateCartLinesMutation,
-} from './mutations';
-import { getCartQuery } from './queries';
 import { ShopifyHelpers } from './ShopifyHelpers';
-import { AddCartLine, RawCart, RemoveCartLine, UpdateCartLine } from './types';
 
 export class ShopifyCart {
   constructor(
@@ -30,7 +12,7 @@ export class ShopifyCart {
     private readonly helpers: ShopifyHelpers,
   ) {}
 
-  public get sessionOptions(): SessionOptions {
+  public get sessionOptions() {
     return {
       password: this.config.cart.session.password,
       cookieName: this.config.cart.session.key,
@@ -43,115 +25,127 @@ export class ShopifyCart {
     };
   }
 
-  public async get(
-    cartId: string,
-    next?: NextFetchRequestConfig,
-    cache?: RequestCache,
-  ): Promise<GetCartQuery> {
-    const id = this.helpers.addPrefix('cart', cartId);
+  public async get<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+    };
+    next?: NextFetchRequestConfig;
+    cache?: RequestCache;
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
 
-    return this.customClient(next, cache).request(getCartQuery, { id });
+    return this.customClient(input.next, input.cache).request(input.query, {
+      cartId: id,
+    });
   }
 
-  public async create(
-    cartLines: AddCartLine[],
-    customerAccessToken?: string,
-  ): Promise<CreateCartMutation> {
-    const lines = cartLines.map((line) => ({
+  public async create<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartLines: {
+        variantId: string;
+        quantity?: number;
+      }[];
+      customerAccessToken?: string;
+    };
+  }): Promise<T> {
+    const lines = input.variables.cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       merchandiseId: this.helpers.addPrefix('variant', line.variantId),
     }));
 
-    return this.client.request(createCartMutation, {
+    return this.client.request(input.query, {
       input: {
         lines,
         buyerIdentity: {
-          customerAccessToken,
+          customerAccessToken: input.variables.customerAccessToken,
         },
       },
     });
   }
 
-  public async addLines(
-    cartId: string,
-    cartLines: AddCartLine[],
-  ): Promise<AddCartLinesMutation> {
-    const lines = cartLines.map((line) => ({
+  public async addLines<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+      cartLines: {
+        variantId: string;
+        quantity?: number;
+      }[];
+    };
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
+    const lines = input.variables.cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       merchandiseId: this.helpers.addPrefix('variant', line.variantId),
     }));
 
-    return this.client.request(addCartLinesMutation, { cartId, lines });
+    return this.client.request(input.query, {
+      cartId: id,
+      lines,
+    });
   }
 
-  public async updateLines(
-    cartId: string,
-    cartLines: UpdateCartLine[],
-  ): Promise<UpdateCartLinesMutation> {
-    const lines = cartLines.map((line) => ({
+  public async updateLines<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+      cartLines: {
+        lineId: string;
+        quantity?: number;
+      }[];
+    };
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
+    const lines = input.variables.cartLines.map((line) => ({
       quantity: line.quantity ?? 1,
       id: this.helpers.addPrefix('line', line.lineId),
     }));
 
-    return this.client.request(updateCartLinesMutation, { cartId, lines });
+    return this.client.request(input.query, {
+      cartId: id,
+      lines,
+    });
   }
 
-  public async removeLines(
-    cartId: string,
-    cartLineIds: RemoveCartLine[],
-  ): Promise<RemoveCartLinesMutation> {
-    const lineIds = cartLineIds.reduce((acc, cur) => {
+  public async removeLines<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+      cartLines: {
+        lineId: string;
+      }[];
+    };
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
+    const lineIds = input.variables.cartLines.reduce((acc, cur) => {
       const prefixedCur = this.helpers.addPrefix('line', cur.lineId);
 
       return acc.includes(prefixedCur) ? acc : [...acc, prefixedCur];
     }, [] as string[]);
 
-    return this.client.request(removeCartLinesMutation, { cartId, lineIds });
-  }
-
-  public async updateCustomer(
-    cartId: string,
-    customerAccessToken: string,
-  ): Promise<UpdateCartBuyerIdentityMutation> {
-    return this.client.request(updateCartBuyerIdentityMutation, {
-      cartId,
-      buyerIdentity: {
-        customerAccessToken,
-      },
+    return this.client.request(input.query, {
+      cartId: id,
+      lineIds,
     });
   }
 
-  public reshape(rawCart: RawCart): Cart {
-    if (!rawCart?.cart) {
-      throw new Error('Reshap empty cart forbidden!');
-    }
-
-    return {
-      id: rawCart.cart.id,
-      checkoutUrl: rawCart.cart.checkoutUrl,
-      state: 'idle',
-      lines: this.helpers
-        .removeEdgesAndNodes(rawCart.cart.lines)
-        .map((line) => ({
-          id: line.id,
-          quantity: line.quantity,
-          availableForSale: line.merchandise.availableForSale,
-          product: {
-            handle: line.merchandise.product.handle,
-            title: line.merchandise.product.title,
-          },
-          variant: {
-            id: line.merchandise.id,
-            title: line.merchandise.title,
-            compareAtPrice: line.merchandise.compareAtPrice,
-            price: line.merchandise.price,
-            image: {
-              src: line.merchandise.image?.url,
-              alt: line.merchandise.image?.altText,
-            },
-          },
-        })),
+  public async updateCustomer<T>(input: {
+    query: DocumentNode;
+    variables: {
+      cartId: string;
+      customerAccessToken: string;
     };
+  }): Promise<T> {
+    const id = this.helpers.addPrefix('cart', input.variables.cartId);
+
+    return this.client.request(input.query, {
+      cartId: id,
+      buyerIdentity: {
+        customerAccessToken: input.variables.customerAccessToken,
+      },
+    });
   }
 
   private customClient(

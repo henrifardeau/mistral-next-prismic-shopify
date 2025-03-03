@@ -26,7 +26,21 @@ export type ValveConfig = {
       duration?: number;
     };
   };
-  collection?: {
+  collection: {
+    sorting: {
+      default: {
+        name: string;
+        slug: string;
+        sortKey: string;
+        sortReverse: boolean;
+      };
+      options: {
+        name: string;
+        slug: string;
+        sortKey: string;
+        sortReverse: boolean;
+      }[];
+    };
     filters?: {
       color?: {
         ids: string[];
@@ -91,6 +105,46 @@ const valveConfig = {
     },
   },
   collection: {
+    sorting: {
+      default: {
+        name: 'Relevance',
+        slug: 'default',
+        sortKey: 'COLLECTION_DEFAULT',
+        sortReverse: false,
+      },
+      options: [
+        {
+          name: 'Relevance',
+          slug: 'default',
+          sortKey: 'COLLECTION_DEFAULT',
+          sortReverse: false,
+        },
+        {
+          name: 'Trending',
+          slug: 'trending-desc',
+          sortKey: 'BEST_SELLING',
+          sortReverse: false,
+        },
+        {
+          name: 'Latest arrivals',
+          slug: 'latest-desc',
+          sortKey: 'CREATED',
+          sortReverse: true,
+        },
+        {
+          name: 'Price: Low to high',
+          slug: 'price-asc',
+          sortKey: 'PRICE',
+          sortReverse: false,
+        },
+        {
+          name: 'Price: High to low',
+          slug: 'price-desc',
+          sortKey: 'PRICE',
+          sortReverse: true,
+        },
+      ],
+    },
     filters: {
       color: {
         ids: ['filter.v.t.shopify.color-pattern'],

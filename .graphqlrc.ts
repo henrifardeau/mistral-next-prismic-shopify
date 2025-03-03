@@ -17,7 +17,7 @@ const config: CodegenConfig = {
   ],
   documents: './src/**/*.{ts,tsx}',
   generates: {
-    './src/lib/shopify/gql/': {
+    './src/api/gql/': {
       preset: 'client',
       presetConfig: {
         fragmentMasking: false,

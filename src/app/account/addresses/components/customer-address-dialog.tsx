@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { AddressPayload, addressSchema } from '@/lib/shopify/schemas';
+import { AddressPayload, addressSchema } from '@/api/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 export function CustomerAddressDialog({

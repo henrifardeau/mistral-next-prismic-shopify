@@ -1,7 +1,7 @@
 import { FormEvent, useTransition } from 'react';
 
 import { useCustomerStore } from '@/hooks/use-customer-store';
-import { removeCustomerAddress } from '@/lib/shopify/actions';
+import { removeCustomerAddress } from '@/api/actions';
 import { CustomerAddress } from '@/types/customer';
 
 export function CustomerRemoveAddress({

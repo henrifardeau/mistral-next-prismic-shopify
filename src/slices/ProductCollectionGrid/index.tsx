@@ -1,5 +1,8 @@
 import { FC } from 'react';
 
+import { CollectionQuery } from '@/api/gql/graphql';
+import { collectionByHandleQuery } from '@/api/queries';
+import { reshapeCollection } from '@/api/utils';
 import { DEFAULT_SORTING } from '@/constants/collection';
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
@@ -44,21 +47,25 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     return null;
   }
 
-  const shopifyCollection = await shopify.collection.getByHandle(
-    slice.primary.shopify_collection_handle,
-    {
-      key: sort?.sortKey || DEFAULT_SORTING.sortKey,
-      reverse: sort?.sortReverse || DEFAULT_SORTING.sortReverse,
-    },
-    Object.values(filters)
-      .flat()
-      .map((e) => JSON.parse(e)),
-  );
+  const shopifyCollection =
+    await shopify.collection.getByHandle<CollectionQuery>({
+      query: collectionByHandleQuery,
+      variables: {
+        handle: slice.primary.shopify_collection_handle,
+        sort: {
+          key: sort?.sortKey || DEFAULT_SORTING.sortKey,
+          reverse: sort?.sortReverse || DEFAULT_SORTING.sortReverse,
+        },
+        filters: Object.values(filters)
+          .flat()
+          .map((e) => JSON.parse(e)),
+      },
+    });
   if (!shopifyCollection.collection?.products) {
     return null;
   }
 
-  const collection = shopify.collection.reshape(shopifyCollection);
+  const collection = reshapeCollection(shopifyCollection);
   const documents = await prismic.getAllByUIDs(
     'products',
     collection.products.map((p) => p.handle),

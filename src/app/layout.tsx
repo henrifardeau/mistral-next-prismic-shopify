@@ -11,7 +11,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { CartStoreProvider } from '@/hooks/use-cart-store';
 import { CustomerStoreProvider } from '@/hooks/use-customer-store';
 import { prismic, repositoryName } from '@/lib/prismic';
-import { getCart, getCustomer } from '@/lib/shopify/actions';
+import { getCart, getCustomer } from '@/api/actions';
 import { asImageSrc, isFilled } from '@prismicio/client';
 import { PrismicPreview } from '@prismicio/next';
 

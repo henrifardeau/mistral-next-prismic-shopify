@@ -7,10 +7,30 @@ import { redirect } from 'next/navigation';
 import invariant from 'tiny-invariant';
 
 import { shopify } from '@/lib/shopify';
+import { CartSession } from '@/types/cart';
+import { CustomerSession } from '@/types/customer';
 
+import {
+  CreateCustomerAddressMutation,
+  CreateCustomerMutation,
+  CreateCustomerTokenMutation,
+  CustomerQuery,
+  RemoveCustomerAddressMutation,
+  UpdateCustomerAddressMutation,
+  UpdateDefaultCustomerAddressMutation,
+} from '../gql/graphql';
+import {
+  createCustomerAddressMutation,
+  createCustomerMutation,
+  createCustomerTokenMutation,
+  removeCustomerAddressMutation,
+  updateCustomerAddressMutation,
+  updateDefaultCustomerAddressMutation,
+} from '../mutations';
+import { customerQuery } from '../queries';
 import { AddressPayload, SignInPayload, SignUpPayload } from '../schemas';
-import { CartSession, CustomerSession } from '../types';
 import { updateCartCustomer } from './cart';
+import { reshapeCustomer } from '../utils';
 
 function revalidateCustomer(customerAccessToken: string) {
   revalidateTag(customerAccessToken);
@@ -34,25 +54,32 @@ async function ensureCustomerSession() {
 export async function getCustomer() {
   const customerSession = await getCustomerSession();
   if (!customerSession.authenticated) {
-    return shopify.customer.reshape({});
+    return reshapeCustomer({});
   }
 
-  const shopifyCustomer = await shopify.customer.get(
-    customerSession.accessToken,
-    { tags: [customerSession.accessToken] },
-  );
+  const shopifyCustomer = await shopify.customer.get<CustomerQuery>({
+    query: customerQuery,
+    variables: {
+      customerAccessToken: customerSession.accessToken,
+    },
+    next: { tags: [customerSession.accessToken] },
+  });
   if (!shopifyCustomer.customer) {
-    return shopify.customer.reshape({});
+    return reshapeCustomer({});
   }
 
-  return shopify.customer.reshape(shopifyCustomer, customerSession.accessToken);
+  return reshapeCustomer(shopifyCustomer, customerSession.accessToken);
 }
 
 export async function getCustomerAccessToken(payload: SignInPayload) {
-  const { customerAccessTokenCreate } = await shopify.customer.createToken({
-    email: payload.email,
-    password: payload.password,
-  });
+  const { customerAccessTokenCreate } =
+    await shopify.customer.createToken<CreateCustomerTokenMutation>({
+      query: createCustomerTokenMutation,
+      variables: {
+        email: payload.email,
+        password: payload.password,
+      },
+    });
 
   invariant(
     customerAccessTokenCreate?.customerAccessToken?.accessToken,
@@ -80,7 +107,10 @@ export async function getCustomerAccessToken(payload: SignInPayload) {
 }
 
 export async function createCustomer(payload: SignUpPayload) {
-  await shopify.customer.create(payload);
+  await shopify.customer.create<CreateCustomerMutation>({
+    query: createCustomerMutation,
+    variables: payload,
+  });
   await getCustomerAccessToken(payload);
 }
 
@@ -95,7 +125,13 @@ export async function destroyCustomer() {
 export async function createCustomerAddress(payload: AddressPayload) {
   const customerSession = await ensureCustomerSession();
 
-  await shopify.customer.createAddress(customerSession.accessToken, payload);
+  await shopify.customer.createAddress<CreateCustomerAddressMutation>({
+    query: createCustomerAddressMutation,
+    variables: {
+      customerAccessToken: customerSession.accessToken,
+      address: payload,
+    },
+  });
 
   revalidateCustomer(customerSession.accessToken);
 }
@@ -106,11 +142,14 @@ export async function updateCustomerAddress(
 ) {
   const customerSession = await ensureCustomerSession();
 
-  await shopify.customer.updateAddress(
-    customerSession.accessToken,
-    addressId,
-    payload,
-  );
+  await shopify.customer.updateAddress<UpdateCustomerAddressMutation>({
+    query: updateCustomerAddressMutation,
+    variables: {
+      customerAccessToken: customerSession.accessToken,
+      addressId,
+      address: payload,
+    },
+  });
 
   revalidateCustomer(customerSession.accessToken);
 }
@@ -118,9 +157,14 @@ export async function updateCustomerAddress(
 export async function updateDefaultCustomerAddress(addressId: string) {
   const customerSession = await ensureCustomerSession();
 
-  await shopify.customer.updateDefaultAddress(
-    customerSession.accessToken,
-    addressId,
+  await shopify.customer.updateDefaultAddress<UpdateDefaultCustomerAddressMutation>(
+    {
+      query: updateDefaultCustomerAddressMutation,
+      variables: {
+        customerAccessToken: customerSession.accessToken,
+        addressId,
+      },
+    },
   );
 
   revalidateCustomer(customerSession.accessToken);
@@ -129,7 +173,13 @@ export async function updateDefaultCustomerAddress(addressId: string) {
 export async function removeCustomerAddress(addressId: string) {
   const customerSession = await ensureCustomerSession();
 
-  await shopify.customer.removeAddress(customerSession.accessToken, addressId);
+  await shopify.customer.removeAddress<RemoveCustomerAddressMutation>({
+    query: removeCustomerAddressMutation,
+    variables: {
+      customerAccessToken: customerSession.accessToken,
+      addressId,
+    },
+  });
 
   revalidateCustomer(customerSession.accessToken);
 }

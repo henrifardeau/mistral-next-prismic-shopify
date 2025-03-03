@@ -16,7 +16,7 @@ import {
   redirectToCheckout,
   removeCartLines,
   updateCartLines,
-} from '@/lib/shopify/actions';
+} from '@/api/actions';
 
 import {
   CartCheckout,

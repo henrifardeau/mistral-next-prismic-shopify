@@ -6,7 +6,7 @@ import { Price } from '@/components/price';
 import { QuantityInput } from '@/components/quantity-input';
 import { useCartStore } from '@/hooks/use-cart-store';
 import { useProduct } from '@/hooks/use-product';
-import { addCartLines } from '@/lib/shopify/actions';
+import { addCartLines } from '@/api/actions';
 
 export function ProductAddToCart() {
   const { optimisticAddCartLine } = useCartStore();

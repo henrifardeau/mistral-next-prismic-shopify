@@ -3,8 +3,8 @@
 import { useState } from 'react';
 
 import { useCustomerStore } from '@/hooks/use-customer-store';
-import { createCustomerAddress } from '@/lib/shopify/actions';
-import { AddressPayload } from '@/lib/shopify/schemas';
+import { createCustomerAddress } from '@/api/actions';
+import { AddressPayload } from '@/api/schemas';
 
 import { CustomerAddressDialog } from './customer-address-dialog';
 
