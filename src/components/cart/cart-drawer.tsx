@@ -29,19 +29,14 @@ import {
   CartSummary,
 } from './cart';
 import { CartItem } from './cart-item';
+import { CartLineProvider } from '@/hooks/use-cart-line';
 
 export function CartDrawer() {
   const cartOpen = useDrawer((state) => state.cart);
   const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
   const closeDrawer = useDrawer((state) => state.closeDrawer);
 
-  const {
-    optimisticCart,
-    cartLength,
-    cartSubTotal,
-    optimisticUpdateCartLine,
-    optimisticRemoveCartLine,
-  } = useCart();
+  const { optimisticCart, cartLength, cartSubTotal } = useCart();
 
   const disableCheckout = useCallback(() => {
     return !optimisticCart?.lines.length || optimisticCart.state !== 'idle';
@@ -65,19 +60,25 @@ export function CartDrawer() {
             <CartContent>
               <CartList className="divide-y">
                 {optimisticCart.lines.map((line) => (
-                  <CartItem
+                  <CartLineProvider
                     key={line.id}
                     line={line}
-                    updateAction={async (quantity: number) => {
-                      optimisticUpdateCartLine({ lineId: line.id, quantity });
-                      await updateCartLines([{ lineId: line.id, quantity }]);
+                    onLineIncrement={(lineId: string) => {
+                      console.log('Line Increment', lineId);
                     }}
-                    removeAction={async () => {
-                      optimisticRemoveCartLine({ lineId: line.id });
-                      await removeCartLines([{ lineId: line.id }]);
+                    onLineDecrement={(lineId: string) => {
+                      console.log('Line Decrement', lineId);
                     }}
-                    closeCart={closeDrawer('cart')}
-                  />
+                    onLineUpdate={async (lineId: string, quantity: number) => {
+                      console.log('Call to update cart line');
+                      await updateCartLines([{ lineId, quantity }]);
+                    }}
+                    onLineRemove={async (lineId: string) => {
+                      await removeCartLines([{ lineId }]);
+                    }}
+                  >
+                    <CartItem />
+                  </CartLineProvider>
                 ))}
               </CartList>
             </CartContent>

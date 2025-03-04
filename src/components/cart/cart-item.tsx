@@ -2,14 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  createContext,
-  FormEvent,
-  useCallback,
-  useContext,
-  useMemo,
-  useTransition,
-} from 'react';
+import { useCallback } from 'react';
 
 import {
   Select,
@@ -18,90 +11,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCartLine } from '@/hooks/use-cart-line';
 import { cn } from '@/lib/cn';
 import { formatPrice, toNumber } from '@/lib/utils';
-import { CartLine } from '@/types/cart';
 
 import { QuantityInput } from '../quantity-input';
 
-interface CartItemContextProps {
-  line: CartLine;
-  updateAction: (newQuantity: number) => Promise<void>;
-  removeAction: () => Promise<void>;
-  closeCart: () => void;
-}
-
-const CartItemContext = createContext<CartItemContextProps | undefined>(
-  undefined,
-);
-
-const useCartItem = () => {
-  const context = useContext(CartItemContext);
-
-  if (context === undefined) {
-    throw new Error('useCartItem must be used within a CartItemProvider');
-  }
-
-  return context;
-};
-
-export const CartItem = ({
-  line,
-  updateAction,
-  removeAction,
-  closeCart,
-}: CartItemContextProps) => {
-  const value = useMemo(() => {
-    return {
-      line,
-      updateAction,
-      removeAction,
-      closeCart,
-    };
-  }, [line, updateAction, removeAction, closeCart]);
-
+export const CartItem = () => {
   return (
-    <CartItemContext.Provider value={value}>
-      <li className="space-y-6 not-first:pt-4 not-last:pb-4">
-        <div className="grid grid-cols-[112px_1fr] gap-2">
-          <CartItemThumbnail />
-
-          <div className="flex flex-col justify-between">
-            <CartItemHeader>
-              <CartItemTitle />
-              <CartItemDescription />
-            </CartItemHeader>
-
-            <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                <CartItemQuantitySelect />
-                <CartItemRemoveButton />
-              </div>
-
-              <CartItemPrice />
+    <li className="space-y-6 not-first:pt-4 not-last:pb-4">
+      <div className="grid grid-cols-[112px_1fr] gap-2">
+        <CartItemThumbnail />
+        <div className="flex flex-col justify-between">
+          <CartItemHeader>
+            <CartItemTitle />
+            <CartItemDescription />
+          </CartItemHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex gap-2">
+              <CartItemQuantitySelect />
+              <CartItemRemoveButton />
             </div>
+            <CartItemPrice />
           </div>
         </div>
-      </li>
-    </CartItemContext.Provider>
+      </div>
+    </li>
   );
 };
 CartItem.displayName = 'CartItem';
 
 const CartItemThumbnail = () => {
-  const { line, closeCart } = useCartItem();
+  const { line } = useCartLine();
 
   return (
     <Link
-      href={`/products/${line.product.handle}`}
-      onClick={closeCart}
+      href={`/products/${line?.product.handle}`}
       className="flex items-center justify-center"
     >
       <Image
         width={112}
         height={112}
-        src={line.variant.image.src || 'https://placehold.co/112x112'}
-        alt={line.variant.image.altText || 'Placeholder image'}
+        src={line?.variant.image.src || 'https://placehold.co/112x112'}
+        alt={line?.variant.image.altText || 'Placeholder image'}
       />
     </Link>
   );
@@ -117,35 +69,31 @@ const CartItemHeader = ({
 CartItemHeader.displayName = 'CartItemHeader';
 
 const CartItemTitle = () => {
-  const { line, closeCart } = useCartItem();
+  const { line } = useCartLine();
 
   return (
     <Link
-      href={`/products/${line.product.handle}`}
-      onClick={closeCart}
+      href={`/products/${line?.product.handle}`}
       className="flex flex-col hover:underline"
     >
-      <h2>{line.product.title}</h2>
+      <h2>{line?.product.title}</h2>
     </Link>
   );
 };
 CartItemTitle.displayName = 'CartItemTitle';
 
 const CartItemDescription = () => {
-  const { line } = useCartItem();
+  const { line } = useCartLine();
 
-  return <span>{line.variant.title}</span>;
+  return <span>{line?.variant.title}</span>;
 };
 CartItemDescription.displayName = 'CartItemDescription';
 
 const CartItemQuantitySelect = ({ as }: { as?: 'input' | 'select' }) => {
-  const [, startUpdate] = useTransition();
-  const { line, updateAction } = useCartItem();
+  const { line, updateCartLine } = useCartLine();
 
   const handleUpdate = async (value: number) => {
-    startUpdate(async () => {
-      await updateAction(value);
-    });
+    updateCartLine(value);
   };
 
   const handleSelectChange = (value: string) => {
@@ -154,29 +102,30 @@ const CartItemQuantitySelect = ({ as }: { as?: 'input' | 'select' }) => {
 
   if (as === 'select') {
     return (
-      <form onSubmit={(e) => e.preventDefault()}>
-        <Select
-          name="quantity"
-          value={`${line.quantity}`}
-          onValueChange={handleSelectChange}
-        >
-          <SelectTrigger className="w-16">
-            <SelectValue placeholder="1" />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((option) => (
-              <SelectItem key={option} value={`${option}`}>
-                {option}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </form>
+      <Select
+        name="quantity"
+        value={`${line?.quantity || 0}`}
+        onValueChange={handleSelectChange}
+      >
+        <SelectTrigger className="w-16">
+          <SelectValue placeholder="1" />
+        </SelectTrigger>
+        <SelectContent>
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((option) => (
+            <SelectItem key={option} value={`${option}`}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     );
   }
 
   return (
-    <QuantityInput quantity={line.quantity} updateQuantity={handleUpdate} />
+    <QuantityInput
+      quantity={line?.quantity || 0}
+      updateQuantity={handleUpdate}
+    />
   );
 };
 CartItemQuantitySelect.displayName = 'CartItemQuantitySelect';
@@ -185,18 +134,10 @@ const CartItemRemoveButton = ({
   className,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const [, startRemove] = useTransition();
-  const { removeAction } = useCartItem();
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    startRemove(async () => {
-      await removeAction();
-    });
-  };
+  const { removeCartLine } = useCartLine();
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={removeCartLine}>
       <button
         className={cn('bg-black px-2 py-4 text-xs text-white', className)}
         {...props}
@@ -209,30 +150,30 @@ const CartItemRemoveButton = ({
 CartItemRemoveButton.displayName = 'CartItemRemoveButton';
 
 const CartItemPrice = () => {
-  const { line } = useCartItem();
+  const { line } = useCartLine();
 
   const totalPrice = useCallback(() => {
     try {
       return formatPrice(
-        line.variant.price.amount,
-        line.variant.price.currencyCode,
-        line.quantity,
+        line?.variant.price.amount || 0,
+        line?.variant.price.currencyCode || 'EUR',
+        line?.quantity || 0,
       );
     } catch (err) {
       console.error(err);
       return 'NaN';
     }
   }, [
-    line.quantity,
-    line.variant.price.amount,
-    line.variant.price.currencyCode,
+    line?.quantity,
+    line?.variant.price.amount,
+    line?.variant.price.currencyCode,
   ]);
 
   return (
     <div>
       <span className="font-medium">{totalPrice()}</span>
       <span className="sr-only">
-        {line.product.title} {line.variant.title} total cost : {totalPrice()}
+        {line?.product.title} {line?.variant.title} total cost : {totalPrice()}
       </span>
     </div>
   );
