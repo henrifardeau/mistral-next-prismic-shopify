@@ -7,10 +7,12 @@ import {
   AddressIdPayload,
   AddressUpdatePayload,
   Customer,
+  CustomerUpdatePayload,
 } from '@/types/customer';
 
 type CustomerContextProps = {
   optimisticCustomer: Customer;
+  optimisticUpdateCustomer: (payload: CustomerUpdatePayload) => void;
   optimisticCreateCustomerAddress: (payload: AddressPayload) => void;
   optimisticUpdateCustomerAddress: (payload: AddressUpdatePayload) => void;
   optimisticRemoveCustomerAddress: (payload: AddressIdPayload) => void;
@@ -20,6 +22,9 @@ type CustomerContextProps = {
 export const CustomerContext = createContext<CustomerContextProps>({
   optimisticCustomer: {
     authenticated: false,
+  },
+  optimisticUpdateCustomer: () => {
+    console.warn('Function not initialized');
   },
   optimisticCreateCustomerAddress: () => {
     console.warn('Function not initialized');

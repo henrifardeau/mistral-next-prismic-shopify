@@ -1,11 +1,11 @@
 'use client';
 
-import { useCustomerStore } from '@/hooks/use-customer';
+import { useCustomer } from '@/hooks/use-customer';
 
 import { CustomerAddressItem, CustomerCreateAddress } from './components';
 
 export default function Page() {
-  const { optimisticCustomer } = useCustomerStore();
+  const { optimisticCustomer } = useCustomer();
 
   if (!optimisticCustomer.authenticated) {
     return null;

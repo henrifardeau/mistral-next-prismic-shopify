@@ -1,54 +1,43 @@
-import { Metadata } from 'next';
+'use client';
+
 import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
+import { destroyCustomer } from '@/api/actions';
 import { NavLink } from '@/components/nav-link';
-import { destroyCustomer, getCustomer } from '@/api/actions';
 
-export function generateMetadata(): Metadata {
-  return {
-    robots: {
-      index: false,
-      follow: false,
-      googleBot: {
-        follow: false,
-        index: false,
-      },
-    },
-  };
-}
+import { CustomerUpdate } from './components';
+import { useCustomer } from '@/hooks/use-customer';
 
-export default async function AccountLayout({ children }: PropsWithChildren) {
-  const customer = await getCustomer();
+export default function AccountLayout({ children }: PropsWithChildren) {
+  const { optimisticCustomer } = useCustomer();
 
-  if (!customer.authenticated) {
+  if (!optimisticCustomer.authenticated) {
     return redirect('/');
   }
 
   return (
     <div className="container divide-y">
       <header className="space-y-4 border-t py-4">
-        {(customer.firstName || customer.lastName) && (
+        {(optimisticCustomer.firstName || optimisticCustomer.lastName) && (
           <div>
             <h2 className="text-4xl font-semibold capitalize">
-              {customer.firstName} {customer.lastName}
+              {optimisticCustomer.firstName} {optimisticCustomer.lastName}
             </h2>
           </div>
         )}
         <div className="flex items-center justify-between">
           <div className="flex flex-col space-y-2">
-            <span className="text-xs uppercase">{customer.email}</span>
             <span className="text-xs uppercase">
-              Customer since {new Date(customer.createdAt).getFullYear()}
+              {optimisticCustomer.email}
+            </span>
+            <span className="text-xs uppercase">
+              Customer since{' '}
+              {new Date(optimisticCustomer.createdAt).getFullYear()}
             </span>
           </div>
 
-          <button
-            type="button"
-            className="flex items-center justify-center rounded-full border px-4 py-1 text-sm uppercase"
-          >
-            Update profile
-          </button>
+          <CustomerUpdate />
         </div>
       </header>
 

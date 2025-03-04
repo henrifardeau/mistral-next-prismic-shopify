@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { updateCustomerAddress } from '@/api/actions';
 import { AddressPayload } from '@/api/schemas';
-import { useCustomerStore } from '@/hooks/use-customer';
+import { useCustomer } from '@/hooks/use-customer';
 import { CustomerAddress } from '@/types/customer';
 
 import { CustomerAddressDialog } from './customer-address-dialog';
@@ -12,7 +12,7 @@ export function CustomerUpdateAddress({
 }: {
   address: CustomerAddress;
 }) {
-  const { optimisticUpdateCustomerAddress } = useCustomerStore();
+  const { optimisticUpdateCustomerAddress } = useCustomer();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 

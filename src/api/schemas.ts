@@ -19,6 +19,14 @@ export const recoverSchema = z.object({
 });
 export type RecoverPayload = z.infer<typeof recoverSchema>;
 
+export const updateCustomerSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+  acceptsMarketing: z.boolean().optional(),
+});
+export type UpdateCustomerPayload = z.infer<typeof updateCustomerSchema>;
+
 export const addressSchema = z.object({
   address1: z.string().nonempty(),
   address2: z.string().optional(),

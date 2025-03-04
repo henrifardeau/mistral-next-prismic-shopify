@@ -58,6 +58,10 @@ export type CustomerOrder = {
 
 export type CustomerAction =
   | {
+      type: 'UPDATE_CUSTOMER';
+      payload: CustomerUpdatePayload;
+    }
+  | {
       type: 'CREATE_ADDRESS';
       payload: AddressPayload;
     }
@@ -73,6 +77,13 @@ export type CustomerAction =
       type: 'UPDATE_DEFAULT_ADDRESS';
       payload: AddressIdPayload;
     };
+
+export type CustomerUpdatePayload = {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  acceptsMarketing?: boolean;
+};
 
 export type AddressIdPayload = {
   id: string;

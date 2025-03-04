@@ -18,6 +18,7 @@ import {
   RemoveCustomerAddressMutation,
   RemoveCustomerTokenMutation,
   UpdateCustomerAddressMutation,
+  UpdateCustomerMutation,
   UpdateDefaultCustomerAddressMutation,
 } from '../gql/graphql';
 import {
@@ -27,10 +28,16 @@ import {
   removeCustomerAddressMutation,
   removeCustomerTokenMutation,
   updateCustomerAddressMutation,
+  updateCustomerMutation,
   updateDefaultCustomerAddressMutation,
 } from '../mutations';
 import { customerQuery } from '../queries';
-import { AddressPayload, SignInPayload, SignUpPayload } from '../schemas';
+import {
+  AddressPayload,
+  SignInPayload,
+  SignUpPayload,
+  UpdateCustomerPayload,
+} from '../schemas';
 import { reshapeCustomer } from '../utils';
 import { removeCartCustomer, updateCartCustomer } from './cart';
 
@@ -114,6 +121,23 @@ export async function createCustomer(payload: SignUpPayload) {
     variables: payload,
   });
   await getCustomerAccessToken(payload);
+}
+
+export async function updateCustomer(payload: UpdateCustomerPayload) {
+  const customerSession = await ensureCustomerSession();
+
+  await shopify.customer.update<UpdateCustomerMutation>({
+    query: updateCustomerMutation,
+    variables: {
+      customerAccessToken: customerSession.accessToken,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      phone: payload.phone,
+      acceptsMarketing: payload.acceptsMarketing,
+    },
+  });
+
+  revalidateCustomer(customerSession.accessToken);
 }
 
 export async function destroyCustomer() {

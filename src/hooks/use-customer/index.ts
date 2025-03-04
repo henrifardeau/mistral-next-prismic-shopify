@@ -4,7 +4,7 @@ import { CustomerContext } from './customer-context';
 
 export * from './customer-provider';
 
-export function useCustomerStore() {
+export function useCustomer() {
   const context = useContext(CustomerContext);
 
   if (context === undefined) {

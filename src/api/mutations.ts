@@ -10,6 +10,35 @@ export const createCustomerMutation = graphql(`
   }
 `);
 
+export const updateCustomerMutation = graphql(`
+  mutation UpdateCustomer(
+    $customerAccessToken: String!
+    $firstName: String
+    $lastName: String
+    $phone: String
+    $acceptsMarketing: Boolean
+  ) {
+    customerUpdate(
+      customerAccessToken: $customerAccessToken
+      customer: {
+        firstName: $firstName
+        lastName: $lastName
+        phone: $phone
+        acceptsMarketing: $acceptsMarketing
+      }
+    ) {
+      customer {
+        id
+      }
+      customerUserErrors {
+        message
+        field
+        code
+      }
+    }
+  }
+`);
+
 export const createCustomerTokenMutation = graphql(`
   mutation CreateCustomerToken($input: CustomerAccessTokenCreateInput!) {
     customerAccessTokenCreate(input: $input) {

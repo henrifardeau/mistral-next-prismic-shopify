@@ -1,7 +1,7 @@
 import { FormEvent, useTransition } from 'react';
 
 import { removeCustomerAddress } from '@/api/actions';
-import { useCustomerStore } from '@/hooks/use-customer';
+import { useCustomer } from '@/hooks/use-customer';
 import { CustomerAddress } from '@/types/customer';
 
 export function CustomerRemoveAddress({
@@ -10,7 +10,7 @@ export function CustomerRemoveAddress({
   address: CustomerAddress;
 }) {
   const [, startRemove] = useTransition();
-  const { optimisticRemoveCustomerAddress } = useCustomerStore();
+  const { optimisticRemoveCustomerAddress } = useCustomer();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

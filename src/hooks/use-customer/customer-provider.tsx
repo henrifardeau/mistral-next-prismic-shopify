@@ -8,6 +8,7 @@ import {
   AddressUpdatePayload,
   Customer,
   CustomerAction,
+  CustomerUpdatePayload,
 } from '@/types/customer';
 
 import { CustomerContext } from './customer-context';
@@ -30,6 +31,14 @@ export function CustomerProvider({
     },
     [updateOptimisticCustomer],
   );
+
+  const optimisticUpdateCustomer = (payload: CustomerUpdatePayload) => {
+    console.log({ payload });
+    updateCustomerOptimistically({
+      type: 'UPDATE_CUSTOMER',
+      payload,
+    });
+  };
 
   const optimisticCreateCustomerAddress = (payload: AddressPayload) => {
     updateCustomerOptimistically({
@@ -65,6 +74,7 @@ export function CustomerProvider({
     <CustomerContext.Provider
       value={{
         optimisticCustomer,
+        optimisticUpdateCustomer,
         optimisticCreateCustomerAddress,
         optimisticUpdateCustomerAddress,
         optimisticRemoveCustomerAddress,
@@ -82,6 +92,12 @@ function customerReducer(state: Customer, action: CustomerAction): Customer {
   }
 
   switch (action.type) {
+    case 'UPDATE_CUSTOMER': {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
     case 'CREATE_ADDRESS': {
       return {
         ...state,
@@ -102,17 +118,6 @@ function customerReducer(state: Customer, action: CustomerAction): Customer {
       if (index === -1) {
         return state;
       }
-
-      const updatedAddresses = [...state.addresses];
-      updatedAddresses[index] = {
-        ...updatedAddresses[index],
-        ...action.payload.address,
-      };
-
-      return {
-        ...state,
-        addresses: updatedAddresses,
-      };
     }
     case 'UPDATE_DEFAULT_ADDRESS': {
       return {
