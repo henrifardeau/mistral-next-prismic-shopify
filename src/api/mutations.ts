@@ -30,11 +30,6 @@ export const updateCustomerMutation = graphql(`
       customer {
         id
       }
-      customerUserErrors {
-        message
-        field
-        code
-      }
     }
   }
 `);
