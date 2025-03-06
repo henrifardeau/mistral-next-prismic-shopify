@@ -108,7 +108,7 @@ function MenuPrimary({
           {primaryLinks.map((primaryLink) => {
             const uid = primaryLink.uid;
 
-            if (uid && secondaryLinks[uid]) {
+            if (uid && secondaryLinks[uid].length) {
               return (
                 <li key={primaryLink.link.text}>
                   <button
