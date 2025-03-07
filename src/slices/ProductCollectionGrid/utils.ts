@@ -1,3 +1,4 @@
+import { DEFAULT_SORTING } from '@/constants/collection';
 import { CollectionProductFilter } from '@/types/collection';
 import {
   ColorOption,
@@ -13,6 +14,30 @@ type Images = Record<
     alt?: string;
   }
 >;
+
+export function computeContext(context: {
+  cursor?: string;
+  sort?: {
+    name: string;
+    slug: string;
+    sortKey: string;
+    sortReverse: boolean;
+  };
+  filters?: Record<string, string[]>;
+}) {
+  const { cursor, sort = DEFAULT_SORTING, filters = {} } = context;
+
+  const shopifySort = {
+    key: sort.sortKey,
+    reverse: sort.sortReverse,
+  };
+
+  const shopifyFilters = Object.values(filters)
+    .flat()
+    .map((e) => JSON.parse(e));
+
+  return { cursor, sort, shopifySort, filters, shopifyFilters };
+}
 
 function hasSwatchForEveryOption(option: CollectionProductFilter) {
   return option.values.every((value) => {

@@ -64,6 +64,8 @@ export function CollectionFilterDrawer({
       params.delete('filters');
     }
 
+    params.delete('page');
+
     router.push(`${pathname}?${params.toString()}`);
     closeDrawer('filter')();
   };

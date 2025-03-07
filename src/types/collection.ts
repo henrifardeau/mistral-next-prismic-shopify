@@ -3,6 +3,10 @@ import { Product } from './product';
 export type Collection = {
   filters: CollectionProductFilter[];
   products: Product[];
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor?: string | null;
+  };
 };
 
 export type CollectionProductFilter = {

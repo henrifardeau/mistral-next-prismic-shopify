@@ -21,12 +21,17 @@ function getProductSlice(product: Content.ProductsDocument) {
 }
 
 export function ProductItem({
-  document,
   product,
+  document,
 }: {
-  document: Content.ProductsDocument;
   product: Product;
+  document?: Content.ProductsDocument;
 }) {
+  if (!document) {
+    console.error('Missing document for product', product.handle);
+    return null;
+  }
+
   const productSlice = getProductSlice(document);
   if (!productSlice) {
     console.error('Missing product header slice for product', document.id);

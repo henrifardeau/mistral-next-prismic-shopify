@@ -3,7 +3,6 @@ import { FC } from 'react';
 import { CollectionQuery } from '@/api/gql/graphql';
 import { collectionByHandleQuery } from '@/api/queries';
 import { reshapeCollection } from '@/api/utils';
-import { DEFAULT_SORTING } from '@/constants/collection';
 import { prismic } from '@/lib/prismic';
 import { shopify } from '@/lib/shopify';
 import { Content } from '@prismicio/client';
@@ -14,9 +13,9 @@ import {
   CollectionFilterDrawer,
   CollectionSortSelect,
   ProductItem,
-  SwitchGridItem,
 } from './components';
-import { getInitialFilters, getVerifiedFilters } from './utils';
+import { computeContext, getInitialFilters, getVerifiedFilters } from './utils';
+import { CollectionPagination } from './components/collection-pagination';
 
 /**
  * Props for `ProductCollectionGrid`.
@@ -24,6 +23,7 @@ import { getInitialFilters, getVerifiedFilters } from './utils';
 export type ProductCollectionGridProps = SliceComponentProps<
   Content.ProductCollectionGridSlice,
   {
+    cursor?: string;
     sort?: {
       name: string;
       slug: string;
@@ -41,7 +41,8 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
   slice,
   context,
 }) => {
-  const { sort = DEFAULT_SORTING, filters = {} } = context;
+  const { cursor, sort, shopifySort, filters, shopifyFilters } =
+    computeContext(context);
 
   if (!slice.primary.shopify_collection_handle) {
     return null;
@@ -51,14 +52,10 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
     await shopify.collection.getByHandle<CollectionQuery>({
       query: collectionByHandleQuery,
       variables: {
+        after: cursor,
         handle: slice.primary.shopify_collection_handle,
-        sort: {
-          key: sort?.sortKey || DEFAULT_SORTING.sortKey,
-          reverse: sort?.sortReverse || DEFAULT_SORTING.sortReverse,
-        },
-        filters: Object.values(filters)
-          .flat()
-          .map((e) => JSON.parse(e)),
+        sort: shopifySort,
+        filters: shopifyFilters,
       },
     });
   if (!shopifyCollection.collection?.products) {
@@ -83,28 +80,23 @@ const ProductCollectionGrid: FC<ProductCollectionGridProps> = async ({
       data-slice-variation={slice.variation}
       className="container pb-16"
     >
-      <div className="py-4">
-        <div className="flex items-center justify-between">
-          <CollectionFilterButton />
-          <CollectionSortSelect
-            sort={{
-              name: sort?.name || DEFAULT_SORTING.name,
-              slug: sort?.slug || DEFAULT_SORTING.slug,
-            }}
-          />
-        </div>
+      <div className="flex items-center justify-between py-4">
+        <CollectionFilterButton />
+        <CollectionSortSelect sort={sort} />
       </div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-4 xl:grid-cols-[repeat(auto-fit,minmax(23rem,1fr))]">
-        <SwitchGridItem
-          products={collection.products}
-          documents={documents}
-          components={{
-            products: ({ document, product }) => (
-              <ProductItem document={document} product={product} />
-            ),
-          }}
-        />
+        {collection.products.map((product) => (
+          <ProductItem
+            key={product.id}
+            document={documents.find((d) => d.uid === product.handle)}
+            product={product}
+          />
+        ))}
       </div>
+      <CollectionPagination
+        cursor={collection.pageInfo.endCursor}
+        hasNext={collection.pageInfo.hasNextPage}
+      />
       <CollectionFilterDrawer
         filters={collectionFilters}
         initialFilters={initialFilters}

@@ -11,6 +11,8 @@ import { SliceZone } from '@prismicio/react';
 async function parseSearch(searchParams: SearchParams) {
   const params = await searchParams;
 
+  const cursor = typeof params.page === 'string' ? params.page : undefined;
+
   const sort =
     typeof params.sort === 'string'
       ? SORTING.find((s) => s.slug === params.sort)
@@ -22,6 +24,7 @@ async function parseSearch(searchParams: SearchParams) {
       : undefined;
 
   return {
+    cursor,
     sort: sort ?? DEFAULT_SORTING,
     filters,
   };
@@ -63,7 +66,7 @@ export default async function Page({
   searchParams: SearchParams;
 }) {
   const { handle } = await params;
-  const { sort, filters } = await parseSearch(searchParams);
+  const { cursor, sort, filters } = await parseSearch(searchParams);
 
   const page = await prismic
     .getByUID('collections', handle)
@@ -73,7 +76,7 @@ export default async function Page({
     <SliceZone
       slices={page.data.slices}
       components={components}
-      context={{ sort, filters }}
+      context={{ cursor, sort, filters }}
     />
   );
 }

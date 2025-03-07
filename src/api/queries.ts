@@ -70,6 +70,7 @@ export const collectionByHandleQuery = graphql(`
   query Collection(
     $handle: String!
     $first: Int!
+    $after: String
     $sortKey: ProductCollectionSortKeys!
     $sortReverse: Boolean!
     $filters: [ProductFilter!]
@@ -78,6 +79,7 @@ export const collectionByHandleQuery = graphql(`
       id
       products(
         first: $first
+        after: $after
         sortKey: $sortKey
         reverse: $sortReverse
         filters: $filters
@@ -104,6 +106,10 @@ export const collectionByHandleQuery = graphql(`
               }
             }
           }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
         }
       }
     }

@@ -81,6 +81,7 @@ export function reshapeCollection(
     products: shopify.helpers
       .removeEdgesAndNodes(rawCollection.collection.products)
       .map((product) => reshapeProduct({ product })),
+    pageInfo: rawCollection.collection.products.pageInfo,
   };
 }
 
